@@ -1,0 +1,2 @@
+metagist:
+    resource: "@MetagistServerBundle/Resources/config/routing.yml"
