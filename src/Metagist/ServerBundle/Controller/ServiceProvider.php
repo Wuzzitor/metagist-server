@@ -2,29 +2,50 @@
 namespace Metagist\ServerBundle\Controller;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
 /**
  * Provides access to often used resources.
  * 
  * @author Daniel Pozzi <bonndan76@googlemail.com>
  */
-class ServiceProvider
+class ServiceProvider implements ContainerAwareInterface
 {
     /**
-     * the service container
+     * container
      * 
-     * @var \Symfony\Component\DependencyInjection\ContainerInterface 
+     * @var ContainerInterface
      */
-    private $container;
-    
-    /**
-     * Constructor.
-     * 
-     * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
-     */
-    public function __construct(ContainerInterface $container)
+    private $application;
+
+    public function setContainer(ContainerInterface $container = null)
     {
-        $this->container = $container;
+        $this->application = $container;
+    }
+    
+     /**
+     * Retrieves a package either from the db or packagist.
+     * 
+     * @param string $author
+     * @param string $name
+     * @return Package
+     */
+    public function getPackage($author, $name)
+    {
+        $packageRepo = $this->application->packages();
+        $package = $packageRepo->byAuthorAndName($author, $name);
+        if ($package == null) {
+            $factory = $this->application[ServiceProvider::PACKAGE_FACTORY];
+            /* @var $factory PackageFactory */
+            $package = $factory->byAuthorAndName($author, $name);
+            if ($packageRepo->save($package)) {
+                /* @var $metaInfoRepo MetaInfoRepository */
+                $metaInfoRepo = $this->application[ServiceProvider::METAINFO_REPO];
+                $metaInfoRepo->savePackage($package);
+            }
+        }
+
+        return $package;
     }
     
     /**

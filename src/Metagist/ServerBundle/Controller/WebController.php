@@ -10,8 +10,18 @@ use Acme\DemoBundle\Form\ContactType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
+/**
+ * @Route("/", service="metagist.web.controller")
+ */
 class WebController extends Controller
 {
+    private $application;
+    
+    public function __construct(ServiceProvider $serviceProvider)
+    {
+        $this->application = $serviceProvider;
+    }
+    
     /**
      * @Route("/", name="_welcome")
      * @Template()

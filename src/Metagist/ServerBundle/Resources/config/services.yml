@@ -1,3 +1,6 @@
+parameters:
+    metagist.web.controller.class: Metagist\ServerBundle\Controller\WebController
+    
 services:
   metagist_controller_serviceprovider:
     class:     Metagist\ServerBundle\Controller\ServiceProvider
@@ -14,3 +17,7 @@ services:
     arguments: [%category.render.mapping%]
     tags:
       - { name: twig.extension }
+
+  metagist.web.controller:
+    class:     "%metagist.web.controller.class%"
+    arguments: ["@metagist_controller_serviceprovider"]
