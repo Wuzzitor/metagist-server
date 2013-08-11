@@ -1,0 +1,16 @@
+services:
+  metagist_controller_serviceprovider:
+    class:     Metagist\ServerBundle\Controller\ServiceProvider
+    arguments: ["@service_container"]
+    
+  metagist_twig_iconextension:
+    class:     Metagist\ServerBundle\Twig\Extension\IconExtension
+    arguments: [%category.icons.mapping%]
+    tags:
+      - { name: twig.extension }
+  
+  metagist_twig_metainfosextension:
+    class:     Metagist\ServerBundle\Twig\Extension\MetaInfosExtension
+    arguments: [%category.render.mapping%]
+    tags:
+      - { name: twig.extension }

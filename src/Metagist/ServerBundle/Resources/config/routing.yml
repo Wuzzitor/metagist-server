@@ -1,4 +1,4 @@
 _defaults:
-    resource: "@MetagistServerBundle/Controller/DefaultController.php"
+    resource: "@MetagistServerBundle/Controller/WebController.php"
     type:     annotation
     prefix:   /
