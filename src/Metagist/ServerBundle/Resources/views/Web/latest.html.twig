@@ -16,7 +16,7 @@
                 </div>
                 <div class="span10">
                     <p>
-                        {{ stars(latestRating.rating) }} for <a href="/package/{{ latestRating.getPackage.getIdentifier|e }}"><i class="icon icon-arrow-right"></i> {{ latestRating.getPackage|e }}</a><br />
+                        {{ stars(latestRating.rating) }} for <a href="{{ path('package', {'author': latestRating.getPackage.author, 'name': latestRating.getPackage.name}) }}{{ latestRating.getPackage.getIdentifier|e }}"><i class="icon icon-arrow-right"></i> {{ latestRating.getPackage|e }}</a><br />
                         <i class="icon icon-quote-left"></i>
                         <em>{{ latestRating.getComment|e }}</em> 
                         <i class="icon icon-quote-right"></i>
@@ -33,7 +33,7 @@
                 {% for metainfo in latestUpdates %}
                     <li class="{{ metainfo.getGroup }}">
                         <strong>{{ icon(metainfo.getGroup) }} {{ (metainfo.getGroup)|trans }}:</strong>  {{ renderInfo(metainfo) }}
-                        <a href="/package/{{ metainfo.getPackage.getIdentifier|e }}" title="{{ metainfo.getPackage.getIdentifier|e }}"><i class="icon icon-arrow-right"></i> {{ metainfo.getPackage }}</a>
+                        <a href="{{ path('package', {'author': metainfo.getPackage.author, 'name': metainfo.getPackage.name}) }}" title="{{ metainfo.getPackage.getIdentifier|e }}"><i class="icon icon-arrow-right"></i> {{ metainfo.getPackage }}</a>
                     </li>
                 {% endfor %}
             </ul>
