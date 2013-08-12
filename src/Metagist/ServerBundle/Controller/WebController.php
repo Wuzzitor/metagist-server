@@ -88,8 +88,8 @@ class WebController extends Controller
      * Show the latest updates and ratings.
      * 
      * @return string
-     * @return string
      * @Route("/latest", name="latest")
+     * @Template()
      */
     public function latestAction()
     {
