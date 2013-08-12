@@ -2,7 +2,6 @@
 namespace Metagist\ServerBundle\Controller;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
 /**
  * Provides access to often used resources.
@@ -16,11 +15,16 @@ class ServiceProvider
      * 
      * @var ContainerInterface
      */
-    private $application;
+    private $container;
 
+    /**
+     * Constructor.
+     *
+     * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+     */
     public function __construct(ContainerInterface $container = null)
     {
-        $this->application = $container;
+        $this->container = $container;
     }
     
      /**
@@ -32,15 +36,14 @@ class ServiceProvider
      */
     public function getPackage($author, $name)
     {
-        $packageRepo = $this->application->packages();
-        $package = $packageRepo->byAuthorAndName($author, $name);
+        $package = $this->packages()->byAuthorAndName($author, $name);
         if ($package == null) {
-            $factory = $this->application[ServiceProvider::PACKAGE_FACTORY];
+            $factory = $this->container[ServiceProvider::PACKAGE_FACTORY];
             /* @var $factory PackageFactory */
             $package = $factory->byAuthorAndName($author, $name);
-            if ($packageRepo->save($package)) {
+            if ($this->packages()->save($package)) {
                 /* @var $metaInfoRepo MetaInfoRepository */
-                $metaInfoRepo = $this->application[ServiceProvider::METAINFO_REPO];
+                $metaInfoRepo = $this->metainfo();
                 $metaInfoRepo->savePackage($package);
             }
         }
@@ -51,27 +54,27 @@ class ServiceProvider
     /**
      * Provides access to the session.
      * 
-     * @return \Symfony\Component\HttpFoundation\Session\Session;
+     * @return \Symfony\Component\HttpFoundation\Session\Session
      */
     public function session()
     {
-        return $this['session'];
+        return $this->container->get('session');
     }
     
     /**
      * Provides access to the logger.
      * 
-     * @return \Monolog\Logger
+     * @return \Symfony\Bridge\Monolog\Logger
      */
     public function logger()
     {
-        return $this['monolog'];
+        return $this->container->get('logger');
     }
     
     /**
      * Returns the package repository.
      * 
-     * @return \Metagist\PackageRepository
+     * @return \Metagist\ServerBundle\Entity\PackageRepository
      */
     public function packages()
     {
@@ -99,7 +102,7 @@ class ServiceProvider
     /**
      * Returns the metainfo repository.
      * 
-     * @return \Metagist\RatingRepository
+     * @return \Metagist\ServerBundle\Entity\RatingRepository
      */
     public function ratings()
     {
@@ -113,7 +116,7 @@ class ServiceProvider
      */
     public function categories()
     {
-        return $this->application->get('metagist.categoryschema');
+        return $this->container->get('metagist.categoryschema');
     }
 
     /**
@@ -123,7 +126,7 @@ class ServiceProvider
      */
     public function security()
     {
-        return $this->application->get('security.context');
+        return $this->container->get('security.context');
     }
     
     /**
@@ -155,7 +158,7 @@ class ServiceProvider
      */
     private function getRepo($entityName)
     {
-        return $this->application->get('doctrine')->getManager()
+        return $this->container->get('doctrine')->getManager()
             ->getRepository($entityName);
     }
     
@@ -166,6 +169,6 @@ class ServiceProvider
      */
     private function getValidator()
     {
-        return $this->application->get('metagist.validator');
+        return $this->container->get('metagist.validator');
     }
 }
