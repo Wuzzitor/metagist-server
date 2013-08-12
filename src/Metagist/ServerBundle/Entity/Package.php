@@ -57,6 +57,11 @@ class Package
      * @ORM\Column(name="time_updated", type="datetime", nullable=false)
      */
     private $timeUpdated;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Metainfo", mappedBy="package")
+     */
+    private $metainfos;
 
     /**
      * Constructor.
@@ -199,10 +204,10 @@ class Package
             $callback = function (MetaInfo $metainfo) use ($group) {
                 return $metainfo->getGroup() == $group; 
             };
-            return $this->metaInfos->filter($callback);
+            return $this->metainfos->filter($callback);
         }
         
-        return $this->metaInfos;
+        return $this->metainfos;
     }
     
     /**
@@ -212,17 +217,17 @@ class Package
      */
     public function getTimeUpdated()
     {
-        return $this->time_updated;
+        return $this->timeUpdated;
     }
     
     /**
      * Set the time of the last update
      * 
-     * @return string|null
+     * @return \DateTime|null
      */
-    public function setTimeUpdated($time)
+    public function setTimeUpdated(\DateTime $time)
     {
-        $this->time_updated = $time;
+        $this->timeUpdated = $time;
     }
     
     /**
