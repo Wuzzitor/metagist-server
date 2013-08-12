@@ -144,21 +144,14 @@ class WebController extends Controller
      * @Route("/package/{author}/{name}", name="package")
      * @Template()
      */
-    public function package($author, $name)
+    public function packageAction($author, $name)
     {
-        $package = $this->getPackage($author, $name);
-        //retrieve the related infos.
-        $metaInfos = $this->serviceProvider->metainfo()->byPackage($package);
-        $package->setMetaInfos($metaInfos);
+        $package = $this->serviceProvider->getPackage($author, $name);
         
-
-        return $this->serviceProvider->render(
-            'package.html.twig',
-            array(
-                'package' => $package,
-                'categories' => $this->serviceProvider->categories(),
-                'ratings' => $this->serviceProvider->ratings()->byPackage($package, 0, 5)
-            )
+        return array(
+            'package' => $package,
+            'categories' => $this->serviceProvider->categories(),
+            'ratings' => $this->serviceProvider->ratings()->byPackage($package, 0, 5)
         );
     }
     
@@ -336,6 +329,8 @@ class WebController extends Controller
      * 
      * @param Request $request
      * @return string
+     * @Route("/search", name="search")
+     * @Template()
      */
     public function search(Request $request)
     {
