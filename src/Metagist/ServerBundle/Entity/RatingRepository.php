@@ -21,21 +21,12 @@ class RatingRepository extends EntityRepository
      */
     public function byPackage(Package $package, $offset = 0, $limit = 25)
     {
-        $collection = new ArrayCollection();
-        $stmt = $this->connection->executeQuery(
-            'SELECT r.*, u.id AS user_id, u.username, u.avatar_url, p.identifier, p.description
-             FROM ratings r
-             LEFT JOIN packages p ON r.package_id = p.id
-             LEFT JOIN users u ON r.user_id = u.id
-             WHERE package_id = ? 
-             ORDER BY time_updated DESC LIMIT ' . (int)$limit . ' OFFSET ' . (int)$offset,
-            array($package->getId())
-        );
-        while ($row = $stmt->fetch()) {
-            $collection->add($this->createRatingWithDummyPackage($row));
-        }
+        $builder = $this->createQueryBuilder('r')
+            ->where('r.package = ?1')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit);
         
-        return $collection;
+        return $builder->getQuery()->execute(array(1 => $package));
     }
     
     /**
@@ -47,6 +38,8 @@ class RatingRepository extends EntityRepository
      */
     public function byPackageAndUser(Package $package, User $user)
     {
+        return $this->findOneBy(array('package' => $package, 'user' => $user));
+        
         $stmt = $this->connection->executeQuery(
             'SELECT r.*, u.id AS user_id, u.username, u.avatar_url, p.identifier, p.description
              FROM ratings r
