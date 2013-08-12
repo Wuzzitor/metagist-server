@@ -117,7 +117,7 @@ class WebController extends Controller
      */
     public function login()
     {
-        return $this->serviceProvider->redirect('/auth/login/github');
+        return $this->redirect('/auth/login/github');
     }
 
     /**
@@ -141,6 +141,8 @@ class WebController extends Controller
      * @param string $author
      * @param string $name
      * @return string
+     * @Route("/package/{author}/{name}", name="package")
+     * @Template()
      */
     public function package($author, $name)
     {
