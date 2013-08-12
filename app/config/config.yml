@@ -64,3 +64,12 @@ swiftmailer:
     username:  %mailer_user%
     password:  %mailer_password%
     spool:     { type: memory }
+
+hwi_oauth:
+    # name of the firewall in which this bundle is active, this setting MUST be set
+    firewall_name: contribution
+    resource_owners:
+        guthub:
+            type:                github
+            client_id:           <client_id>
+            client_secret:       <client_secret>

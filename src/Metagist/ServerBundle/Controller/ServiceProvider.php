@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
  * 
  * @author Daniel Pozzi <bonndan76@googlemail.com>
  */
-class ServiceProvider implements ContainerAwareInterface
+class ServiceProvider
 {
     /**
      * container
@@ -18,7 +18,7 @@ class ServiceProvider implements ContainerAwareInterface
      */
     private $application;
 
-    public function setContainer(ContainerInterface $container = null)
+    public function __construct(ContainerInterface $container = null)
     {
         $this->application = $container;
     }
@@ -75,18 +75,21 @@ class ServiceProvider implements ContainerAwareInterface
      */
     public function packages()
     {
-        return $this[ServiceProvider::PACKAGE_REPO];
+        return $this->getRepo('MetagistServerBundle:Package');
     }
     
     /**
      * Returns the metainfo repository (proxy).
      * 
-     * @return \Metagist\MetaInfoRepository
+     * @return \Metagist\ServerBundle\Entity\MetainfoRepository
      */
     public function metainfo()
     {
-        $proxy = new MetaInfoRepositoryProxy(
-            $this[ServiceProvider::METAINFO_REPO],
+        $metainfoRepo = $this->getRepo('MetagistServerBundle:Metainfo');
+        $metainfoRepo->setValidator($this->getValidator());
+        
+        $proxy = new \Metagist\ServerBundle\Entity\MetainfoRepositoryProxy(
+            $metainfoRepo,
             $this->security(),
             $this->categories()
         );
@@ -100,17 +103,17 @@ class ServiceProvider implements ContainerAwareInterface
      */
     public function ratings()
     {
-        return $this[ServiceProvider::RATINGS_REPO];
+        return $this->getRepo('MetagistServerBundle:Rating');
     }
     
     /**
      * Returns the category schema representation.
      * 
-     * @return \Metagist\CategorySchema
+     * @return \Metagist\ServerBundle\Resources\CategorySchema
      */
     public function categories()
     {
-        return $this[ServiceProvider::CATEGORY_SCHEMA];
+        return $this->application->get('metagist.categoryschema');
     }
 
     /**
@@ -120,7 +123,7 @@ class ServiceProvider implements ContainerAwareInterface
      */
     public function security()
     {
-        return $this['security'];
+        return $this->application->get('security.context');
     }
     
     /**
@@ -142,5 +145,27 @@ class ServiceProvider implements ContainerAwareInterface
     public function getOpauthListener()
     {
         return $this[\Metagist\OpauthSecurityServiceProvider::LISTENER];
+    }
+    
+    /**
+     * Returns the repo for an entity.
+     * 
+     * @param string $entityName
+     * @return \Doctrine\ORM\EntityRepository
+     */
+    private function getRepo($entityName)
+    {
+        return $this->application->get('doctrine')->getManager()
+            ->getRepository($entityName);
+    }
+    
+    /**
+     * Returns the validator.
+     * 
+     * @return \Metagist\ServerBundle\Resources\Validator
+     */
+    private function getValidator()
+    {
+        return $this->application->get('metagist.validator');
     }
 }

@@ -1,37 +1,64 @@
-{% extends "TwigBundle::layout.html.twig" %}
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-{% block head %}
-    <link rel="icon" sizes="16x16" href="{{ asset('favicon.ico') }}" />
-    <link rel="stylesheet" href="{{ asset('bundles/acmedemo/css/demo.css') }}" />
-{% endblock %}
+    <title>{{ pagetitle|trans }}</title>
 
-{% block title 'Demo Bundle' %}
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-{% block body %}
-    {% for flashMessage in app.session.flashbag.get('notice') %}
-        <div class="flash-message">
-            <em>Notice</em>: {{ flashMessage }}
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="stylesheet" href="{{ app.request.basepath }}/assets/css/styles.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
+    <script src="{{ app.request.basepath }}/js/libs/modernizr-2.5.3-respond-1.1.0.min.js"></script>
+</head>
+<body>
+<!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+
+                  <ul class="nav">
+                      <li><a href="{{ path('homepage') }}" title="Home"><i class="icon icon-home"></i> metagist.org</a></li>
+                      <li><a href="{{ path('latest') }}" title="Home"><i class="icon icon-globe"></i> Latest</a></li>
+                      {% if (is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')) %}
+                      <li><a href="{{ path('logout') }}"><i class="icon icon-off"></i> {{ 'Logout'|trans }}</a></li>
+                      {% else %}
+                      <li><a href="{{ path('custom_login') }}"><i class="icon icon-lock"></i> {{ 'Sign in with github'|trans }}</a></li>
+                      {% endif %}
+                      <li><a href="/about"><i class="icon icon-info-sign"></i> About</a></li>
+                  </ul>
+                  <form action="/search" class="navbar-search pull-right">
+                      <input type="text" name="query" value="{% if query is defined %}{{query | e}}{% endif %}" class="search-query" placeholder="Search">
+                  </form>
+                </div>
+            </div>
         </div>
-    {% endfor %}
+            
+        <div id="main" role="main" class="row-fluid">
+            {% set alertTypeAvaillable = [ 'info', 'success', 'warning', 'error'] %}
+            {% for alert in alertTypeAvaillable %}
+                {% for message in app.session.getFlashBag.get(alert) %}
+                    <div class="alert alert-{{ alert }}" >
+                        <button class="close" data-dismiss="alert">×</button>
+                        {{ message|trans }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
 
-    {% block content_header %}
-        <ul id="menu">
-            {% block content_header_more %}
-                <li><a href="{{ path('_demo') }}">Demo Home</a></li>
+            {% block content %}
             {% endblock %}
-        </ul>
-
-        <div style="clear: both"></div>
-    {% endblock %}
-
-    <div class="block">
-        {% block content %}{% endblock %}
-    </div>
-
-    {% if code is defined %}
-        <h2>Code behind this page</h2>
-        <div class="block">
-            <div class="symfony-content">{{ code|raw }}</div>
         </div>
-    {% endif %}
-{% endblock %}
+    </div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="{{ app.request.basepath }}/js/libs/jquery-1.7.2.min.js"><\/script>')</script>
+    <script src="{{ app.request.basepath }}/assets/js/scripts.js"></script>
+</body>
+</html>

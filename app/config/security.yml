@@ -18,22 +18,27 @@ security:
             pattern:  ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        login:
-            pattern:  ^/demo/secured/login$
-            security: false
+        public:
+            pattern:  ^/
+            anonymous: ~
 
-        secured_area:
-            pattern:    ^/demo/secured/
-            form_login:
-                check_path: _security_check
-                login_path: _demo_login
-            logout:
-                path:   _demo_logout
-                target: _demo
-            #anonymous: ~
-            #http_basic:
-            #    realm: "Secured Demo Area"
+        contribution:
+           # pattern:    ^/contribute/
+          oauth:
+            resource_owners:
+                facebook:           "/login/check-facebook"
+                google:             "/login/check-google"
+                my_custom_provider: "/login/check-custom"
+                my_github:          "/login/check-github"
+            login_path:        /login
+            failure_path:      /login
+            #anonymous:         ~
+
+            oauth_user_provider:
+                service: metagist.user.provider.entity
 
     access_control:
-        - { path: ^/demo/secured/hello/admin/, roles: ROLE_ADMIN }
-        #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
+        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/contribute/, roles: ROLE_USER }
+        - { path: ^/admin/, roles: ROLE_ADMIN }
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }

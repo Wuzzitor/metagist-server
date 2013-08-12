@@ -1,19 +1,16 @@
 parameters:
   category.icons.mapping:
-    homepage: 'icon-home'
-    
-    api: 'icon-sitemap'
-    manual: 'icon-book'
-    gettingstarted: 'icon-rocket'
-    
-    committers: 'icon-group'
-    maintainers: 'icon-group'
-    usage: 'icon-resize-horizontal'
-    
-    commits:  'icon-dashboard'
-    tests.number:  'icon-dashboard'
-    tests.status:  'icon-lightbulb'
-    repository:  'icon-github'
+    - homepage: 'icon-home'
+    - api: 'icon-sitemap'
+    - manual: 'icon-book'
+    - gettingstarted: 'icon-rocket'
+    - committers: 'icon-group'
+    - maintainers: 'icon-group'
+    - usage: 'icon-resize-horizontal'
+    - commits:  'icon-dashboard'
+    - tests.number:  'icon-dashboard'
+    - tests.status:  'icon-lightbulb'
+    - repository:  'icon-github'
 
   category.render.mapping:
     usage:  {class: 'label label-info'}

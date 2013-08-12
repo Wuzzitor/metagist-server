@@ -1,10 +1,20 @@
 parameters:
     metagist.web.controller.class: Metagist\ServerBundle\Controller\WebController
+    metagist.categoryschema.class: Metagist\ServerBundle\Resources\CategorySchema
     
 services:
   metagist_controller_serviceprovider:
     class:     Metagist\ServerBundle\Controller\ServiceProvider
     arguments: ["@service_container"]
+    
+  metagist.categoryschema:
+    class:     "%metagist.categoryschema.class%"
+    factory_class:  "%metagist.categoryschema.class%"
+    factory_method: create
+    
+  metagist.validator:
+    class:     Metagist\ServerBundle\Resources\Validator
+    arguments: ["@metagist.categoryschema"]
     
   metagist_twig_iconextension:
     class:     Metagist\ServerBundle\Twig\Extension\IconExtension
@@ -21,3 +31,7 @@ services:
   metagist.web.controller:
     class:     "%metagist.web.controller.class%"
     arguments: ["@metagist_controller_serviceprovider"]
+    
+  metagist.user.provider.entity:
+    class: Metagist\ServerBundle\Entity\UserProvider
+    arguments: ["@doctrine.orm.entity_manager"]

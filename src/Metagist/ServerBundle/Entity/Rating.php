@@ -1,15 +1,16 @@
 <?php
+
 namespace Metagist\ServerBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Metainfo
+ * Ratings
  *
- * @ORM\Table(name="metainfo")
- * @ORM\Entity(repositoryClass="MetainfoRepository")
+ * @ORM\Table(name="ratings")
+ * @ORM\Entity(repositoryClass="RatingRepository")
  */
-class Metainfo
+class Rating
 {
     /**
      * @var integer
@@ -35,25 +36,25 @@ class Metainfo
     private $version;
 
     /**
-     * @var string
+     * @var integer
      *
-     * @ORM\Column(name="category", type="string", length=32, nullable=false)
+     * @ORM\Column(name="rating", type="integer", nullable=false)
      */
-    private $category;
+    private $rating;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="group", type="string", length=32, nullable=false)
+     * @ORM\Column(name="comment", type="text", nullable=false)
      */
-    private $group;
+    private $comment;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="value", type="text", nullable=false)
+     * @ORM\Column(name="title", type="text", nullable=false)
      */
-    private $value;
+    private $title;
 
     /**
      * @var \Users
@@ -66,8 +67,9 @@ class Metainfo
     private $user;
 
     /**
-     * @var \Packages
-     *
+     * Related package.
+     * 
+     * @var \Package
      * @ORM\ManyToOne(targetEntity="Package")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="package_id", referencedColumnName="id")
@@ -79,7 +81,7 @@ class Metainfo
      * Factory method.
      * 
      * @param array $data
-     * @return MetaInfo
+     * @return Rating
      */
     public static function fromArray(array $data)
     {
@@ -94,24 +96,6 @@ class Metainfo
         return $info;
     }
     
-    /**
-     * Factory method to create metainfo based on values.
-     * 
-     * @param string $group
-     * @param mixed  $value
-     * @return MetaInfo
-     */
-    public static function fromValue($group, $value, $version = null)
-    {
-        return self::fromArray(
-            array(
-                'group'    => $group,
-                'value'    => $value,
-                'version'  => $version
-            )
-        );
-    }
-
     /**
      * Set the related package.
      * 
@@ -133,23 +117,33 @@ class Metainfo
     }
     
     /**
-     * Returns the group name.
-     * 
-     * @return string
-     */
-    public function getGroup()
-    {
-        return $this->group;
-    }
-    
-    /**
      * Returns the value.
      * 
      * @return string|int
      */
-    public function getValue()
+    public function getRating()
     {
-        return $this->value;
+        return $this->rating;
+    }
+    
+    /**
+     * Returns the title.
+     * 
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+    
+    /**
+     * Returns the comment text.
+     * 
+     * @return string|null
+     */
+    public function getComment()
+    {
+        return $this->comment;
     }
     
     /**
@@ -163,23 +157,21 @@ class Metainfo
     }
     
     /**
-     * Set the version string.
-     * 
-     * @param string $version
-     */
-    public function setVersion($version)
-    {
-        $this->version = $version;
-    }
-    
-    /**
      * Returns the id of the user who created the info.
      * 
      * @return int|null
      */
     public function getUserId()
     {
-        return $this->user_id;
+        if ($this->user_id != null) {
+            return $this->user_id;
+        }
+        
+        if ($this->user !== null) {
+            return $this->user->getId();
+        }
+        
+        return null;
     }
     
     /**
@@ -190,5 +182,25 @@ class Metainfo
     public function getTimeUpdated()
     {
         return $this->time_updated;
+    }
+    
+    /**
+     * Set the user.
+     * 
+     * @param \Metagist\User $user
+     */
+    public function setUser(User $user)
+    {
+        $this->user = $user;
+    }
+    
+    /**
+     * Returns the user.
+     * 
+     * @return User|null
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

@@ -19,7 +19,7 @@ class IconExtension extends \Twig_Extension
      * 
      * @param array $mapping
      */
-    public function __construct(array $mapping)
+    public function __construct( $mapping)
     {
         $this->mapping = $mapping;
     }
