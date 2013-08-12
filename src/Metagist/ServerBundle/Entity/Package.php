@@ -4,11 +4,13 @@ namespace Metagist\ServerBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 
+use Metagist\ServerBundle\Resources\Validator;
+
 /**
  * Package
  *
  * @ORM\Table(name="packages")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="PackageRepository")
  */
 class Package
 {
@@ -108,7 +110,7 @@ class Package
         if (!Validator::isValidIdentifier($this->identifier)) {
             return false;
         }
-        $pieces = Util::splitIdentifier($this->identifier);
+        $pieces = self::splitIdentifier($this->identifier);
         return $pieces[0];
     }
     
@@ -122,7 +124,7 @@ class Package
         if (!Validator::isValidIdentifier($this->identifier)) {
             return false;
         }
-        $pieces = Util::splitIdentifier($this->identifier);
+        $pieces = self::splitIdentifier($this->identifier);
         return $pieces[1];
     }
     
@@ -186,21 +188,6 @@ class Package
     }
     
     /**
-     * Set the metainfos and assigns the package to each metainfo.
-     * 
-     * @param \Doctrine\Common\Collections\Collection $collection
-     */
-    public function setMetaInfos(Collection $collection)
-    {
-        foreach ($collection as $metaInfo) {
-            /* @var $metaInfo MetaInfo */
-            $metaInfo->setPackage($this);
-        }
-        
-        $this->metaInfos = $collection;
-    }
-    
-    /**
      * Returns the associated metainfos.
      * 
      * @param string $group
@@ -246,5 +233,21 @@ class Package
     public function __toString()
     {
         return substr($this->identifier, strpos($this->identifier, '/') + 1);
+    }
+    
+    /**
+     * Returns author + name from a package identifier string.
+     * 
+     * @param string $identifier
+     * @return array
+     * @throws \InvalidArgumentException
+     */
+    public static function splitIdentifier($identifier)
+    {
+        if (!is_string($identifier)) {
+            throw new \InvalidArgumentException('Identifier must be a string.');
+        }
+        
+        return explode('/', $identifier);
     }
 }
