@@ -1,6 +1,7 @@
 <?php
 namespace Metagist\ServerBundle\Twig\Extension;
 
+use Metagist\ServerBundle\Entity\Metainfo;
 use \Doctrine\Common\Collections\Collection;
 
 /**
@@ -124,10 +125,10 @@ class MetaInfosExtension extends \Twig_Extension
     /**
      * Render a single metainfo.
      * 
-     * @param \Metagist\MetaInfo $metaInfo
+     * @param MetaInfo $metaInfo
      * @return string
      */
-    public function renderInfo(\Metagist\MetaInfo $metaInfo)
+    public function renderInfo(Metainfo $metaInfo)
     {
         $group    = $metaInfo->getGroup();
         $strategy = isset($this->mappings[$group]) ?  $this->mappings[$group] : array();
@@ -141,7 +142,7 @@ class MetaInfosExtension extends \Twig_Extension
      * @param array $config
      * @return string
      */
-    protected function renderMetaInfo(\Metagist\MetaInfo $metaInfo, array $config)
+    protected function renderMetaInfo(Metainfo $metaInfo, array $config)
     {
         $class = isset($config[self::CSS_CLASS_KEY]) ? 
             ' class="' . $config[self::CSS_CLASS_KEY] . '"' : '';
@@ -157,12 +158,12 @@ class MetaInfosExtension extends \Twig_Extension
      * @param string                  $displayAs
      * @return string
      */
-    protected function getRenderedValue(\Metagist\MetaInfo $metaInfo, $displayAs = null)
+    protected function getRenderedValue(MetaInfo $metaInfo, $displayAs = null)
     {
         $strategies = array(
-            'url'   => new \Metagist\Twig\RenderStrategy\Link(),
-            'file'   => new \Metagist\Twig\RenderStrategy\FileLink(),
-            'badge' => new \Metagist\Twig\RenderStrategy\Badge(),
+            'url'   => new RenderStrategy\Link(),
+            'file'  => new RenderStrategy\FileLink(),
+            'badge' => new RenderStrategy\Badge(),
         );
         
         if (isset($strategies[$displayAs])) {
@@ -171,5 +172,4 @@ class MetaInfosExtension extends \Twig_Extension
         
         return $metaInfo->getValue();
     }
-    
 }
