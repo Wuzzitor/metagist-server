@@ -1,6 +1,12 @@
 <?php
 namespace Metagist\ServerBundle\Tests\Entity;
 
+use Metagist\ServerBundle\Entity\MetainfoRepositoryProxy;
+use Metagist\ServerBundle\Resources\CategorySchema;
+use Metagist\ServerBundle\Entity\Metainfo;
+use Metagist\ServerBundle\Entity\User;
+use Metagist\ServerBundle\Entity\Package;
+
 /**
  * Tests the metainfo repo class.
  * 
@@ -38,7 +44,7 @@ class MetaInfoRepositoryProxyTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->repo = $this->getMockBuilder("\Metagist\MetaInfoRepository")
+        $this->repo = $this->getMockBuilder("\Metagist\ServerBundle\Entity\MetaInfoRepository")
             ->disableOriginalConstructor()
             ->getMock();
         $this->context = $this->getMockBuilder("\Symfony\Component\Security\Core\SecurityContextInterface")
@@ -55,7 +61,7 @@ class MetaInfoRepositoryProxyTest extends \PHPUnit_Framework_TestCase
      */
     public function testSave()
     {
-        $metaInfo = MetaInfo::fromValue('testInteger', true);
+        $metaInfo = Metainfo::fromValue('testInteger', true);
             
         $this->context->expects($this->once())
             ->method('isGranted')
@@ -77,7 +83,7 @@ class MetaInfoRepositoryProxyTest extends \PHPUnit_Framework_TestCase
             ->method('isGranted')
             ->with('ROLE_USER')
             ->will($this->returnValue(false));
-        $user = new \Metagist\User('test', null, \Metagist\User::ROLE_USER);
+        $user = new User('test', null, User::ROLE_USER);
         $token = new \Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken($user, NULL, 'api');
         $this->context->expects($this->once())
             ->method('getToken')
@@ -86,7 +92,7 @@ class MetaInfoRepositoryProxyTest extends \PHPUnit_Framework_TestCase
             ->method('save');
         
         $this->setExpectedException("\Symfony\Component\Security\Core\Exception\AccessDeniedException");
-        $this->proxy->save(MetaInfo::fromValue('testInteger', true));
+        $this->proxy->save(Metainfo::fromValue('testInteger', true));
     }
     
     /**
