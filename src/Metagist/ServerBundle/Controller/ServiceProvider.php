@@ -78,7 +78,9 @@ class ServiceProvider
      */
     public function packages()
     {
-        return $this->getRepo('MetagistServerBundle:Package');
+        $repo = $this->getRepo('MetagistServerBundle:Package');
+        $repo->setValidator($this->getValidator());
+        return $repo;
     }
     
     /**
@@ -136,18 +138,7 @@ class ServiceProvider
      */
     public function getApi()
     {
-        return $this[\Metagist\Api\ServiceProvider::API];
-    }
-    
-    /**
-     * Returns the opauth listener (used to authenticate users).
-     * 
-     * @todo rework this. The listener should maybe not be provided here.
-     * @return \Metagist\OpauthListener
-     */
-    public function getOpauthListener()
-    {
-        return $this[\Metagist\OpauthSecurityServiceProvider::LISTENER];
+        return $this->container->get('metagist.api');
     }
     
     /**

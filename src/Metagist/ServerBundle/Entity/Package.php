@@ -193,6 +193,15 @@ class Package
     }
     
     /**
+     * 
+     * @todo remove
+     * @param type $metainfos
+     */
+    public function setMetaInfos($metainfos)
+    {
+        $this->metainfos = $metainfos;
+    }
+    /**
      * Returns the associated metainfos.
      * 
      * @param string $group

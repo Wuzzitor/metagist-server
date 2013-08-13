@@ -4,7 +4,10 @@
     "type": "project",
     "description": "The \"Symfony Standard Edition\" distribution",
     "autoload": {
-        "psr-0": { "": "src/" }
+        "psr-0": { 
+            "": "src/",
+            "Metagist\\Api": "vendor/wuzzitor/metagist-api/src"
+        }
     },
     "require": {
         "php": ">=5.3.3",
@@ -20,7 +23,12 @@
         "sensio/generator-bundle": "2.3.*",
         "incenteev/composer-parameter-handler": "~2.0",
         
-        "hwi/oauth-bundle": "0.3.*@dev"
+        "hwi/oauth-bundle":     "0.3.*@dev",
+        "twitter/bootstrap":    "dev-3.0.0-wip",
+        "knplabs/packagist-api" : "0.1.*@dev",
+        "pagerfanta/pagerfanta" : "v1.0.0",
+        "bonndan/RMT"           : "@dev",
+        "wuzzitor/metagist-api" : "dev-master"
     },
     "scripts": {
         "post-install-cmd": [
@@ -51,5 +59,23 @@
         "branch-alias": {
             "dev-master": "2.3-dev"
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Wuzzitor/metagist-api.git"
+        },
+        { 
+            "type": "package",
+            "package": {
+                "name": "bonndan/RMT",
+                "version": "0.0.0",
+                "source": {
+                    "url": "http://github.com/bonndan/RMT.git",
+                    "type": "git",
+                    "reference": "0e6e2798939e651a20aa6c1f698a10db210d4cc5"
+                }
+            }
+        }
+    ]
 }

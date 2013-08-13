@@ -35,3 +35,10 @@ services:
   metagist.user.provider.entity:
     class: Metagist\ServerBundle\Entity\UserProvider
     arguments: ["@doctrine.orm.entity_manager"]
+    
+  metagist.opauth.listener:
+    class: Metagist\ServerBundle\EventListener\OpauthListener
+    arguments: ["@doctrine.orm.entity_manager"]
+    
+  metagist.api:
+    class: Metagist\Api\ServiceProvider

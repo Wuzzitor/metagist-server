@@ -1,6 +1,8 @@
 <?php
 namespace Metagist\ServerBundle\Resources;
 
+use Metagist\ServerBundle\Exception;
+
 /**
  * Class representing the contents of the metainfo.json file.
  * 

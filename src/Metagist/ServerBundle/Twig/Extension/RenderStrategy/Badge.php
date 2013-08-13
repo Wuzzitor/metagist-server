@@ -14,7 +14,7 @@ class Badge implements StrategyInterface
      * @param \Metagist\MetaInfo $metaInfo
      * @return string
      */
-    public function render(\Metagist\MetaInfo $metaInfo)
+    public function render(Metainfo $metaInfo)
     {
         $template = '<img src="%s" alt="badge for %s"/>';
         return sprintf(

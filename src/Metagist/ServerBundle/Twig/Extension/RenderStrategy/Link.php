@@ -13,7 +13,7 @@ class Link implements StrategyInterface
      * @param \Metagist\MetaInfo $metaInfo
      * @return string
      */
-    public function render(\Metagist\MetaInfo $metaInfo)
+    public function render(Metainfo $metaInfo)
     {
         $template = '<a href="%1$s" target="_blank">%1$s</a>';
         return sprintf($template, $metaInfo->getValue());

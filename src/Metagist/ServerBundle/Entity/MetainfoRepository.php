@@ -2,7 +2,6 @@
 namespace Metagist\ServerBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Metagist\ServerBundle\Resources\Validator;
 
 /**
@@ -54,13 +53,6 @@ class MetainfoRepository extends EntityRepository
         }
         
         return $this->findBy(array('group' => $group));
-        /*
-        $collection = new ArrayCollection();
-        while ($row = $stmt->fetch()) {
-            $collection->add($this->createMetaInfoWithDummyPackage($row));
-        }
-        return $collection;
-         */
     }
     
     /**
@@ -131,16 +123,11 @@ class MetainfoRepository extends EntityRepository
      */
     public function latest($limit = 25)
     {
-        $stmt = $this->connection->executeQuery(
-            'SELECT m.*, p.identifier FROM metainfo m LEFT JOIN packages p ON p.id = m.package_id 
-             ORDER BY time_updated DESC LIMIT ' . $limit,
-            array()
-        );
-        $collection = new ArrayCollection();
-        while ($row = $stmt->fetch()) {
-            $collection->add($this->createMetaInfoWithDummyPackage($row));
-        }
-        return $collection;
+        $builder = $this->createQueryBuilder('m')
+            ->orderBy('m.timeUpdated', 'DESC')
+            ->setMaxResults($limit);
+        
+        return $builder->getQuery()->execute();
     }
     
     /**

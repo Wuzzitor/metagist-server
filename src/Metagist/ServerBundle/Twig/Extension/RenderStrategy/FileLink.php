@@ -14,7 +14,7 @@ class FileLink implements StrategyInterface
      * @param \Metagist\MetaInfo $metaInfo
      * @return string
      */
-    public function render(\Metagist\MetaInfo $metaInfo)
+    public function render(Metainfo $metaInfo)
     {
         $template = '<a href="%s" target="_blank">%s</a>';
         return sprintf($template, $metaInfo->getValue(), basename($metaInfo->getValue()));

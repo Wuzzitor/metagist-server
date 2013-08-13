@@ -12,6 +12,83 @@ use Doctrine\ORM\Mapping as ORM;
 class Metainfo
 {
     /**
+     * identifier for the repo
+     * 
+     * @var string
+     */
+    const REPOSITORY = 'repository';
+    
+    /**
+     * identifier for the package homepage
+     * 
+     * @var string
+     */
+    const HOMEPAGE = 'homepage';
+    
+    /**
+     * identifier for number of maintainers
+     * 
+     * @var string
+     */
+    const MAINTAINERS = 'maintainers';
+    
+    /**
+     * identifier for number of dependencies
+     * 
+     * @var string
+     */
+    const REQUIRES = 'requires';
+    
+    /**
+     * identifier for number of dependencies for development
+     * 
+     * @var string
+     */
+    const REQUIRES_DEV = 'requires.dev';
+    
+    /**
+     * identifier for license type
+     * 
+     * @var string
+     */
+    const LICENSE = 'license';
+    
+    /**
+     * Identifier for number of github stargazers.
+     * 
+     * @var string
+     */
+    const STARGAZERS = 'stargazers';
+    
+    /**
+     * Identifier for number of open issues
+     * 
+     * @var string
+     */
+    const OPEN_ISSUES = 'issues.open';
+    
+    /**
+     * Identifier for number of closed issues
+     * 
+     * @var string
+     */
+    const CLOSED_ISSUES = 'issues.closed';
+    
+    /**
+     * Number of project contributors (based on repo info).
+     * 
+     * @var string
+     */
+    const CONTRIBUTORS = 'contributors';
+    
+    /**
+     * Number of commits (repo).
+     * 
+     * @var string
+     */
+    const COMMITS = 'commits';
+    
+    /**
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
@@ -189,6 +266,6 @@ class Metainfo
      */
     public function getTimeUpdated()
     {
-        return $this->time_updated;
+        return $this->timeUpdated;
     }
 }

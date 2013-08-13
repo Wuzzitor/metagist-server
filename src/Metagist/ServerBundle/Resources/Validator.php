@@ -1,6 +1,8 @@
 <?php
 namespace Metagist\ServerBundle\Resources;
 
+use Metagist\ServerBundle\Entity\Package;
+
 /**
  * Validator class.
  * 
@@ -81,7 +83,7 @@ class Validator
      */
     public static function isValidIdentifier($identifier)
     {
-        $pieces = Util::splitIdentifier($identifier);
+        $pieces = Package::splitIdentifier($identifier);
         $slashPos = strpos($identifier, '/');
         if (in_array($slashPos, array(FALSE, 0, strlen($identifier)-1), true)) {
             return false;
