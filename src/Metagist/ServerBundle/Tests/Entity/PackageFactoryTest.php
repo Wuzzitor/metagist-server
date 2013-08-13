@@ -2,6 +2,7 @@
 namespace Metagist\ServerBundle\Tests\Entity;
 
 use Metagist\ServerBundle\Entity\PackageFactory;
+use Metagist\ServerBundle\Entity\Metainfo;
 
 /**
  * Tests the package factory class.
@@ -37,7 +38,7 @@ class PackageFactoryTest extends \PHPUnit_Framework_TestCase
         $this->client = $this->getMockBuilder("\Packagist\Api\Client")
             ->disableOriginalConstructor()
             ->getMock();
-        $this->metainfoFactory = $this->getMockBuilder("\Metagist\MetaInfoFactory")
+        $this->metainfoFactory = $this->getMockBuilder("\Metagist\ServerBundle\Entity\MetainfoFactory")
             ->disableOriginalConstructor()
             ->getMock();
         $this->repo = new PackageFactory($this->client, $this->metainfoFactory);
@@ -50,7 +51,7 @@ class PackageFactoryTest extends \PHPUnit_Framework_TestCase
     public function testByAuthorAndName()
     {
         $collection = new \Doctrine\Common\Collections\ArrayCollection(array());
-        $collection->add(MetaInfo::fromValue('test/test', 1));
+        $collection->add(Metainfo::fromValue('test/test', 1));
         
         $pp = $this->createPackage();
         $this->client->expects($this->once())
@@ -62,11 +63,11 @@ class PackageFactoryTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($collection));
         
         $result = $this->repo->byAuthorAndName('author', 'name');
-        $this->assertInstanceOf('\Metagist\Package', $result);
+        $this->assertInstanceOf('\Metagist\ServerBundle\Entity\Package', $result);
         
         $metaInfos = $result->getMetaInfos();
         $this->assertNotEmpty($metaInfos);
-        $this->assertInstanceOf("\Metagist\MetaInfo", $metaInfos[0]);
+        $this->assertInstanceOf("\Metagist\ServerBundle\Entity\MetaInfo", $metaInfos[0]);
         $this->assertInternalType('array', $result->getVersions());
         $this->assertEquals('description', $result->getDescription());
     }
@@ -80,7 +81,7 @@ class PackageFactoryTest extends \PHPUnit_Framework_TestCase
             ->method('get')
             ->will($this->throwException(new \Guzzle\Http\Exception\ClientErrorResponseException('test')));
         
-        $this->setExpectedException("\Metagist\Exception");
+        $this->setExpectedException("\Metagist\ServerBundle\Exception");
         $this->repo->byAuthorAndName('author', 'name');
     }
     

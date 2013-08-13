@@ -33,7 +33,7 @@ class RatingTest extends \PHPUnit_Framework_TestCase
     public function testFactoryMethod()
     {
         $rating = Rating::fromArray(array());
-        $this->assertInstanceOf('Metagist\Rating', $rating);
+        $this->assertInstanceOf('Metagist\ServerBundle\Entity\Rating', $rating);
     }
     
     /**
@@ -56,7 +56,7 @@ class RatingTest extends \PHPUnit_Framework_TestCase
         $user = new User('test', 'ROLE_ADMIN');
         $user->setId(13);
         $rating->setUser($user);
-        $this->assertEquals(13, $rating->getUserId());
+        $this->assertEquals($user, $rating->getUser());
     }
     
     /**
@@ -65,10 +65,11 @@ class RatingTest extends \PHPUnit_Framework_TestCase
     public function testFactoryMethodStoresValues()
     {
         $package = new Package('aaa/bbb', 12);
+        $user = new User('test');
         $rating = Rating::fromArray(
             array(
                 'package' => $package,
-                'user_id' => 12,
+                'user' => $user,
                 'rating' => 3,
                 'title' => 'test title',
                 'comment' => 'test comment',
@@ -78,7 +79,7 @@ class RatingTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertEquals($package, $rating->getPackage());
         $this->assertEquals(3, $rating->getRating());
-        $this->assertEquals(12, $rating->getUserId());
+        $this->assertEquals($user, $rating->getUser());
         $this->assertEquals('test title', $rating->getTitle());
         $this->assertEquals('test comment', $rating->getComment());
         $this->assertEquals('1.0.0', $rating->getVersion());

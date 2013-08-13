@@ -17,10 +17,10 @@ class UserProviderTest extends \PHPUnit_Framework_TestCase
     private $provider;
     
     /**
-     * connectio mock
-     * @var \Doctrine\DBAL\Connection 
+     * em
+     * @var \Doctrine\ORM\EntityManager 
      */
-    private $connection;
+    private $repo;
     
     /**
      * Test setup.
@@ -28,10 +28,10 @@ class UserProviderTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->connection = $this->getMockBuilder("\Doctrine\DBAL\Connection")
+        $this->repo = $this->getMockBuilder("\Doctrine\ORM\EntityRepository")
             ->disableOriginalConstructor()
             ->getMock();
-        $this->provider = new UserProvider($this->connection, array());
+        $this->provider = new UserProvider($this->repo, array());
     }
     
     /**
@@ -52,7 +52,7 @@ class UserProviderTest extends \PHPUnit_Framework_TestCase
             ->method('fetch')
             ->will($this->returnValue(array('username' => 'test', 'avatar_url' => 'http://ava.tar', 'id' => 13)));
         
-        $this->connection->expects($this->once())
+        $this->repo->expects($this->once())
             ->method('executeQuery')
             ->will($this->returnValue($statement));
         
@@ -83,13 +83,13 @@ class UserProviderTest extends \PHPUnit_Framework_TestCase
             ->method('fetch')
             ->will($this->returnValue(null));
         
-        $this->connection->expects($this->at(0))
+        $this->repo->expects($this->at(0))
             ->method('executeQuery')
             ->will($this->returnValue($statement));
-        $this->connection->expects($this->at(1))
+        $this->repo->expects($this->at(1))
             ->method('executeQuery')
             ->will($this->returnValue($statement));
-        $this->connection->expects($this->once())
+        $this->repo->expects($this->once())
             ->method('lastInsertId')
             ->will($this->returnValue(13));
         
@@ -104,13 +104,13 @@ class UserProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadAdmin()
     {
-        $this->provider = new UserProvider($this->connection, array('admins' => 'test123'));
+        $this->provider = new UserProvider($this->repo, array('admins' => 'test123'));
         $statement = $this->createMockStatement();
         $statement->expects($this->once())
             ->method('fetch')
             ->will($this->returnValue(array('username' => 'test123', 'avatar_url' => 'http://ava.tar', 'id' => 13)));
         
-        $this->connection->expects($this->once())
+        $this->repo->expects($this->once())
             ->method('executeQuery')
             ->will($this->returnValue($statement));
         

@@ -95,36 +95,7 @@ class RatingRepository extends EntityRepository
      */
     public function save(Rating $rating)
     {
-        $package = $rating->getPackage();
-        $userId  = $rating->getUserId();
-        
-        if ($package == null || $package->getId() == null || $userId == null) {
-            throw new \RuntimeException('Package ID and User ID must be set.');
-        }
-        $packageId = $package->getId();
-        
-        $this->connection->executeQuery(
-            'DELETE FROM ratings WHERE (package_id = ? AND user_id = ?)',
-            array($packageId, $userId)
-        );
-        
-        $data = array(
-            $packageId,
-            $userId,
-            date('Y-m-d H:i:s', time()),
-            $rating->getVersion(),
-            $rating->getRating(),
-            $rating->getTitle(),
-            $rating->getComment()
-        );
-        
-        $stmt = $this->connection->executeQuery(
-            'INSERT INTO ratings (package_id, user_id, time_updated, version, rating, title, comment) 
-             VALUES (?, ?, ?, ?, ?, ?, ?)',
-            $data
-        );
-        $rows = $stmt->rowCount();
-        return $rows;
+        $this->getEntityManager()->persist($rating);
     }
     
     /**

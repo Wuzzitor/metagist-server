@@ -86,7 +86,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
             )
         );
         
-        $this->setExpectedException("\Metagist\InvalidInfoException");
+        $this->setExpectedException("\Metagist\ServerBundle\InvalidInfoException");
         $this->validator->isValidMetaInfo($metaInfo);
     }
     

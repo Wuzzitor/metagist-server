@@ -1,7 +1,9 @@
 <?php
 namespace Metagist\ServerBundle\Entity;
 
-use \Packagist\Api\Client as PackagistClient;
+use Metagist\ServerBundle\Entity\MetainfoFactory;
+use Metagist\ServerBundle\Exception;
+use Packagist\Api\Client as PackagistClient;
 
 /**
  * Factory for packages (querying packagist).
@@ -19,7 +21,7 @@ class PackageFactory
     /**
      * nested metainfo factory.
      * 
-     * @var \Metagist\MetaInfoFactory 
+     * @var \Metagist\ServerBundle\Entity\MetainfoFactory
      */
     private $metainfoFactory;
     
@@ -28,7 +30,7 @@ class PackageFactory
      * 
      * @param \Packagist\Api\Client $client
      */
-    public function __construct(PackagistClient $client, MetaInfoFactory $metainfoFactory)
+    public function __construct(PackagistClient $client, MetainfoFactory $metainfoFactory)
     {
         $this->client          = $client;
         $this->metainfoFactory = $metainfoFactory;

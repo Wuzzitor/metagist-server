@@ -1,7 +1,11 @@
 <?php
 namespace Metagist\ServerBundle\Tests\Entity;
 
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Metagist\ServerBundle\Entity\MetainfoRepository;
+use Metagist\ServerBundle\Resources\CategorySchema;
+use Metagist\ServerBundle\Entity\Package;
+use Metagist\ServerBundle\Entity\Metainfo;
 
 /**
  * 
@@ -9,7 +13,7 @@ use Metagist\ServerBundle\Entity\MetainfoRepository;
  * 
  * @author Daniel Pozzi <bonndan76@googlemail.com>
  */
-class MetaInfoRepositoryTest extends \PHPUnit_Framework_TestCase
+class MetaInfoRepositoryTest extends WebTestCase
 {
     /**
      * system under test
@@ -18,30 +22,15 @@ class MetaInfoRepositoryTest extends \PHPUnit_Framework_TestCase
     private $repo;
     
     /**
-     * connection mock
-     * @var \Doctrine\DBAL\Connection 
-     */
-    private $connection;
-    
-    /**
-     * validator mock
-     * @var Validator
-     */
-    private $validator;
-    
-    /**
      * Test setup
      */
     public function setUp()
     {
         parent::setUp();
-        $this->connection = $this->getMockBuilder("\Doctrine\DBAL\Connection")
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->validator = $this->getMockBuilder("\Metagist\Validator")
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->repo = new MetainfoRepository($this->connection, $this->validator);
+        $kernel = self::createKernel();
+        $kernel->boot();
+        $doctrine = $kernel->getContainer()->get('doctrine');
+        $this->repo = $doctrine->getManager()->getRepository('MetagistServerBundle:Metainfo');
     }
     
     /**
@@ -61,15 +50,11 @@ class MetaInfoRepositoryTest extends \PHPUnit_Framework_TestCase
             ->method('fetch')
             ->will($this->returnValue(false));
         
-        $this->connection->expects($this->once())
-            ->method('executeQuery')
-            ->will($this->returnValue($statement));
-        
         $package = new Package('test/test123', 123);
         $collection = $this->repo->byPackage($package);
         $this->assertInstanceOf("\Doctrine\Common\Collections\Collection", $collection);
         $info = $collection->get(0);
-        $this->assertInstanceOf("\Metagist\MetaInfo", $info);
+        $this->assertInstanceOf("\Metagist\ServerBundle\Entity\Metainfo", $info);
     }
     
     /**
@@ -77,22 +62,10 @@ class MetaInfoRepositoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testSavePackage()
     {
-        $elements = array(MetaInfo::fromValue('test/test', 123));
+        $elements = array(Metainfo::fromValue('test/test', 123));
         $collection = new \Doctrine\Common\Collections\ArrayCollection($elements);
         $package = new Package('test/test123', 123);
         $package->setMetaInfos($collection);
-        
-        $statement = $this->createMockStatement();
-        $statement->expects($this->at(0))
-            ->method('rowCount')
-            ->will($this->returnValue(1));
-        
-        $this->connection->expects($this->at(0))
-            ->method('executeQuery');
-        $this->connection->expects($this->at(1))
-            ->method('executeQuery')
-            ->with($this->stringContains('INSERT INTO metainfo'))
-            ->will($this->returnValue($statement));
         
         $this->repo->savePackage($package);
     }
@@ -117,38 +90,9 @@ class MetaInfoRepositoryTest extends \PHPUnit_Framework_TestCase
             ->method('fetch')
             ->will($this->returnValue(false));
         
-        $this->connection->expects($this->once())
-            ->method('executeQuery')
-            ->will($this->returnValue($statement));
-        
         $collection = $this->repo->latest();
         $this->assertInstanceOf("\Doctrine\Common\Collections\ArrayCollection", $collection);
         $this->assertEquals(1, count($collection));
-    }
-    
-    /**
-     * Ensures metainfos with cardinality 1 are replaced.
-     */
-    public function testSaveWithCardinalityOne()
-    {
-        $metaInfo = MetaInfo::fromValue('test/test', 123);
-        $package = new Package('test/test123', 123);
-        $metaInfo->setPackage($package);
-        
-        $statement = $this->createMockStatement();
-        $statement->expects($this->at(0))
-            ->method('rowCount')
-            ->will($this->returnValue(1));
-        
-        $this->connection->expects($this->at(0))
-            ->method('executeQuery')
-            ->with("DELETE FROM metainfo WHERE package_id = ? AND `group` = ?");
-        $this->connection->expects($this->at(1))
-            ->method('executeQuery')
-            ->with($this->stringContains('INSERT INTO metainfo'))
-            ->will($this->returnValue($statement));
-        
-        $this->repo->save($metaInfo, 1);
     }
     
     /**

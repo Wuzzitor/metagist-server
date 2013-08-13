@@ -254,9 +254,19 @@ class Metainfo
      * 
      * @return int|null
      */
-    public function getUserId()
+    public function getUser()
     {
-        return $this->user_id;
+        return $this->user;
+    }
+    
+    /**
+     * Set the related user.
+     * 
+     * @param User $user
+     */
+    public function setUser(User $user)
+    {
+        $this->user = $user;
     }
     
     /**

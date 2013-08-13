@@ -1,6 +1,7 @@
 <?php
 namespace Metagist\ServerBundle\Tests\Controller;
 
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Metagist\ServerBundle\Controller\ServiceProvider;
 
 /**
@@ -8,7 +9,7 @@ use Metagist\ServerBundle\Controller\ServiceProvider;
  * 
  * @author Daniel Pozzi <bonndan76@googlemail.com>
  */
-class ServiceProviderTest extends \PHPUnit_Framework_TestCase
+class ServiceProviderTest extends WebTestCase
 {
     /**
      * system under test
@@ -17,16 +18,15 @@ class ServiceProviderTest extends \PHPUnit_Framework_TestCase
      */
     private $serviceProvider;
     
-    private $containerMock;
-    
     /**
      * Test setup.
      */
     public function setUp()
     {
         parent::setUp();
-        $this->containerMock = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
-        $this->serviceProvider = new ServiceProvider($this->containerMock);
+        $kernel = self::createKernel();
+        $kernel->boot();
+        $this->serviceProvider = new ServiceProvider($kernel->getContainer());
     }
     
     /**
@@ -34,9 +34,6 @@ class ServiceProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testProvidesSessionShortcut()
     {
-        $this->containerMock->expects($this->once())
-            ->method('get')
-            ->with('session');
         $this->serviceProvider->session();
     }
     
@@ -45,9 +42,6 @@ class ServiceProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testProvidesMonologShortcut()
     {
-        $this->containerMock->expects($this->once())
-            ->method('get')
-            ->with('logger');
         $this->serviceProvider->logger();
     }
     
@@ -56,34 +50,7 @@ class ServiceProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testProvidesPackageRepoShortcut()
     {
-        $this->createDoctrineMock('MetagistServerBundle:Package');
         $this->serviceProvider->packages();
-    }
-    
-    /**
-     * 
-     * @param type $entityName
-     */
-    protected function createDoctrineMock($entityName)
-    {
-        $em = $this->getMockBuilder("\Doctrine\ORM\EntityManager")
-            ->disableOriginalConstructor()
-            ->getMock();
-        $em->expects($this->once())
-            ->method('getRepository')
-            ->with($entityName)
-            ->with($this->getMock("\Doctrine\ORM\EntityRepository"));
-        $registry = $this->getMockBuilder("\Doctrine\Bundle\DoctrineBundle\Registry")
-            ->disableOriginalConstructor()
-            ->getMock();
-        $registry->expects($this->once())
-            ->method('getManager')
-            ->will($this->returnValue($em));
-        
-        $this->containerMock->expects($this->once())
-            ->method('get')
-            ->with('doctrine')
-            ->will($this->returnValue($em));
     }
     
     /**
@@ -91,22 +58,7 @@ class ServiceProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testMetaInfoRepoShortcutReturnsProxy()
     {
-        $this->createDoctrineMock("MetagistServerBundle:Metainfo");
-        
-        $this->containerMock->expects($this->once())
-            ->method('get')
-            ->with('security')
-            ->will($this->returnValue($this->getMock("\Symfony\Component\Security\Core\SecurityContextInterface")));
-        
-        $cat = $this->getMockBuilder("\Metagist\CategorySchema")
-                ->disableOriginalConstructor()
-                ->getMock();
-        $this->containerMock->expects($this->once())
-            ->method('get')
-            ->with('metagist.categoryschema')
-            ->will($this->returnValue($cat));
-        
-        $this->assertInstanceOf("\Metagist\MetaInfoRepositoryProxy", $this->serviceProvider->metainfo());
+        $this->assertInstanceOf("\Metagist\ServerBundle\Entity\MetaInfoRepositoryProxy", $this->serviceProvider->metainfo());
     }
     
     /**
@@ -114,7 +66,6 @@ class ServiceProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testProvidesRatingRepoShortcut()
     {
-        $this->createDoctrineMock("MetagistServerBundle:Rating");
         $this->serviceProvider->ratings();
     }
     
@@ -123,15 +74,8 @@ class ServiceProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testProvidesCategorySchemaShortcut()
     {
-        $cat = $this->getMockBuilder("\Metagist\CategorySchema")
-                ->disableOriginalConstructor()
-                ->getMock();
-        $this->containerMock->expects($this->once())
-            ->method('get')
-            ->with('metagist.categoryschema')
-            ->will($this->returnValue($cat));
-        
-        $this->serviceProvider->categories();
+        $cat = $this->serviceProvider->categories();
+        $this->assertInstanceOf("\Metagist\ServerBundle\Resources\CategorySchema", $cat);
     }
     
     /**
@@ -139,9 +83,6 @@ class ServiceProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testProvidesSecurityShortcut()
     {
-        $this->containerMock->expects($this->once())
-            ->method('get')
-            ->with('security');
         $this->serviceProvider->security();
     }
     
@@ -150,9 +91,7 @@ class ServiceProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetApi()
     {
-        $this->containerMock->expects($this->once())
-            ->method('get')
-            ->with('metagist.api');
+        $this->markTestSkipped('ApiProvider must be refactored to be usable with symfony');
         $this->serviceProvider->getApi();
     }
 }

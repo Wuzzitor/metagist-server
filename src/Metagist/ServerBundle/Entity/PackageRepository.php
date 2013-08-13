@@ -53,17 +53,13 @@ class PackageRepository extends EntityRepository
      */
     public function byIdentifierPart($identifier)
     {
-        $stmt = $this->connection->executeQuery(
-            'SELECT * FROM packages WHERE identifier LIKE ?',
-            array('%' . $identifier . '%')
-        );
-
-        $collection = new ArrayCollection();
-        while ($data = $stmt->fetch()) {
-            $collection->add($this->createPackageFromData($data));
-        }
+        $result = $this->createQueryBuilder('p')
+           ->where('p.identifier LIKE :part')
+           ->setParameter('part', '%' . $identifier . '%')
+           ->getQuery()
+           ->getResult();
         
-        return $collection;
+        return new ArrayCollection($result);
     }
     
     /**
@@ -74,33 +70,7 @@ class PackageRepository extends EntityRepository
      */
     public function save(Package $package)
     {
-        $id = $package->getId();
-        $data = array(
-            $package->getIdentifier(),
-            $package->getDescription(),
-            implode(',', $package->getVersions()),
-            $package->getType(),
-            date('Y-m-d H:i:s')
-        );
-        if ($id == null) {
-            $stmt = $this->connection->executeQuery(
-                'INSERT INTO packages (identifier, description, versions, type, time_updated)
-                 VALUES (?, ?, ?, ?, ?)',
-                $data
-            );
-            $id = $this->connection->lastInsertId();
-            $package->setId($id);
-        } else {
-            $data[] = $id;
-            $stmt = $this->connection->executeQuery(
-                'UPDATE packages 
-                 SET identifier = ?, description = ?, versions = ?, type = ?, time_updated = ?
-                 WHERE id = ?',
-                $data
-            );
-        }
-        
-        return $stmt->rowCount();
+        $this->getEntityManager()->persist($package);
     }
     
     /**

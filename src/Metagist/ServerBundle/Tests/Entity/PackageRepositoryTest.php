@@ -1,7 +1,9 @@
 <?php
 namespace Metagist\ServerBundle\Tests\Entity;
 
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Metagist\ServerBundle\Entity\PackageRepository;
+use Metagist\ServerBundle\Entity\Package;
 use Metagist\ServerBundle\Resources\CategorySchema;
 use Metagist\ServerBundle\Resources\Validator;
 
@@ -10,19 +12,13 @@ use Metagist\ServerBundle\Resources\Validator;
  * 
  * @author Daniel Pozzi <bonndan76@googlemail.com>
  */
-class PackageRepositoryTest extends \PHPUnit_Framework_TestCase
+class PackageRepositoryTest extends WebTestCase
 {
     /**
      * system under test
      * @var PackageRepository
      */
     private $repo;
-    
-    /**
-     * connection mock
-     * @var \Doctrine\DBAL\Connection 
-     */
-    private $connection;
     
     /**
      * Validator 
@@ -36,13 +32,14 @@ class PackageRepositoryTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->connection = $this->getMockBuilder("\Doctrine\DBAL\Connection")
-            ->disableOriginalConstructor()
-            ->getMock();
         $this->validator = new Validator(
             new CategorySchema(file_get_contents(__DIR__ . '/testdata/testcategories.json'))
         );
-        $this->repo = new PackageRepository($this->connection, $this->validator);
+        $kernel = self::createKernel();
+        $kernel->boot();
+        
+        $this->repo = $kernel->getContainer()->get('doctrine')->getManager()->getRepository('MetagistServerBundle:Package');
+        $this->repo->setValidator($this->validator);
     }
     
     /**
@@ -73,10 +70,6 @@ class PackageRepositoryTest extends \PHPUnit_Framework_TestCase
             ->method('fetch')
             ->will($this->returnValue(false));
         
-        $this->connection->expects($this->once())
-            ->method('executeQuery')
-            ->will($this->returnValue($statement));
-        
         $this->repo->byAuthorAndName('test', 'test');
     }
     
@@ -97,10 +90,6 @@ class PackageRepositoryTest extends \PHPUnit_Framework_TestCase
         $statement->expects($this->once())
             ->method('fetch')
             ->will($this->returnValue($data));
-        
-        $this->connection->expects($this->once())
-            ->method('executeQuery')
-            ->will($this->returnValue($statement));
         
         $this->repo->byAuthorAndName('test', 'test');
     }
@@ -123,11 +112,6 @@ class PackageRepositoryTest extends \PHPUnit_Framework_TestCase
             ->method('fetch')
             ->will($this->returnValue($data));
         
-        $this->connection->expects($this->once())
-            ->method('executeQuery')
-            ->with($this->stringContains('WHERE identifier LIKE ?'), array('%tes%'))
-            ->will($this->returnValue($statement));
-        
         $result = $this->repo->byIdentifierPart('tes');
         $this->assertInstanceOf("\Doctrine\Common\Collections\ArrayCollection", $result);
     }
@@ -143,11 +127,6 @@ class PackageRepositoryTest extends \PHPUnit_Framework_TestCase
             ->method('rowCount')
             ->will($this->returnValue(1));
         
-        $this->connection->expects($this->once())
-            ->method('executeQuery')
-            ->with($this->stringContains('UPDATE packages'))
-            ->will($this->returnValue($statement));
-        
         $this->repo->save($package);
     }
     
@@ -161,14 +140,6 @@ class PackageRepositoryTest extends \PHPUnit_Framework_TestCase
         $statement->expects($this->once())
             ->method('rowCount')
             ->will($this->returnValue(1));
-        $this->connection->expects($this->once())
-            ->method('lastInsertId')
-            ->will($this->returnValue(123));
-        
-        $this->connection->expects($this->once())
-            ->method('executeQuery')
-            ->with($this->stringContains('INSERT INTO packages'))
-            ->will($this->returnValue($statement));
         
         $this->repo->save($package);
         $this->assertEquals(123, $package->getId());

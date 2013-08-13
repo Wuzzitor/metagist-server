@@ -1,14 +1,18 @@
 <?php
 namespace Metagist\ServerBundle\Tests\Entity;
 
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Metagist\ServerBundle\Entity\RatingRepository;
+use Metagist\ServerBundle\Entity\Rating;
+use Metagist\ServerBundle\Entity\Package;
+use Metagist\ServerBundle\Entity\User;
 
 /**
  * Tests the rating repo class.
  * 
  * @author Daniel Pozzi <bonndan76@googlemail.com>
  */
-class RatingRepositoryTest extends \PHPUnit_Framework_TestCase
+class RatingRepositoryTest extends WebTestCase
 {
     /**
      * system under test
@@ -17,21 +21,15 @@ class RatingRepositoryTest extends \PHPUnit_Framework_TestCase
     private $repo;
     
     /**
-     * connection mock
-     * @var \Doctrine\DBAL\Connection 
-     */
-    private $connection;
-    
-    /**
      * Test setup
      */
     public function setUp()
     {
         parent::setUp();
-        $this->connection = $this->getMockBuilder("\Doctrine\DBAL\Connection")
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->repo = new RatingRepository($this->connection);
+        $kernel = self::createKernel();
+        $kernel->boot();
+        
+        $this->repo = $kernel->getContainer()->get('doctrine')->getManager()->getRepository('MetagistServerBundle:Rating');
     }
     
     /**
@@ -54,9 +52,6 @@ class RatingRepositoryTest extends \PHPUnit_Framework_TestCase
             ->method('fetch')
             ->will($this->returnValue(false));
         
-        $this->connection->expects($this->once())
-            ->method('executeQuery')
-            ->will($this->returnValue($statement));
         
         $package = new Package('test/test123', 123);
         $collection = $this->repo->byPackage($package);
@@ -84,17 +79,12 @@ class RatingRepositoryTest extends \PHPUnit_Framework_TestCase
                     'identifier' => 'val123/xyz'))
             );
         
-        $this->connection->expects($this->once())
-            ->method('executeQuery')
-            ->with($this->stringContains('WHERE package_id = ? AND r.user_id = ?'), array(123, 22))
-            ->will($this->returnValue($statement));
-        
         $package = new Package('test/test123', 123);
         $user    = new User('test');
         $user->setId(22);
         
         $rating = $this->repo->byPackageAndUser($package, $user);
-        $this->assertInstanceOf("\Metagist\Rating", $rating);
+        $this->assertInstanceOf("\Metagist\ServerBundle\Entity\Rating", $rating);
         $this->assertEquals($user, $rating->getUser());
         $this->assertEquals($package, $rating->getPackage());
     }
@@ -119,10 +109,6 @@ class RatingRepositoryTest extends \PHPUnit_Framework_TestCase
             ->method('fetch')
             ->will($this->returnValue(false));
         
-        $this->connection->expects($this->once())
-            ->method('executeQuery')
-            ->will($this->returnValue($statement));
-        
         $collection = $this->repo->latest();
         $this->assertInstanceOf("\Doctrine\Common\Collections\Collection", $collection);
         $info = $collection->get(0);
@@ -137,13 +123,6 @@ class RatingRepositoryTest extends \PHPUnit_Framework_TestCase
     public function testSave()
     {
         $statement = $this->createMockStatement();
-        $this->connection->expects($this->at(0))
-            ->method('executeQuery')
-            ->with($this->stringContains('DELETE FROM ratings'));
-        $this->connection->expects($this->at(1))
-            ->method('executeQuery')
-            ->with($this->stringContains('INSERT INTO ratings'))
-            ->will($this->returnValue($statement));
         
         $package = new Package('test/test123', 123);
         $rating = Rating::fromArray(array(
@@ -211,10 +190,6 @@ class RatingRepositoryTest extends \PHPUnit_Framework_TestCase
         $statement->expects($this->at(1))
             ->method('fetch')
             ->will($this->returnValue(false));
-        
-        $this->connection->expects($this->once())
-            ->method('executeQuery')
-            ->will($this->returnValue($statement));
         
         $collection = $this->repo->best();
         $this->assertInstanceOf("\Doctrine\Common\Collections\ArrayCollection", $collection);

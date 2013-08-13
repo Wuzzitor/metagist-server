@@ -2,6 +2,7 @@
 namespace Metagist\ServerBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Metagist\ServerBundle\Resources\Validator;
 
 /**
@@ -36,7 +37,8 @@ class MetainfoRepository extends EntityRepository
      */
     public function byPackage(Package $package)
     {
-        return $this->findBy(array('package' => $package));
+        $result = $this->findBy(array('package' => $package));
+        return new ArrayCollection($result);
     }
     
     /**
@@ -52,7 +54,8 @@ class MetainfoRepository extends EntityRepository
             throw new \InvalidArgumentException('Group not existing.');
         }
         
-        return $this->findBy(array('group' => $group));
+        $result = $this->findBy(array('group' => $group));
+        return new ArrayCollection($result);
     }
     
     /**
@@ -67,12 +70,6 @@ class MetainfoRepository extends EntityRepository
             throw new \RuntimeException('Save the package first.');
         }
         
-        //delete old entries
-        $this->connection->executeQuery(
-            'DELETE FROM metainfo WHERE package_id = ?',
-            array($package->getId())
-        );
-            
         $metaInfos = $package->getMetaInfos();
         foreach ($metaInfos as $info) {
             $this->save($info, null);
@@ -83,35 +80,12 @@ class MetainfoRepository extends EntityRepository
      * Saves (inserts) a single info.
      * 
      * @param \Metagist\MetaInfo $info
-     * @param mixed              $cardinality
      * @return int
+     * @todo remove
      */
-    public function save(MetaInfo $info, $cardinality)
+    public function save(MetaInfo $info)
     {
-        if ($cardinality === 1) {
-            $this->connection->executeQuery(
-                'DELETE FROM metainfo WHERE package_id = ? AND `group` = ?',
-                array(
-                    $info->getPackage()->getId(),
-                    $info->getGroup()
-                )
-            );
-        }
-        
-        $stmt = $this->connection->executeQuery(
-            'INSERT INTO metainfo (package_id, user_id, time_updated, version, `group`, value) 
-             VALUES (?, ?, ?, ?, ?, ?)',
-            array(
-                $info->getPackage()->getId(),
-                $info->getUserId(),
-                date('Y-m-d H:i:s', time()),
-                $info->getVersion(),
-                $info->getGroup(),
-                $info->getValue()
-            )
-        );
-        
-        return $stmt->rowCount();
+        $this->getEntityManager()->persist($info);
     }
     
     /**

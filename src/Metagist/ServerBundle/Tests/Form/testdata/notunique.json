@@ -1,0 +1,24 @@
+{
+    "test": {
+        "description": "test",
+        "access": "ROLE_ADMIN",
+        "types": {
+            "testInteger": {
+                "access": "ROLE_USER",
+                "type": "integer",
+                "description": "testInteger text"
+            }
+        }
+    },
+    "test2": {
+        "description": "test",
+        "access": "ROLE_ADMIN",
+        "types": {
+            "testInteger": {
+                "access": "ROLE_USER",
+                "type": "integer",
+                "description": "testInteger text"
+            }
+        }
+    }
+}

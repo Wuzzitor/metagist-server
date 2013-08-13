@@ -2,7 +2,9 @@
 namespace Metagist\ServerBundle\Resources;
 
 use Metagist\ServerBundle\Entity\Package;
-
+use Metagist\ServerBundle\Entity\Metainfo;
+use Metagist\ServerBundle\InvalidInfoException;
+    
 /**
  * Validator class.
  * 
@@ -100,7 +102,7 @@ class Validator
      * @return boolean
      * @throws InvalidInfoException
      */
-    public function isValidMetaInfo(MetaInfo $metaInfo)
+    public function isValidMetaInfo(Metainfo $metaInfo)
     {
         if ($metaInfo->getPackage() == null || $metaInfo->getGroup() == null) {
             throw new InvalidInfoException('Package or group is not set.');

@@ -159,29 +159,21 @@ class Rating
     /**
      * Returns the id of the user who created the info.
      * 
-     * @return int|null
+     * @return User|null
      */
-    public function getUserId()
+    public function getUser()
     {
-        if ($this->user_id != null) {
-            return $this->user_id;
-        }
-        
-        if ($this->user !== null) {
-            return $this->user->getId();
-        }
-        
-        return null;
+        return $this->user;
     }
     
     /**
      * Returns the time of the last update
      * 
-     * @return string|null
+     * @return Datetime|null
      */
     public function getTimeUpdated()
     {
-        return $this->time_updated;
+        return $this->timeUpdated;
     }
     
     /**
@@ -192,15 +184,5 @@ class Rating
     public function setUser(User $user)
     {
         $this->user = $user;
-    }
-    
-    /**
-     * Returns the user.
-     * 
-     * @return User|null
-     */
-    public function getUser()
-    {
-        return $this->user;
     }
 }

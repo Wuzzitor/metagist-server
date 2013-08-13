@@ -6,6 +6,7 @@ use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Validator\Tests\Fixtures\FakeMetadataFactory;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Metagist\ServerBundle\Resources\CategorySchema;
+use Metagist\ServerBundle\Form\FormFactory;
 
 /**
  * Tests the metagist form factory.

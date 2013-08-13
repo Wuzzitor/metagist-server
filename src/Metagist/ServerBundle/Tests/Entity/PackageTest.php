@@ -79,7 +79,7 @@ class PackageTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetTimeUpdated()
     {
-        $time = '2013-10-31 00:30:00';
+        $time = new \DateTime();
         $this->package->setTimeUpdated($time);
         $this->assertEquals($time, $this->package->getTimeUpdated());
     }

@@ -49,7 +49,7 @@ class Package
      *
      * @ORM\Column(name="versions", type="text", nullable=false)
      */
-    private $versions;
+    private $versions = array();
 
     /**
      * @var \DateTime

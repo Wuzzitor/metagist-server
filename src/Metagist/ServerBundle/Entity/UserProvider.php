@@ -5,7 +5,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use HWI\Bundle\OAuthBundle\Security\Core\User\OAuthAwareUserProviderInterface;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 
@@ -23,12 +23,12 @@ class UserProvider implements UserProviderInterface, OAuthAwareUserProviderInter
     const CONFIG_ADMIN_LIST = 'admins';
     
     /**
-     * entity manager
+     * user reop
      * 
-     * @var \Doctrine\ORM\EntityManager 
+     * @var UserRepository
      */
-    private $manager;
-
+    private $repo;
+    
     /**
      * userprovider configuration
      * @var array
@@ -41,11 +41,10 @@ class UserProvider implements UserProviderInterface, OAuthAwareUserProviderInter
      * @param \Doctrine\ORM\EntityManager $conn
      * @param array                       $config
      */
-    public function __construct(EntityManager $manager, array $config = array())
+    public function __construct(EntityRepository $repo, array $config = array())
     {
-        $this->manager = $manager;
-        $this->repo    = $manager->getRepository("MetagistServerBundle:User");
-        $this->config  = $config;
+        $this->repo   = $repo;
+        $this->config = $config;
     }
 
     /**
@@ -57,22 +56,12 @@ class UserProvider implements UserProviderInterface, OAuthAwareUserProviderInter
      */
     public function loadUserByUsername($username)
     {
-        $stmt = $this->conn->executeQuery(
-            'SELECT * FROM users WHERE username = ?',
-            array(strtolower($username))
-        );
-
-        if (!$data = $stmt->fetch()) {
+        $user = $this->repo->findOneBy(array('username' => $username));
+        
+        if (!$user) {
             throw new UsernameNotFoundException(sprintf('Username "%s" does not exist.', $username));
         }
 
-        $user = new User(
-            $data['username'],
-            $this->getRoleByUsername($data['username']),
-            $data['avatar_url']
-        );
-        $user->setId($data['id']);
-        
         return $user;
     }
     
@@ -147,7 +136,7 @@ class UserProvider implements UserProviderInterface, OAuthAwareUserProviderInter
      */
     public function supportsClass($class)
     {
-        return $class === 'Metagist\User';
+        return $class === 'Metagist\ServerBundle\Entity\User';
     }
     
     public function loadUserByOAuthUserResponse(UserResponseInterface $response)

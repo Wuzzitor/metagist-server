@@ -43,7 +43,7 @@ class CategorySchemaTest extends \PHPUnit_Framework_TestCase
     public function testGroupNamesMustBeUnique()
     {
         $json = file_get_contents(__DIR__ . '/testdata/notunique.json');
-        $this->setExpectedException('\Metagist\Exception');
+        $this->setExpectedException('\Metagist\ServerBundle\Exception');
         $this->schema = new CategorySchema($json);
     }
 
@@ -53,7 +53,7 @@ class CategorySchemaTest extends \PHPUnit_Framework_TestCase
     public function testCreate()
     {
         $schema = CategorySchema::create();
-        $this->assertInstanceOf("\Metagist\CategorySchema", $schema);
+        $this->assertInstanceOf("\Metagist\ServerBundle\Resources\CategorySchema", $schema);
     }
 
     /**
