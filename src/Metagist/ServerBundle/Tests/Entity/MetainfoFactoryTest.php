@@ -55,7 +55,7 @@ class MetainfoFactoryTest extends \PHPUnit_Framework_TestCase
         $collection = $this->factory->fromPackagistPackage($package);
         $this->assertInstanceOf("\Doctrine\Common\Collections\Collection", $collection);
         $this->assertEquals(6, count($collection));
-        $this->assertInstanceOf("\Metagist\MetaInfo", $collection->first());
+        $this->assertInstanceOf("\Metagist\ServerBundle\Entity\MetaInfo", $collection->first());
     }
     
     public function testFromPackagistPackageHasNoVersionReturnsArray()
