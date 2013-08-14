@@ -54,7 +54,7 @@ class User implements UserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="avatar_url", type="string", length=255, nullable=false)
+     * @ORM\Column(name="avatar_url", type="string", length=255, nullable=true)
      */
     private $avatarUrl;
 
