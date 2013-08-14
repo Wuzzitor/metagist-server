@@ -91,25 +91,8 @@ class UserProvider implements UserProviderInterface, OAuthAwareUserProviderInter
      * @param array $response
      * @return User
      */
-    public function createUserFromOauthResponse(array $response)
+    public function createUserFromOauthResponse(UserResponseInterface $response)
     {
-        $rawData = $response['auth']['raw'];
-        $user = new User($rawData['login'], $this->getRoleByUsername($rawData['login']), $rawData['avatar_url']);
-        
-        try {
-            $user = $this->loadUserByUsername($user->getUsername());
-        } catch (UsernameNotFoundException $exception) {
-            $stmt = $this->conn->executeQuery(
-                'INSERT INTO users (username, avatar_url) VALUES (?, ?)',
-                array($user->getUsername(), $user->getAvatarUrl())
-            );
-            $user->setId($this->conn->lastInsertId());
-            if (!$stmt->rowCount()) {
-                throw new \RuntimeException('Could not create the user.', 500, $exception);
-            }
-        }
-        
-        return $user;
     }
 
     /**
@@ -139,9 +122,26 @@ class UserProvider implements UserProviderInterface, OAuthAwareUserProviderInter
         return $class === 'Metagist\ServerBundle\Entity\User';
     }
     
+    /**
+     * {@inheritdoc}
+     * @see EntityUserProvider
+     */
     public function loadUserByOAuthUserResponse(UserResponseInterface $response)
     {
-        
+        $resourceOwnerName = $response->getResourceOwner()->getName();
+
+        if (!isset($this->properties[$resourceOwnerName])) {
+            throw new \RuntimeException(sprintf("No property defined for entity for resource owner '%s'.", $resourceOwnerName));
+        }
+
+        $username = $response->getUsername();
+        $user = $this->repository->findOneBy(array($this->properties[$resourceOwnerName] => $username));
+
+        if (null === $user) {
+            $this->createUserFromOauthResponse($response);
+        }
+
+        return $user;
     }
 
 }

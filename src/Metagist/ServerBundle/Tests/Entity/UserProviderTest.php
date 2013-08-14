@@ -1,6 +1,8 @@
 <?php
 namespace Metagist\ServerBundle\Tests\Entity;
 
+use Metagist\ServerBundle\Tests\WebDoctrineTestCase;
+use Metagist\ServerBundle\Entity\User;
 use Metagist\ServerBundle\Entity\UserProvider;
 
 /**
@@ -8,7 +10,7 @@ use Metagist\ServerBundle\Entity\UserProvider;
  * 
  * @author Daniel Pozzi <bonndan76@googlemail.com>
  */
-class UserProviderTest extends \PHPUnit_Framework_TestCase
+class UserProviderTest extends WebDoctrineTestCase
 {
     /**
      * system under test
@@ -17,23 +19,24 @@ class UserProviderTest extends \PHPUnit_Framework_TestCase
     private $provider;
     
     /**
-     * em
-     * @var \Doctrine\ORM\EntityManager 
-     */
-    private $repo;
-    
-    /**
      * Test setup.
      */
     public function setUp()
     {
         parent::setUp();
-        $this->repo = $this->getMockBuilder("\Doctrine\ORM\EntityRepository")
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->provider = new UserProvider($this->repo, array());
+        $this->provider = new UserProvider(
+            self::$entityManager->getRepository('MetagistServerBundle:User'), 
+            array('admins' => 'test123')
+        );
     }
     
+    protected function loadFixtures()
+    {
+        $user = new User('test');
+        self::$entityManager->persist($user);
+    }
+
+
     /**
      * Ensures the provider implements the UserProviderInterface
      */
@@ -47,15 +50,6 @@ class UserProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testReturnsUser()
     {
-        $statement = $this->createMockStatement();
-        $statement->expects($this->once())
-            ->method('fetch')
-            ->will($this->returnValue(array('username' => 'test', 'avatar_url' => 'http://ava.tar', 'id' => 13)));
-        
-        $this->repo->expects($this->once())
-            ->method('executeQuery')
-            ->will($this->returnValue($statement));
-        
         $user = $this->provider->loadUserByUsername('test');
         $this->assertInstanceOf('Metagist\User', $user);
         $this->assertEquals(13, $user->getId());
@@ -66,37 +60,7 @@ class UserProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateUserFromOauthResponse()
     {
-        $response = array(
-            'auth' => array(
-                'raw' => array(
-                    'login' => 'test123',
-                    'avatar_url' => 'http://ava.tar'
-                )
-            )
-        );
-        
-        $statement = $this->createMockStatement();
-        $statement->expects($this->once())
-            ->method('rowCount')
-            ->will($this->returnValue(1));
-        $statement->expects($this->once())
-            ->method('fetch')
-            ->will($this->returnValue(null));
-        
-        $this->repo->expects($this->at(0))
-            ->method('executeQuery')
-            ->will($this->returnValue($statement));
-        $this->repo->expects($this->at(1))
-            ->method('executeQuery')
-            ->will($this->returnValue($statement));
-        $this->repo->expects($this->once())
-            ->method('lastInsertId')
-            ->will($this->returnValue(13));
-        
-        $user = $this->provider->createUserFromOauthResponse($response);
-        $this->assertInstanceOf('Metagist\User', $user);
-        $this->assertEquals('test123', $user->getUsername());
-        $this->assertEquals(13, $user->getId());
+        $this->markTestIncomplete();
     }
     
     /**
@@ -104,16 +68,6 @@ class UserProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadAdmin()
     {
-        $this->provider = new UserProvider($this->repo, array('admins' => 'test123'));
-        $statement = $this->createMockStatement();
-        $statement->expects($this->once())
-            ->method('fetch')
-            ->will($this->returnValue(array('username' => 'test123', 'avatar_url' => 'http://ava.tar', 'id' => 13)));
-        
-        $this->repo->expects($this->once())
-            ->method('executeQuery')
-            ->will($this->returnValue($statement));
-        
         $user = $this->provider->loadUserByUsername('test123');
         $this->assertContains(User::ROLE_ADMIN, $user->getRoles());
     }

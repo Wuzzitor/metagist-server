@@ -1,7 +1,7 @@
 <?php
 namespace Metagist\ServerBundle\Tests\Entity;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Metagist\ServerBundle\Tests\WebDoctrineTestCase;
 use Metagist\ServerBundle\Entity\MetainfoRepository;
 use Metagist\ServerBundle\Resources\CategorySchema;
 use Metagist\ServerBundle\Entity\Package;
@@ -13,7 +13,7 @@ use Metagist\ServerBundle\Entity\Metainfo;
  * 
  * @author Daniel Pozzi <bonndan76@googlemail.com>
  */
-class MetaInfoRepositoryTest extends WebTestCase
+class MetaInfoRepositoryTest extends WebDoctrineTestCase
 {
     /**
      * system under test

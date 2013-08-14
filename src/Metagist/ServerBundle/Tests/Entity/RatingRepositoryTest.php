@@ -1,7 +1,7 @@
 <?php
 namespace Metagist\ServerBundle\Tests\Entity;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Metagist\ServerBundle\Tests\WebDoctrineTestCase;
 use Metagist\ServerBundle\Entity\RatingRepository;
 use Metagist\ServerBundle\Entity\Rating;
 use Metagist\ServerBundle\Entity\Package;
@@ -12,7 +12,7 @@ use Metagist\ServerBundle\Entity\User;
  * 
  * @author Daniel Pozzi <bonndan76@googlemail.com>
  */
-class RatingRepositoryTest extends WebTestCase
+class RatingRepositoryTest extends WebDoctrineTestCase
 {
     /**
      * system under test

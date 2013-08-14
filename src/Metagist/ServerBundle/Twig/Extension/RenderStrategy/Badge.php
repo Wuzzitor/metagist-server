@@ -1,6 +1,8 @@
 <?php
 namespace Metagist\ServerBundle\Twig\Extension\RenderStrategy;
 
+use Metagist\ServerBundle\Entity\Metainfo;
+
 /**
  * Strategy to render metainfo images like badges.
  * 

@@ -1,7 +1,7 @@
 <?php
 namespace Metagist\ServerBundle\Tests\Entity;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Metagist\ServerBundle\Tests\WebDoctrineTestCase;
 use Metagist\ServerBundle\Entity\PackageRepository;
 use Metagist\ServerBundle\Entity\Package;
 use Metagist\ServerBundle\Resources\CategorySchema;
@@ -12,7 +12,7 @@ use Metagist\ServerBundle\Resources\Validator;
  * 
  * @author Daniel Pozzi <bonndan76@googlemail.com>
  */
-class PackageRepositoryTest extends WebTestCase
+class PackageRepositoryTest extends WebDoctrineTestCase
 {
     /**
      * system under test

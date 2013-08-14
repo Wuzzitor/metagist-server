@@ -1,7 +1,7 @@
 <?php
 namespace Metagist\ServerBundle\Twig\Extension\RenderStrategy;
 
-use Metainfo;
+use Metagist\ServerBundle\Entity\Metainfo;
 
 /**
  * Interface for classes implementing a metainfo render strategy.
