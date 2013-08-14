@@ -26,10 +26,7 @@ class RatingRepositoryTest extends WebDoctrineTestCase
     public function setUp()
     {
         parent::setUp();
-        $kernel = self::createKernel();
-        $kernel->boot();
-        
-        $this->repo = $kernel->getContainer()->get('doctrine')->getManager()->getRepository('MetagistServerBundle:Rating');
+        $this->repo = $this->entityManager->getRepository('MetagistServerBundle:Rating');
     }
     
     /**
@@ -112,9 +109,9 @@ class RatingRepositoryTest extends WebDoctrineTestCase
         $collection = $this->repo->latest();
         $this->assertInstanceOf("\Doctrine\Common\Collections\Collection", $collection);
         $info = $collection->get(0);
-        $this->assertInstanceOf("\Metagist\Rating", $info);
+        $this->assertInstanceOf("\Metagist\ServerBundle\Entity\Rating", $info);
         $this->assertEquals('testcomment', $info->getComment());
-        $this->assertInstanceOf("\Metagist\Package", $info->getPackage());
+        $this->assertInstanceOf("\Metagist\ServerBundle\Entity\Package", $info->getPackage());
     }
     
     /**
@@ -176,20 +173,13 @@ class RatingRepositoryTest extends WebDoctrineTestCase
      */
     public function testBest()
     {
-        $data = array(
-            'id' => 1,
-            'identifier' => 'test/test',
-            'description' => 'test',
-            'versions' => 'dev-master',
-            'package_id' => 1,
-        );
-        $statement = $this->createMockStatement();
-        $statement->expects($this->at(0))
-            ->method('fetch')
-            ->will($this->returnValue($data));
-        $statement->expects($this->at(1))
-            ->method('fetch')
-            ->will($this->returnValue(false));
+        $package = new Package('test/test123');
+        $this->entityManager->persist($package);
+        $rating = Rating::fromArray(array(
+            'user_id' => 13,
+            'package' => $package,
+        ));
+        $this->entityManager->persist($rating);
         
         $collection = $this->repo->best();
         $this->assertInstanceOf("\Doctrine\Common\Collections\ArrayCollection", $collection);

@@ -27,10 +27,7 @@ class MetaInfoRepositoryTest extends WebDoctrineTestCase
     public function setUp()
     {
         parent::setUp();
-        $kernel = self::createKernel();
-        $kernel->boot();
-        $doctrine = $kernel->getContainer()->get('doctrine');
-        $this->repo = $doctrine->getManager()->getRepository('MetagistServerBundle:Metainfo');
+        $this->repo = $this->entityManager->getRepository('MetagistServerBundle:Metainfo');
     }
     
     /**

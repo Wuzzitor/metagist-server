@@ -32,13 +32,11 @@ class PackageRepositoryTest extends WebDoctrineTestCase
     public function setUp()
     {
         parent::setUp();
+        $this->repo = $this->entityManager->getRepository('MetagistServerBundle:Package');
+        
         $this->validator = new Validator(
             new CategorySchema(file_get_contents(__DIR__ . '/testdata/testcategories.json'))
         );
-        $kernel = self::createKernel();
-        $kernel->boot();
-        
-        $this->repo = $kernel->getContainer()->get('doctrine')->getManager()->getRepository('MetagistServerBundle:Package');
         $this->repo->setValidator($this->validator);
     }
     
@@ -65,12 +63,9 @@ class PackageRepositoryTest extends WebDoctrineTestCase
      */
     public function testPackageNotFoundReturnsNull()
     {
-        $statement = $this->createMockStatement();
-        $statement->expects($this->once())
-            ->method('fetch')
-            ->will($this->returnValue(false));
-        
-        $this->repo->byAuthorAndName('test', 'test');
+        $this->assertNull(
+            $this->repo->byAuthorAndName('test', 'test')
+        );
     }
     
     /**

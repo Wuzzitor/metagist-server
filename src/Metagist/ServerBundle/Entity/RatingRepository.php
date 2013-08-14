@@ -32,30 +32,13 @@ class RatingRepository extends EntityRepository
     /**
      * Retrieves the rating of a package by the given user.
      * 
-     * @param \Metagist\Package $package
-     * @param \Metagist\User    $user
+     * @param Package $package
+     * @param User    $user
      * @return Rating|null
      */
     public function byPackageAndUser(Package $package, User $user)
     {
         return $this->findOneBy(array('package' => $package, 'user' => $user));
-        
-        $stmt = $this->connection->executeQuery(
-            'SELECT r.*, u.id AS user_id, u.username, u.avatar_url, p.identifier, p.description
-             FROM ratings r
-             LEFT JOIN packages p ON r.package_id = p.id
-             LEFT JOIN users u ON r.user_id = u.id
-             WHERE package_id = ? AND r.user_id = ?',
-             array($package->getId(), $user->getId())
-        );
-        $data = $stmt->fetch();
-        if ($data != false) {
-            $data['user']    = $user;
-            $data['package'] = $package;
-            return Rating::fromArray($data);
-        }
-        
-        return null;
     }
     
     /**
@@ -70,8 +53,7 @@ class RatingRepository extends EntityRepository
             ->orderBy('r.timeUpdated', 'DESC')
             ;
             
-        return $builder->getQuery()->execute();
-        $collection = new ArrayCollection();
+        return new ArrayCollection($builder->getQuery()->execute());
         /*$stmt = $this->connection->executeQuery(
             'SELECT r.*, u.id AS user_id, u.username, u.avatar_url, p.identifier, p.description
              FROM ratings r
@@ -103,26 +85,17 @@ class RatingRepository extends EntityRepository
      * 
      * @param int $limit
      * @return \Doctrine\Common\Collections\ArrayCollection
-     * @todo parameter binding did not work.
      */
     public function best($limit = 25)
     {
-        $sql =
-            'SELECT AVG(r.rating) AS rating, r.package_id, p.identifier, p.description
-             FROM ratings r 
-             LEFT JOIN packages p ON p.id = r.package_id
-             GROUP BY r.package_id
-             ORDER BY rating DESC LIMIT ' . $limit
-        ;
-        
         $builder = $this->createQueryBuilder('r')
             ->select('avg(r.rating) AS rateavg')
-            ->join('MetagistServerBundle:Package', 'p')
-            //->groupBy('r.package_id')
-            //->orderBy('p.id', 'DESC')
-            ;
+            ->join('r.package', 'p')
+            ->groupBy('p.id')
+            ->orderBy('p.id', 'DESC')
+            ->setMaxResults($limit);
         
-        return $builder->getQuery()->execute();
+        return new ArrayCollection($builder->getQuery()->execute());
     }
     
     /**

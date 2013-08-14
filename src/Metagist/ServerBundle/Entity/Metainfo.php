@@ -114,14 +114,7 @@ class Metainfo
     /**
      * @var string
      *
-     * @ORM\Column(name="category", type="string", length=32, nullable=false)
-     */
-    private $category;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="group", type="string", length=32, nullable=false)
+     * @ORM\Column(name="groupname", type="string", length=32, nullable=false)
      */
     private $group;
 

@@ -25,18 +25,11 @@ class UserProviderTest extends WebDoctrineTestCase
     {
         parent::setUp();
         $this->provider = new UserProvider(
-            self::$entityManager->getRepository('MetagistServerBundle:User'), 
+            $this->entityManager->getRepository('MetagistServerBundle:User'), 
             array('admins' => 'test123')
         );
     }
     
-    protected function loadFixtures()
-    {
-        $user = new User('test');
-        self::$entityManager->persist($user);
-    }
-
-
     /**
      * Ensures the provider implements the UserProviderInterface
      */
@@ -50,8 +43,11 @@ class UserProviderTest extends WebDoctrineTestCase
      */
     public function testReturnsUser()
     {
+        $this->entityManager->persist(new User('test'));
+        $this->entityManager->flush();
+        
         $user = $this->provider->loadUserByUsername('test');
-        $this->assertInstanceOf('Metagist\User', $user);
+        $this->assertInstanceOf('Metagist\ServerBundle\Entity\User', $user);
         $this->assertEquals(13, $user->getId());
     }
     
@@ -68,18 +64,10 @@ class UserProviderTest extends WebDoctrineTestCase
      */
     public function testLoadAdmin()
     {
+        $this->entityManager->persist(new User('test123'));
+        $this->entityManager->flush();
+        
         $user = $this->provider->loadUserByUsername('test123');
         $this->assertContains(User::ROLE_ADMIN, $user->getRoles());
-    }
-    
-    /**
-     * Creates a statement mock, the provided HydratorMockStatement seems to be broken.
-     * 
-     * @param array $methods
-     * @return Statement mock
-     */
-    protected function createMockStatement(array $methods = array('rowCount', 'fetch'))
-    {
-        return $this->getMock('stdClass', $methods);
     }
 }

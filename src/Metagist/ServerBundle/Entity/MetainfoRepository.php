@@ -115,7 +115,7 @@ class MetainfoRepository extends EntityRepository
     {
         $package = new Package($data['identifier'], $data['package_id']);
         $data['package'] = $package;
-        $metainfo = MetaInfo::fromArray($data);
+        $metainfo = Metainfo::fromArray($data);
         return $metainfo;
     }
 }
