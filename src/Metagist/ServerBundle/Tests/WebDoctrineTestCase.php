@@ -60,7 +60,6 @@ abstract class WebDoctrineTestCase extends WebTestCase
             // Create SchemaTool
             $tool = new SchemaTool($this->entityManager);
             $tool->createSchema($metadata);
-            echo 'Schema created.';
         } else {
             throw new Doctrine\DBAL\Schema\SchemaException('No Metadata Classes to process.');
         }
