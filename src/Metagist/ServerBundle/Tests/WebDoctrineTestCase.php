@@ -1,127 +1,68 @@
 <?php
+
 namespace Metagist\ServerBundle\Tests;
- 
+
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
- 
+use Doctrine\ORM\Tools\SchemaTool;
 /**
- * Class to test against the database.
+ * Class to test against the database using sqlite.
  * 
- * @copyright (c) 2013, Miguel Angel Gabriel
- * @link http://dev4theweb.blogspot.de/2012/07/yet-another-look-at-isolated-symfony2.html
+ * @link http://www.theodo.fr/blog/2011/09/symfony2-unit-database-tests/
  */
 abstract class WebDoctrineTestCase extends WebTestCase
 {
+
     /**
      * entity manager instance.
      * 
      * @var \Doctrine\ORM\EntityManager
      */
-    protected static $entityManager;
-    
+    protected $entityManager;
     protected static $client;
-    protected static $application;
-     
-    protected static $isFirstTest = true;
- 
+
     /**
      * Prepare each test
      */
     public function setUp()
     {
         parent::setUp();
- 
+
         static::$client = static::createClient();
- 
-        if (!$this->useCachedDatabase()) {
-            $this->databaseInit();
-            $this->loadFixtures();  
-        }
+
+        $this->databaseInit();
+        $this->loadFixtures();
     }
- 
+
     /**
      * Initialize database
      */
     protected function databaseInit()
     {
-        static::$entityManager = static::$kernel
-            ->getContainer()
+        $this->entityManager = static::$kernel->getContainer()
             ->get('doctrine.orm.entity_manager');
- 
-        static::$application = new \Symfony\Bundle\FrameworkBundle\Console\Application(static::$kernel);
-         
-        static::$application->setAutoExit(false);
-        $this->runConsole("doctrine:schema:drop", array("--force" => true));
-        $this->runConsole("doctrine:schema:create");
-        $this->runConsole("cache:warmup");
+        $this->generateSchema();
     }
- 
+
     /**
      * Load tests fixtures
      */
     protected function loadFixtures()
     {
-        $this->runConsole("doctrine:fixtures:load");
+        
     }
-     
-    /**
-     * Use cached database for testing or return false if not
-     */
-    protected function useCachedDatabase()
+
+    protected function generateSchema()
     {
-        $container = static::$kernel->getContainer();
-        $registry = $container->get('doctrine');
-        $om = $registry->getManager();
-        $connection = $om->getConnection();
-         
-        if ($connection->getDriver() instanceOf SqliteDriver) {
-            $params = $connection->getParams();
-            $name = isset($params['path']) ? $params['path'] : $params['dbname'];
-            $filename = pathinfo($name, PATHINFO_BASENAME);
-            $backup = $container->getParameter('kernel.cache_dir') . '/'.$filename;
- 
-            // The first time we won't use the cached version
-            if (self::$isFirstTest) {
-                self::$isFirstTest = false;
-                return false;
-            }
-             
-            self::$isFirstTest = false;
- 
-            // Regenerate not-existing database
-            if (!file_exists($name)) {
-                @unlink($backup);
-                return false;
-            }
- 
-            $om->flush();
-            $om->clear();
-             
-            // Copy backup to database
-            if (!file_exists($backup)) {
-                copy($name, $backup);
-            }
- 
-            copy($backup, $name);
-            return true;
+        // Get the metadata of the application to create the schema.
+        $metadata = $this->entityManager->getMetadataFactory()->getAllMetadata();
+
+        if (!empty($metadata)) {
+            // Create SchemaTool
+            $tool = new SchemaTool($this->entityManager);
+            $tool->createSchema($metadata);
+            echo 'Schema created.';
+        } else {
+            throw new Doctrine\DBAL\Schema\SchemaException('No Metadata Classes to process.');
         }
-         
-        return false;
-    }
- 
-    /**
-     * Executes a console command
-     *
-     * @param type $command
-     * @param array $options
-     * @return type integer
-     */
-    protected function runConsole($command, Array $options = array())
-    {
-        $options["--env"] = "test";
-        $options["--quiet"] = null;
-        $options["--no-interaction"] = null;
-        $options = array_merge($options, array('command' => $command));
-        return static::$application->run(new \Symfony\Component\Console\Input\ArrayInput($options));
     }
 }
