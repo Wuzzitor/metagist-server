@@ -31,10 +31,16 @@ services:
   metagist.web.controller:
     class:     "%metagist.web.controller.class%"
     arguments: ["@metagist_controller_serviceprovider"]
-    
+  
+  metagist.user.repository:
+        class:           Metagist\ServerBundle\Entity\UserRepository
+        factory_service: doctrine.orm.entity_manager
+        factory_method:  getRepository
+        arguments: ["MetagistServerBundle:User"]
+            
   metagist.user.provider.entity:
     class: Metagist\ServerBundle\Entity\UserProvider
-    arguments: ["@doctrine.orm.entity_manager"]
+    arguments: ["@metagist.user.repository"]
     
   metagist.opauth.listener:
     class: Metagist\ServerBundle\EventListener\OpauthListener
