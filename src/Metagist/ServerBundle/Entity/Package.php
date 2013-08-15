@@ -2,14 +2,12 @@
 namespace Metagist\ServerBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\Collection;
-
 use Metagist\ServerBundle\Resources\Validator;
 
 /**
  * Package
  *
- * @ORM\Table(name="packages")
+ * @ORM\Table(name="packages",uniqueConstraints={@UniqueConstraint(name="identifier_idx", columns={"identifier"})})
  * @ORM\Entity(repositoryClass="PackageRepository")
  */
 class Package
@@ -42,22 +40,26 @@ class Package
      *
      * @ORM\Column(name="type", type="string", length=64, nullable=false)
      */
-    private $type;
+    private $type = "library";
 
     /**
      * @var string
      * @ORM\Column(name="versions", type="text", nullable=false)
      */
-    private $versions;
+    private $versions = '';
 
     /**
+     * time of last update
+     * 
      * @var \DateTime
-     *
      * @ORM\Column(name="time_updated", type="datetime", nullable=false)
      */
     private $timeUpdated;
     
     /**
+     * related metainfos
+     * 
+     * @var Metainfo[]
      * @ORM\OneToMany(targetEntity="Metainfo", mappedBy="package")
      */
     private $metainfos;
@@ -66,12 +68,11 @@ class Package
      * Constructor.
      * 
      * @param string  $identifier
-     * @param integer $id
      */
-    public function __construct($identifier, $id = null)
+    public function __construct($identifier)
     {
-        $this->identifier = $identifier;
-        $this->id         = (int) $id;  
+        $this->identifier  = $identifier;
+        $this->timeUpdated = new \DateTime();
     }
     
     /**
