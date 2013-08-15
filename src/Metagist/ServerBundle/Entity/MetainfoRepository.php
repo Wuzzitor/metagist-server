@@ -101,21 +101,6 @@ class MetainfoRepository extends EntityRepository
             ->orderBy('m.timeUpdated', 'DESC')
             ->setMaxResults($limit);
         
-        return $builder->getQuery()->execute();
-    }
-    
-    /**
-     * Creates a MetaInfo instance with a dummy package based on the results
-     * of a joined query.
-     * 
-     * @param array $data
-     * @return MetaInfo
-     */
-    protected function createMetaInfoWithDummyPackage(array $data)
-    {
-        $package = new Package($data['identifier'], $data['package_id']);
-        $data['package'] = $package;
-        $metainfo = Metainfo::fromArray($data);
-        return $metainfo;
+        return new ArrayCollection($builder->getQuery()->execute());
     }
 }

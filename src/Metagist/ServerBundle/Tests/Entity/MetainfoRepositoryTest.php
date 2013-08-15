@@ -17,9 +17,15 @@ class MetaInfoRepositoryTest extends WebDoctrineTestCase
 {
     /**
      * system under test
-     * @var MetaInfoRepository
+     * 
+     * @var \Metagist\ServerBundle\Entity\MetainfoRepository
      */
     private $repo;
+    
+    /**
+     * @var Package
+     */
+    private $package;
     
     /**
      * Test setup
@@ -30,25 +36,27 @@ class MetaInfoRepositoryTest extends WebDoctrineTestCase
         $this->repo = $this->entityManager->getRepository('MetagistServerBundle:Metainfo');
     }
     
+    protected function loadFixtures()
+    {
+        $faker = \Faker\Factory::create();
+        
+        $this->package = new Package('test/test123');
+        $this->package->setDescription($faker->text);
+        $this->entityManager->persist($this->package);
+
+        $metaInfo = Metainfo::fromValue('test', $faker->domainName);
+        $metaInfo->setPackage($this->package);
+        $this->entityManager->persist($metaInfo);
+        $this->entityManager->flush();
+    }
+
+
     /**
-     * Ensures the params are validated.
+     * Ensures the related metainfo is returned.
      */
     public function testByPackage()
     {
-        $statement = $this->createMockStatement();
-        $statement->expects($this->at(0))
-            ->method('fetch')
-            ->will($this->returnValue(
-                array(
-                    'group' => 'group123',
-                    'value' => 'val123'))
-            );
-        $statement->expects($this->at(1))
-            ->method('fetch')
-            ->will($this->returnValue(false));
-        
-        $package = new Package('test/test123', 123);
-        $collection = $this->repo->byPackage($package);
+        $collection = $this->repo->byPackage($this->package);
         $this->assertInstanceOf("\Doctrine\Common\Collections\Collection", $collection);
         $info = $collection->get(0);
         $this->assertInstanceOf("\Metagist\ServerBundle\Entity\Metainfo", $info);
@@ -61,10 +69,9 @@ class MetaInfoRepositoryTest extends WebDoctrineTestCase
     {
         $elements = array(Metainfo::fromValue('test/test', 123));
         $collection = new \Doctrine\Common\Collections\ArrayCollection($elements);
-        $package = new Package('test/test123', 123);
-        $package->setMetaInfos($collection);
+        $this->package->setMetaInfos($collection);
         
-        $this->repo->savePackage($package);
+        $this->repo->savePackage($this->package);
     }
     
         /**
@@ -72,21 +79,6 @@ class MetaInfoRepositoryTest extends WebDoctrineTestCase
      */
     public function testGetLatest()
     {
-        $data = array(
-            'id' => 1,
-            'identifier' => 'test/test',
-            'description' => 'test',
-            'versions' => 'dev-master',
-            'package_id' => 1,
-        );
-        $statement = $this->createMockStatement();
-        $statement->expects($this->at(0))
-            ->method('fetch')
-            ->will($this->returnValue($data));
-        $statement->expects($this->at(1))
-            ->method('fetch')
-            ->will($this->returnValue(false));
-        
         $collection = $this->repo->latest();
         $this->assertInstanceOf("\Doctrine\Common\Collections\ArrayCollection", $collection);
         $this->assertEquals(1, count($collection));
