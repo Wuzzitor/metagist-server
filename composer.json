@@ -30,6 +30,9 @@
         "bonndan/RMT"           : "@dev",
         "wuzzitor/metagist-api" : "dev-master"
     },
+    "require-dev": {
+        "fzaninotto/faker": "v1.2.0"
+    },
     "scripts": {
         "post-install-cmd": [
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
