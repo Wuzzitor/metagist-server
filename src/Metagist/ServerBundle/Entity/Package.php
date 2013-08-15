@@ -46,10 +46,9 @@ class Package
 
     /**
      * @var string
-     *
      * @ORM\Column(name="versions", type="text", nullable=false)
      */
-    private $versions = array();
+    private $versions;
 
     /**
      * @var \DateTime
@@ -160,7 +159,7 @@ class Package
      */
     public function setVersions(array $versions)
     {
-        $this->versions = $versions;
+        $this->versions = implode(',', $versions);
     }
     
     /**
@@ -170,7 +169,7 @@ class Package
      */
     public function getVersions()
     {
-        return $this->versions;
+        return explode(',', $this->versions);
     }
     
     /**
