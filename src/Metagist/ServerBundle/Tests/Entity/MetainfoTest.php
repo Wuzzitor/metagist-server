@@ -78,8 +78,8 @@ class MetainfoTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetTimeUpdated()
     {
-        $this->metaInfo = Metainfo::fromArray(array('time_updated' => '2012-12-12 00:00:00'));
-        $this->assertEquals('2012-12-12 00:00:00', $this->metaInfo->getTimeUpdated());
+        $this->metaInfo = Metainfo::fromArray(array());
+        $this->assertInstanceOf('\DateTime', $this->metaInfo->getTimeUpdated());
     }
     
     /**

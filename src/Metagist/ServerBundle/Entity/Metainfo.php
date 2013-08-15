@@ -146,6 +146,14 @@ class Metainfo
     private $package;
 
     /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        $this->timeUpdated = new \DateTime();
+    }
+    
+    /**
      * Factory method.
      * 
      * @param array $data
