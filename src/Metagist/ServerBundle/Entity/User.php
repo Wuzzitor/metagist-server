@@ -101,6 +101,16 @@ class User implements UserInterface
     {
         return array($this->role);
     }
+    
+    /**
+     * Set a role for the user.
+     * 
+     * @param string $role
+     */
+    public function setRole($role)
+    {
+        $this->role = $role;
+    }
 
     /**
      * Returns the username (at metagist and github).

@@ -85,18 +85,6 @@ class PackageTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Ensures id getter is working
-     */
-    public function testGetId()
-    {
-        $this->package = new Package('id/test', 10);
-        $this->assertEquals(10, $this->package->getId());
-        
-        $this->package->setId(123);
-        $this->assertEquals(123, $this->package->getId());
-    }
-    
-    /**
      * Ensures a collection of metainfos can be passed.
      */
     public function testCollections()

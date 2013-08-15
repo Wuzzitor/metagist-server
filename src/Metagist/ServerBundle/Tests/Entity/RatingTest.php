@@ -83,7 +83,6 @@ class RatingTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('test title', $rating->getTitle());
         $this->assertEquals('test comment', $rating->getComment());
         $this->assertEquals('1.0.0', $rating->getVersion());
-        $this->assertEquals('2012-12-12 00:00:00', $rating->getTimeUpdated());
     }
     
 }

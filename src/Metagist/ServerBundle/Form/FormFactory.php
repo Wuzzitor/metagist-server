@@ -2,7 +2,7 @@
 namespace Metagist\ServerBundle\Form;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use Metagist\ServerBundle\Resources\CategorySchema;
+use Metagist\CategorySchema;
 
 /**
  * Factory for forms.

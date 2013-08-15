@@ -4,8 +4,8 @@ namespace Metagist\ServerBundle\Tests\Entity;
 use Metagist\ServerBundle\Tests\WebDoctrineTestCase;
 use Metagist\ServerBundle\Entity\PackageRepository;
 use Metagist\ServerBundle\Entity\Package;
-use Metagist\ServerBundle\Resources\CategorySchema;
-use Metagist\ServerBundle\Resources\Validator;
+use Metagist\CategorySchema;
+use Metagist\Validator;
 
 /**
  * Tests the package repo class.
@@ -38,6 +38,16 @@ class PackageRepositoryTest extends WebDoctrineTestCase
             new CategorySchema(file_get_contents(__DIR__ . '/testdata/testcategories.json'))
         );
         $this->repo->setValidator($this->validator);
+    }
+    
+    protected function loadFixtures()
+    {
+        $faker = \Faker\Factory::create();
+        
+        $this->package = new Package('test/test123');
+        $this->package->setDescription($faker->text);
+        $this->entityManager->persist($this->package);
+        $this->entityManager->flush();
     }
     
     /**
@@ -73,20 +83,8 @@ class PackageRepositoryTest extends WebDoctrineTestCase
      */
     public function testPackageIsFound()
     {
-        $data = array(
-            'id' => 1,
-            'identifier' => 'test/test',
-            'description' => 'test',
-            'versions' => 'dev-master',
-            'type' => 'library',
-            'time_updated' => date('Y-m-d H:i:s')
-        );
-        $statement = $this->createMockStatement();
-        $statement->expects($this->once())
-            ->method('fetch')
-            ->will($this->returnValue($data));
-        
-        $this->repo->byAuthorAndName('test', 'test');
+        $package = $this->repo->byAuthorAndName('test', 'test123');
+        $this->assertInstanceOf("\Metagist\ServerBundle\Entity\Package", $package);
     }
     
     /**
@@ -94,50 +92,20 @@ class PackageRepositoryTest extends WebDoctrineTestCase
      */
     public function testByIdentifierPart()
     {
-        $data = array(
-            'id' => 1,
-            'identifier' => 'test/test',
-            'description' => 'test',
-            'versions' => 'dev-master',
-            'type' => 'library',
-            'time_updated' => date('Y-m-d H:i:s')
-        );
-        $statement = $this->createMockStatement();
-        $statement->expects($this->at(0))
-            ->method('fetch')
-            ->will($this->returnValue($data));
-        
         $result = $this->repo->byIdentifierPart('tes');
         $this->assertInstanceOf("\Doctrine\Common\Collections\ArrayCollection", $result);
+        $this->assertCount(1, $result);
+        $this->assertInstanceOf("\Metagist\ServerBundle\Entity\Package", $result->first());
     }
     
     /**
-     * Ensures a package with an id is updated.
+     * Ensures a package is saved
      */
-    public function testSaveWithId()
-    {
-        $package = new Package('test/test', 123);
-        $statement = $this->createMockStatement();
-        $statement->expects($this->once())
-            ->method('rowCount')
-            ->will($this->returnValue(1));
-        
-        $this->repo->save($package);
-    }
-    
-    /**
-     * Ensures a package without an id is inserted.
-     */
-    public function testSaveWithoutId()
+    public function testSave()
     {
         $package = new Package('test/test');
-        $statement = $this->createMockStatement();
-        $statement->expects($this->once())
-            ->method('rowCount')
-            ->will($this->returnValue(1));
-        
+        $package->setDescription("desc");
         $this->repo->save($package);
-        $this->assertEquals(123, $package->getId());
     }
     
     /**

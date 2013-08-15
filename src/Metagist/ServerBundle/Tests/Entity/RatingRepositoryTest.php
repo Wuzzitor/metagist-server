@@ -20,6 +20,10 @@ class RatingRepositoryTest extends WebDoctrineTestCase
      */
     private $repo;
     
+    private $package;
+    private $user;
+    private $rating;
+        
     /**
      * Test setup
      */
@@ -29,34 +33,41 @@ class RatingRepositoryTest extends WebDoctrineTestCase
         $this->repo = $this->entityManager->getRepository('MetagistServerBundle:Rating');
     }
     
+    public function loadFixtures()
+    {
+        $faker = \Faker\Factory::create();
+        
+        $this->package = new Package('test/' . $faker->domainWord);
+        $this->package->setDescription('test');
+        $this->entityManager->persist($this->package);
+        $this->entityManager->flush();
+        
+        $this->user = new User($faker->username);
+        $this->entityManager->persist($this->user);
+        $this->entityManager->flush();
+        
+        $this->rating = new Rating();
+        $this->rating->setPackage($this->package);
+        $this->rating->setUser($this->user);
+        $this->rating->setComment('testcomment');
+        $this->rating->setRating($faker->randomNumber(1, 5));
+        $this->rating->setTitle('Superb');
+        
+        $this->entityManager->persist($this->rating);
+        $this->entityManager->flush();
+    }
+    
     /**
      * Ensures the params are validated.
      */
     public function testByPackage()
     {
-        $statement = $this->createMockStatement();
-        $statement->expects($this->at(0))
-            ->method('fetch')
-            ->will($this->returnValue(
-                array(
-                    'package_id' => 13,
-                    'rating' => 1,
-                    'title' => 'testtitle',
-                    'comment' => 'testcomment',
-                    'identifier' => 'val123/xyz'))
-            );
-        $statement->expects($this->at(1))
-            ->method('fetch')
-            ->will($this->returnValue(false));
-        
-        
-        $package = new Package('test/test123', 123);
-        $collection = $this->repo->byPackage($package);
+        $collection = $this->repo->byPackage($this->package);
         $this->assertInstanceOf("\Doctrine\Common\Collections\Collection", $collection);
-        $info = $collection->get(0);
-        $this->assertInstanceOf("\Metagist\Rating", $info);
-        $this->assertEquals('testcomment', $info->getComment());
-        $this->assertInstanceOf("\Metagist\Package", $info->getPackage());
+        $rating = $collection->get(0);
+        $this->assertInstanceOf("\Metagist\ServerBundle\Entity\Rating", $rating);
+        $this->assertEquals('testcomment', $rating->getComment());
+        $this->assertSame($this->package, $rating->getPackage());
     }
     
     /**
@@ -64,26 +75,10 @@ class RatingRepositoryTest extends WebDoctrineTestCase
      */
     public function testByPackageAndUser()
     {
-        $statement = $this->createMockStatement();
-        $statement->expects($this->once())
-            ->method('fetch')
-            ->will($this->returnValue(
-                array(
-                    'package_id' => 13,
-                    'rating' => 1,
-                    'title' => 'testtitle',
-                    'comment' => 'testcomment',
-                    'identifier' => 'val123/xyz'))
-            );
-        
-        $package = new Package('test/test123', 123);
-        $user    = new User('test');
-        $user->setId(22);
-        
-        $rating = $this->repo->byPackageAndUser($package, $user);
+        $rating = $this->repo->byPackageAndUser($this->package, $this->user);
         $this->assertInstanceOf("\Metagist\ServerBundle\Entity\Rating", $rating);
-        $this->assertEquals($user, $rating->getUser());
-        $this->assertEquals($package, $rating->getPackage());
+        $this->assertEquals($this->user, $rating->getUser());
+        $this->assertEquals($this->package, $rating->getPackage());
     }
     
     /**
@@ -91,21 +86,6 @@ class RatingRepositoryTest extends WebDoctrineTestCase
      */
     public function testLatest()
     {
-        $statement = $this->createMockStatement();
-        $statement->expects($this->at(0))
-            ->method('fetch')
-            ->will($this->returnValue(
-                array(
-                    'package_id' => 13,
-                    'rating' => 1,
-                    'title' => 'testtitle',
-                    'comment' => 'testcomment',
-                    'identifier' => 'val123/xyz'))
-            );
-        $statement->expects($this->at(1))
-            ->method('fetch')
-            ->will($this->returnValue(false));
-        
         $collection = $this->repo->latest();
         $this->assertInstanceOf("\Doctrine\Common\Collections\Collection", $collection);
         $info = $collection->get(0);
@@ -119,52 +99,14 @@ class RatingRepositoryTest extends WebDoctrineTestCase
      */
     public function testSave()
     {
-        $statement = $this->createMockStatement();
+        $rating = Rating::fromArray(array(
+            'package' => $this->package,
+            'user' => $this->user,
+            'title' => 'test',
+            'comment' => 'test',
+            'rating' => 4,
+        ));
         
-        $package = new Package('test/test123', 123);
-        $rating = Rating::fromArray(array(
-            'package' => $package,
-            'user_id' => 13
-        ));
-        $this->repo->save($rating);
-    }
-    
-    /**
-     * Ensures a package cannot be saved without user_id.
-     */
-    public function testSaveNoUserIdException()
-    {
-        $package = new Package('test/test123', 123);
-        $rating = Rating::fromArray(array(
-            'package' => $package,
-        ));
-        $this->setExpectedException("\RuntimeException");
-        $this->repo->save($rating);
-    }
-    
-    /**
-     * Ensures a package cannot be saved without a package.
-     */
-    public function testSaveNoPackageException()
-    {
-        $rating = Rating::fromArray(array(
-            'user_id' => 13,
-        ));
-        $this->setExpectedException("\RuntimeException");
-        $this->repo->save($rating);
-    }
-    
-    /**
-     * Ensures a package cannot be saved without a package.
-     */
-    public function testSaveNoPackageIdException()
-    {
-        $package = new Package('test/test123');
-        $rating = Rating::fromArray(array(
-            'user_id' => 13,
-            'package' => $package,
-        ));
-        $this->setExpectedException("\RuntimeException");
         $this->repo->save($rating);
     }
     
@@ -173,29 +115,13 @@ class RatingRepositoryTest extends WebDoctrineTestCase
      */
     public function testBest()
     {
-        $package = new Package('test/test123');
-        $this->entityManager->persist($package);
-        $rating = Rating::fromArray(array(
-            'user_id' => 13,
-            'package' => $package,
-        ));
-        $this->entityManager->persist($rating);
+        $this->loadFixtures();
         
         $collection = $this->repo->best();
         $this->assertInstanceOf("\Doctrine\Common\Collections\ArrayCollection", $collection);
-        $this->assertEquals(1, count($collection));
-        $rating = $collection->get(0);
-        $this->assertInstanceOf("\Metagist\Rating", $rating);
+        $this->assertEquals(2, count($collection));
+        $rating = $collection->first();
+        $this->assertInstanceOf("\Metagist\ServerBundle\Entity\Package", $rating);
     }
     
-    /**
-     * Creates a statement mock, the provided HydratorMockStatement seems to be broken.
-     * 
-     * @param array $methods
-     * @return Statement mock
-     */
-    protected function createMockStatement(array $methods = array('rowCount', 'fetch'))
-    {
-        return $this->getMock('stdClass', $methods);
-    }
 }

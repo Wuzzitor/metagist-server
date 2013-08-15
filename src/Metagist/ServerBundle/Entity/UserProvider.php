@@ -57,10 +57,13 @@ class UserProvider implements UserProviderInterface, OAuthAwareUserProviderInter
     public function loadUserByUsername($username)
     {
         $user = $this->repo->findOneBy(array('username' => $username));
-        
         if (!$user) {
             throw new UsernameNotFoundException(sprintf('Username "%s" does not exist.', $username));
         }
+        
+        /* @var $user User */
+        $role = $this->getRoleByUsername($user->getUsername());
+        $user->setRole($role);
 
         return $user;
     }

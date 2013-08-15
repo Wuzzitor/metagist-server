@@ -2,7 +2,9 @@
 namespace Metagist\ServerBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Metagist\ServerBundle\Resources\Validator;
+use Metagist\Validator;
+use Metagist\PackageInterface;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
  * Package
@@ -10,7 +12,7 @@ use Metagist\ServerBundle\Resources\Validator;
  * @ORM\Table(name="packages",uniqueConstraints={@UniqueConstraint(name="identifier_idx", columns={"identifier"})})
  * @ORM\Entity(repositoryClass="PackageRepository")
  */
-class Package
+class Package implements PackageInterface
 {
     /**
      * @var integer

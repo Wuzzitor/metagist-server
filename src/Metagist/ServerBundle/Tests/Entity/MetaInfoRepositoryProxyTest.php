@@ -2,10 +2,10 @@
 namespace Metagist\ServerBundle\Tests\Entity;
 
 use Metagist\ServerBundle\Entity\MetainfoRepositoryProxy;
-use Metagist\ServerBundle\Resources\CategorySchema;
 use Metagist\ServerBundle\Entity\Metainfo;
 use Metagist\ServerBundle\Entity\User;
 use Metagist\ServerBundle\Entity\Package;
+use Metagist\CategorySchema;
 
 /**
  * Tests the metainfo repo class.

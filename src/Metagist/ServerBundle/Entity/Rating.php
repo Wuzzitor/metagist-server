@@ -9,9 +9,11 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="ratings")
  * @ORM\Entity(repositoryClass="RatingRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Rating
 {
+
     /**
      * @var integer
      *
@@ -36,8 +38,9 @@ class Rating
     private $version;
 
     /**
+     * Rating value.
+     * 
      * @var integer
-     *
      * @ORM\Column(name="rating", type="integer", nullable=false)
      */
     private $rating;
@@ -92,10 +95,10 @@ class Rating
             }
             $info->$key = $value;
         }
-        
+
         return $info;
     }
-    
+
     /**
      * Set the related package.
      * 
@@ -105,7 +108,7 @@ class Rating
     {
         $this->package = $package;
     }
-    
+
     /**
      * Returns the related package.
      * 
@@ -115,7 +118,7 @@ class Rating
     {
         return $this->package;
     }
-    
+
     /**
      * Returns the value.
      * 
@@ -127,6 +130,16 @@ class Rating
     }
     
     /**
+     * Setter for rating.
+     * 
+     * @param int $rating
+     */
+    public function setRating($rating)
+    {
+        $this->rating = (int)$rating;
+    }
+    
+    /**
      * Returns the title.
      * 
      * @return string
@@ -134,6 +147,16 @@ class Rating
     public function getTitle()
     {
         return $this->title;
+    }
+
+    /**
+     * Sets the title.
+     * 
+     * @param string $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
     }
     
     /**
@@ -145,7 +168,17 @@ class Rating
     {
         return $this->comment;
     }
-    
+
+    /**
+     * Set the comment.
+     * 
+     * @param string $comment
+     */
+    public function setComment($comment)
+    {
+        $this->comment = $comment;
+    }
+
     /**
      * Returns the associated version.
      * 
@@ -154,6 +187,11 @@ class Rating
     public function getVersion()
     {
         return $this->version;
+    }
+
+    public function setVersion($version)
+    {
+        $this->version = $version;
     }
     
     /**
@@ -165,7 +203,17 @@ class Rating
     {
         return $this->user;
     }
-    
+
+    /**
+     * Set the user.
+     * 
+     * @param \Metagist\User $user
+     */
+    public function setUser(User $user)
+    {
+        $this->user = $user;
+    }
+
     /**
      * Returns the time of the last update
      * 
@@ -175,14 +223,12 @@ class Rating
     {
         return $this->timeUpdated;
     }
-    
-    /**
-     * Set the user.
-     * 
-     * @param \Metagist\User $user
+
+    /** 
+     * @ORM\PrePersist 
      */
-    public function setUser(User $user)
+    public function onPrePersist()
     {
-        $this->user = $user;
+        $this->timeUpdated = new \DateTime('now');
     }
 }

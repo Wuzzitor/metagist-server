@@ -3,7 +3,7 @@ namespace Metagist\ServerBundle\Entity;
 
 use Symfony\Component\Security\Core\SecurityContextInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Metagist\ServerBundle\Resources\CategorySchema;
+use Metagist\CategorySchema;
     
 /**
  * Security proxy for the metainfo repo.

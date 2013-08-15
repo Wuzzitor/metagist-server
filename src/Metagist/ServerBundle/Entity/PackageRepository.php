@@ -3,7 +3,8 @@ namespace Metagist\ServerBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Metagist\ServerBundle\Resources\Validator;
+use Metagist\Validator;
+use Metagist\PackageInterface;
 
 /**
  * Repository for packages.
@@ -65,28 +66,23 @@ class PackageRepository extends EntityRepository
     /**
      * Saves a package.
      * 
-     * @param \Metagist\Package $package
+     * @param \Metagist\PackageInterface $package
      * @return int
      */
-    public function save(Package $package)
+    public function save(PackageInterface $package)
     {
-        $this->getEntityManager()->persist($package);
-    }
-    
-    /**
-     * Creates a package instance from fetched data.
-     * 
-     * @param array $data
-     * @return \Metagist\Package
-     */
-    protected function createPackageFromData(array $data)
-    {
-        $package = new Package($data['identifier'], $data['id']);
-        $package->setDescription($data['description']);
-        $package->setVersions(explode(',', $data['versions']));
-        $package->setType($data['type']);
-        $package->setTimeUpdated($data['time_updated']);
+        $entity = $this->findOneBy(array('identifier' => $package->getIdentifier()));
+        if ($entity === null) {
+            $entity = new Package($package->getIdentifier());
+        }
+
+        /* @var $entity Package */
+        $entity->setTimeUpdated(new \DateTime());
+        $entity->setDescription($package->getDescription());
+        $entity->setType($package->getType());
+        $entity->setVersions($package->getVersions());
         
-        return $package;
+        $this->getEntityManager()->persist($entity);
+        $this->getEntityManager()->flush();
     }
 }

@@ -26,7 +26,7 @@ class RatingRepository extends EntityRepository
             ->setFirstResult($offset)
             ->setMaxResults($limit);
         
-        return $builder->getQuery()->execute(array(1 => $package));
+        return new ArrayCollection($builder->getQuery()->execute(array(1 => $package)));
     }
     
     /**
@@ -51,22 +51,9 @@ class RatingRepository extends EntityRepository
     {
         $builder = $this->createQueryBuilder('r')
             ->orderBy('r.timeUpdated', 'DESC')
-            ;
-            
-        return new ArrayCollection($builder->getQuery()->execute());
-        /*$stmt = $this->connection->executeQuery(
-            'SELECT r.*, u.id AS user_id, u.username, u.avatar_url, p.identifier, p.description
-             FROM ratings r
-             LEFT JOIN packages p ON r.package_id = p.id
-             LEFT JOIN users u ON r.user_id = u.id
-             ORDER BY time_updated DESC LIMIT ' . (int)$limit,
-            array()
-        );
-        while ($row = $stmt->fetch()) {
-            $collection->add($this->createRatingWithDummyPackage($row));
-        }
+            ->setMaxResults($limit);
         
-        return $collection;*/
+        return new ArrayCollection($builder->getQuery()->execute());
     }
     
     /**
@@ -78,6 +65,7 @@ class RatingRepository extends EntityRepository
     public function save(Rating $rating)
     {
         $this->getEntityManager()->persist($rating);
+        $this->getEntityManager()->flush();
     }
     
     /**
@@ -89,13 +77,22 @@ class RatingRepository extends EntityRepository
     public function best($limit = 25)
     {
         $builder = $this->createQueryBuilder('r')
-            ->select('avg(r.rating) AS rateavg')
+            ->select('avg(r.rating) rateavg, r')
             ->join('r.package', 'p')
             ->groupBy('p.id')
-            ->orderBy('p.id', 'DESC')
+            ->orderBy('rateavg', 'DESC')
             ->setMaxResults($limit);
         
-        return new ArrayCollection($builder->getQuery()->execute());
+        $result = $builder->getQuery()->execute();
+        $collection = new ArrayCollection();
+        foreach ($result as $data) {
+            foreach ($data as $entry) {
+                if ($entry instanceof Rating) {
+                    $collection->add($entry->getPackage());
+                }
+            }
+        }
+        return $collection;
     }
     
     /**

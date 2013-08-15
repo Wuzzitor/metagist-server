@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "b71af3a9dcfffef9fbe2ec7a43b4ee55",
+    "hash": "a6197dbbd4ce67f71f31d34e208f677b",
     "packages": [
         {
             "name": "bonndan/RMT",
@@ -2049,12 +2049,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twbs/bootstrap.git",
-                "reference": "ce77f10ce5f53be5a6baf11f50a99b0bca48e99a"
+                "reference": "fee3f1e733e80bd128736e1b9b403f49b701a6a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/ce77f10ce5f53be5a6baf11f50a99b0bca48e99a",
-                "reference": "ce77f10ce5f53be5a6baf11f50a99b0bca48e99a",
+                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/fee3f1e733e80bd128736e1b9b403f49b701a6a9",
+                "reference": "fee3f1e733e80bd128736e1b9b403f49b701a6a9",
                 "shasum": ""
             },
             "type": "library",
@@ -2078,20 +2078,20 @@
                 "bootstrap",
                 "css"
             ],
-            "time": "2013-08-13 17:35:04"
+            "time": "2013-08-15 07:46:18"
         },
         {
             "name": "wuzzitor/metagist-api",
-            "version": "dev-master",
+            "version": "0.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Wuzzitor/metagist-api.git",
-                "reference": "0.0.2"
+                "reference": "0.0.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Wuzzitor/metagist-api/zipball/0.0.2",
-                "reference": "0.0.2",
+                "url": "https://api.github.com/repos/Wuzzitor/metagist-api/zipball/0.0.3",
+                "reference": "0.0.3",
                 "shasum": ""
             },
             "require": {
@@ -2104,15 +2104,12 @@
             "require-dev": {
                 "doctrine/common": "2.3.0",
                 "silex/silex": "1.0.*@dev",
-                "symfony/security": "~2.2",
-                "wuzzitor/metagist.org": "dev-master"
+                "symfony/security": "~2.2"
             },
             "type": "library",
             "autoload": {
                 "psr-0": {
-                    "Metagist\\Api\\Guzzle\\Plugin": "src/",
-                    "Metagist\\Api": "src/",
-                    "Metagist": "vendor/wuzzitor/metagist.org/src"
+                    "Metagist": "src/"
                 }
             },
             "license": [
@@ -2131,14 +2128,59 @@
                 "metagist"
             ],
             "support": {
-                "source": "https://github.com/Wuzzitor/metagist-api/tree/0.0.2",
+                "source": "https://github.com/Wuzzitor/metagist-api/tree/0.0.3",
                 "issues": "https://github.com/Wuzzitor/metagist-api/issues"
             },
-            "time": "2013-07-04 21:07:00"
+            "time": "2013-08-15 04:48:37"
         }
     ],
     "packages-dev": [
-
+        {
+            "name": "fzaninotto/faker",
+            "version": "v1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fzaninotto/Faker.git",
+                "reference": "v1.2.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/v1.2.0",
+                "reference": "v1.2.0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Faker": "src/",
+                    "Faker\\PHPUnit": "test/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "François Zaninotto"
+                }
+            ],
+            "description": "Faker is a PHP library that generates fake data for you.",
+            "keywords": [
+                "data",
+                "faker",
+                "fixtures"
+            ],
+            "time": "2013-06-09 17:55:57"
+        }
     ],
     "aliases": [
 
@@ -2148,8 +2190,7 @@
         "hwi/oauth-bundle": 20,
         "twitter/bootstrap": 20,
         "knplabs/packagist-api": 20,
-        "bonndan/rmt": 20,
-        "wuzzitor/metagist-api": 20
+        "bonndan/rmt": 20
     },
     "platform": {
         "php": ">=5.3.3"

@@ -1,6 +1,6 @@
 parameters:
     metagist.web.controller.class: Metagist\ServerBundle\Controller\WebController
-    metagist.categoryschema.class: Metagist\ServerBundle\Resources\CategorySchema
+    metagist.categoryschema.class: Metagist\CategorySchema
     
 services:
   metagist_controller_serviceprovider:
@@ -11,9 +11,10 @@ services:
     class:     "%metagist.categoryschema.class%"
     factory_class:  "%metagist.categoryschema.class%"
     factory_method: create
+    arguments: [%kernel.root_dir%/../web/bundles/metagistserver/metainfo.json]
     
   metagist.validator:
-    class:     Metagist\ServerBundle\Resources\Validator
+    class:     Metagist\Validator
     arguments: ["@metagist.categoryschema"]
     
   metagist_twig_iconextension:

@@ -75,7 +75,7 @@ class ServiceProviderTest extends WebTestCase
     public function testProvidesCategorySchemaShortcut()
     {
         $cat = $this->serviceProvider->categories();
-        $this->assertInstanceOf("\Metagist\ServerBundle\Resources\CategorySchema", $cat);
+        $this->assertInstanceOf("\Metagist\CategorySchema", $cat);
     }
     
     /**
