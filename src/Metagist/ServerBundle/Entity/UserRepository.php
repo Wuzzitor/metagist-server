@@ -2,6 +2,7 @@
 namespace Metagist\ServerBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Metagist\ServerBundle\Entity\User;
 
 /**
  * Repository for users
@@ -10,5 +11,14 @@ use Doctrine\ORM\EntityRepository;
  */
 class UserRepository extends EntityRepository
 {
-    
+    /**
+     * Saves the given user.
+     * 
+     * @param \Metagist\ServerBundle\Entity\User $user
+     */
+    public function save(User $user)
+    {
+        $this->getEntityManager()->persist($user);
+        $this->getEntityManager()->flush();
+    }
 }

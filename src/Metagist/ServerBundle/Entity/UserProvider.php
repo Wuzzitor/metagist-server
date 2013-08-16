@@ -96,6 +96,10 @@ class UserProvider implements UserProviderInterface, OAuthAwareUserProviderInter
      */
     public function createUserFromOauthResponse(UserResponseInterface $response)
     {
+        $username = $response->getUsername() . '@' . $response->getResourceOwner()->getName();
+        $user = new User($username, $this->getRoleByUsername($username), $response->getProfilePicture());
+        $this->repo->save($user);
+        return $user;
     }
 
     /**
@@ -131,20 +135,12 @@ class UserProvider implements UserProviderInterface, OAuthAwareUserProviderInter
      */
     public function loadUserByOAuthUserResponse(UserResponseInterface $response)
     {
-        $resourceOwnerName = $response->getResourceOwner()->getName();
-
-        if (!isset($this->properties[$resourceOwnerName])) {
-            throw new \RuntimeException(sprintf("No property defined for entity for resource owner '%s'.", $resourceOwnerName));
-        }
-
         $username = $response->getUsername();
-        $user = $this->repository->findOneBy(array($this->properties[$resourceOwnerName] => $username));
-
-        if (null === $user) {
-            $this->createUserFromOauthResponse($response);
+        try {
+            $user = $this->loadUserByUsername($username);
+        } catch (UsernameNotFoundException $exception) {
+            $user = $this->createUserFromOauthResponse($response);
         }
-
         return $user;
     }
-
 }

@@ -56,7 +56,40 @@ class UserProviderTest extends WebDoctrineTestCase
      */
     public function testCreateUserFromOauthResponse()
     {
-        $this->markTestIncomplete();
+        $owner = $this->getMock("\HWI\Bundle\OAuthBundle\OAuth\ResourceOwnerInterface");
+        $owner->expects($this->any())
+            ->method('getName')
+            ->will($this->returnValue('bar'));
+     
+        $response = new \HWI\Bundle\OAuthBundle\Tests\Fixtures\CustomUserResponse();
+        $response->setResourceOwner($owner);
+        $user = $this->provider->loadUserByOAuthUserResponse($response);
+        
+        $this->assertInstanceOf('Metagist\ServerBundle\Entity\User', $user);
+        $this->assertEquals(1, $user->getId());
+        $this->assertEquals("foo666@bar", $user->getUsername());
+    }
+    
+    /**
+     * Ensures a new user is created when someone logs in using oauth.
+     */
+    public function testLoadFromOauthResponse()
+    {
+        $user = new User('foo666@bar');
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+        
+        $owner = $this->getMock("\HWI\Bundle\OAuthBundle\OAuth\ResourceOwnerInterface");
+        $owner->expects($this->any())
+            ->method('getName')
+            ->will($this->returnValue('bar'));
+     
+        $response = new \HWI\Bundle\OAuthBundle\Tests\Fixtures\CustomUserResponse();
+        $response->setResourceOwner($owner);
+        $user = $this->provider->loadUserByOAuthUserResponse($response);
+        
+        $this->assertInstanceOf('Metagist\ServerBundle\Entity\User', $user);
+        $this->assertEquals(2, $user->getId());
     }
     
     /**
