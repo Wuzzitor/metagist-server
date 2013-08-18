@@ -13,3 +13,12 @@ parameters:
 
     locale:            en
     secret:            ThisTokenIsNotSoSecretChangeIt
+
+    metagist.api.config:
+        metagist.worker.config:
+            - base_url: "http://seal/metagist-worker/api/"
+            - consumer_key: "metagist.dev"
+            - consumer_secret: "dev-test"
+        metagist.consumers:
+            - worker: "dev-test"
+        metagist.services: %kernel.root_dir%/config/services.json
