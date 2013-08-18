@@ -48,4 +48,10 @@ services:
     arguments: ["@doctrine.orm.entity_manager"]
     
   metagist.api:
-    class: Metagist\Api\ServiceProvider
+    class: Metagist\Api\Factory
+    calls:
+      - [setConfig, [%metagist.api.config%]]
+  
+  metagist.api.request_validator:
+    class: Metagist\Api\RequestValidator
+    arguments: ["@event_dispatcher"]
