@@ -28,7 +28,7 @@
         "knplabs/packagist-api" : "0.1.*@dev",
         "pagerfanta/pagerfanta" : "v1.0.0",
         "bonndan/RMT"           : "@dev",
-        "wuzzitor/metagist-api" : "0.0.3"
+        "wuzzitor/metagist-api" : "0.0.4"
     },
     "require-dev": {
         "fzaninotto/faker": "v1.2.0"
