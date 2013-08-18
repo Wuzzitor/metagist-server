@@ -132,11 +132,11 @@ class ServiceProvider
     }
     
     /**
-     * Returns the api provider.
+     * Returns the api factory.
      * 
-     * @return \Metagist\Api\ApiProviderInterface
+     * @return \Metagist\Api\FactoryInterface
      */
-    public function getApi()
+    public function getApiFactory()
     {
         return $this->container->get('metagist.api');
     }

@@ -91,7 +91,7 @@ class ServiceProviderTest extends WebTestCase
      */
     public function testGetApi()
     {
-        $this->markTestSkipped('ApiProvider must be refactored to be usable with symfony');
-        $this->serviceProvider->getApi();
+        $factory = $this->serviceProvider->getApiFactory();
+        $this->assertInstanceOf("\Metagist\Api\FactoryInterface", $factory);
     }
 }
