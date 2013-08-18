@@ -1,0 +1,11 @@
+{
+    "services": {
+        "Worker": {
+            "class": "\\Metagist\\Api\\WorkerClient",
+            "params": {
+                "consumer_key": "",
+                "consumer_secret": ""
+            }
+        }
+    }
+}
