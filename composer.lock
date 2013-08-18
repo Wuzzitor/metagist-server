@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "a6197dbbd4ce67f71f31d34e208f677b",
+    "hash": "1497be87c6319e3ef150908d1624c18c",
     "packages": [
         {
             "name": "bonndan/RMT",
@@ -2049,12 +2049,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twbs/bootstrap.git",
-                "reference": "fee3f1e733e80bd128736e1b9b403f49b701a6a9"
+                "reference": "04a73ebe42b8beb9567220fe31cc11057badf40f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/fee3f1e733e80bd128736e1b9b403f49b701a6a9",
-                "reference": "fee3f1e733e80bd128736e1b9b403f49b701a6a9",
+                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/04a73ebe42b8beb9567220fe31cc11057badf40f",
+                "reference": "04a73ebe42b8beb9567220fe31cc11057badf40f",
                 "shasum": ""
             },
             "type": "library",
@@ -2072,26 +2072,26 @@
                     "email": "jacobthornton@gmail.com"
                 }
             ],
-            "description": "Sleek, intuitive, and powerful front-end framework for faster and easier web development.",
+            "description": "Sleek, intuitive, and powerful mobile first front-end framework for faster and easier web development.",
             "homepage": "http://getbootstrap.com",
             "keywords": [
                 "bootstrap",
                 "css"
             ],
-            "time": "2013-08-15 07:46:18"
+            "time": "2013-08-18 05:11:27"
         },
         {
             "name": "wuzzitor/metagist-api",
-            "version": "0.0.3",
+            "version": "0.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Wuzzitor/metagist-api.git",
-                "reference": "0.0.3"
+                "reference": "0.0.5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Wuzzitor/metagist-api/zipball/0.0.3",
-                "reference": "0.0.3",
+                "url": "https://api.github.com/repos/Wuzzitor/metagist-api/zipball/0.0.5",
+                "reference": "0.0.5",
                 "shasum": ""
             },
             "require": {
@@ -2128,10 +2128,10 @@
                 "metagist"
             ],
             "support": {
-                "source": "https://github.com/Wuzzitor/metagist-api/tree/0.0.3",
+                "source": "https://github.com/Wuzzitor/metagist-api/tree/0.0.5",
                 "issues": "https://github.com/Wuzzitor/metagist-api/issues"
             },
-            "time": "2013-08-15 04:48:37"
+            "time": "2013-08-18 05:30:20"
         }
     ],
     "packages-dev": [
