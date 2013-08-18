@@ -1,5 +1,9 @@
-_defaults:
+web:
     resource: "@MetagistServerBundle/Controller/WebController.php"
    # resource: "@metagist.web.controller"
     type:     annotation
     prefix:   /
+
+api:
+    resource: "@MetagistServerBundle/Controller/ApiController.php"
+    type:     annotation

@@ -1,5 +1,6 @@
 parameters:
     metagist.web.controller.class: Metagist\ServerBundle\Controller\WebController
+    metagist.api.controller.class: Metagist\ServerBundle\Controller\ApiController
     metagist.categoryschema.class: Metagist\CategorySchema
     
 services:
@@ -31,6 +32,10 @@ services:
 
   metagist.web.controller:
     class:     "%metagist.web.controller.class%"
+    arguments: ["@metagist_controller_serviceprovider"]
+  
+  metagist.api.controller:
+    class:     "%metagist.api.controller.class%"
     arguments: ["@metagist_controller_serviceprovider"]
   
   metagist.user.repository:

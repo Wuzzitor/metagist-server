@@ -11,35 +11,15 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 class ApiControllerTest extends WebTestCase
 {
     /**
-     * system under test
-     * 
-     * @var ApiController
-     */
-    private $controller;
-    
-    /**
-     * application mock
-     * @var Application
-     */
-    private $application;
-    
-    /**
-     * Test setup.
-     */
-    public function setUp()
-    {
-        $this->markTestSkipped();
-    }
-    
-    /**
      * Ensures the index action returns the routes.
      */
     public function testIndexReturnsRoutes()
     {
-        $response = $this->controller->index();
-        $this->assertInstanceOf('\Symfony\Component\HttpFoundation\JsonResponse', $response);
-        
-        $routes = json_decode($response->getContent());
+        $client = static::createClient();
+
+        $client->request('GET', '/api');
+        $json = $client->getResponse()->getContent();
+        $routes = json_decode($json);
         $this->assertInternalType('array', $routes);
         $this->assertNotEmpty($routes);
     }
@@ -49,6 +29,7 @@ class ApiControllerTest extends WebTestCase
      */
     public function testPackage()
     {
+        $this->markTestSkipped();
         $api = $this->createMockApi();
         $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
         $api->expects($this->any())
@@ -74,7 +55,7 @@ class ApiControllerTest extends WebTestCase
      * Tests the successful execution of pushInfo().
      */
     public function testPushInfo()
-    {
+    {$this->markTestSkipped();
         $serviceProvider = new Api\ServiceProvider();
         
         $api = $this->createMockApi();
@@ -133,7 +114,7 @@ class ApiControllerTest extends WebTestCase
      * Ensures the request is denied with proper authorization
      */
     public function testPushInfoFailsForWrongAuthorization()
-    {
+    {$this->markTestSkipped();
         $api = $this->createMockApi();
         $api->expects($this->once())
             ->method('validateRequest')
@@ -157,7 +138,7 @@ class ApiControllerTest extends WebTestCase
      * Ensures a 404 is sent if the package cannot be found.
      */
     public function testPushInfoFailsForinvalidJson()
-    {
+    {$this->markTestSkipped();
         $api = $this->createMockApi();
         $api->expects($this->once())
             ->method('validateRequest')
@@ -191,7 +172,7 @@ class ApiControllerTest extends WebTestCase
      */
     public function testPushInfoFailsForMissingPackage()
     {
-        
+        $this->markTestSkipped();
         $api = $this->createMockApi();
         $api->expects($this->once())
             ->method('validateRequest')
@@ -253,14 +234,6 @@ class ApiControllerTest extends WebTestCase
         return $apiMock;
     }
     
-    
-    /**
-     * Mocks the controllers bind behaviour
-     */
-    public function bind($route)
-    {
-        
-    }
     
     /**
      * Mocks the json() behaviour of the application.

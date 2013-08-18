@@ -3,13 +3,14 @@ namespace Metagist\ServerBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Acme\DemoBundle\Form\ContactType;
 
 // these import the "@Route" and "@Template" annotations
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 /**
+ * Web controller
+ * 
  * @Route("/", service="metagist.web.controller")
  */
 class WebController extends Controller
@@ -30,7 +31,6 @@ class WebController extends Controller
     {
         $this->serviceProvider = $serviceProvider;
     }
-    
     
    /**
      * Routing setup.
