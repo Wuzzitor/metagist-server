@@ -96,7 +96,7 @@ class UserProvider implements UserProviderInterface, OAuthAwareUserProviderInter
      */
     public function createUserFromOauthResponse(UserResponseInterface $response)
     {
-        $username = $response->getUsername() . '@' . $response->getResourceOwner()->getName();
+        $username = $response->getNickname() . '@' . $response->getResourceOwner()->getName();
         $user = new User($username, $this->getRoleByUsername($username), $response->getProfilePicture());
         $this->repo->save($user);
         return $user;
