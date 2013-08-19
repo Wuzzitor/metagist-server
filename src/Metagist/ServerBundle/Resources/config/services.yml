@@ -4,6 +4,12 @@ parameters:
     metagist.categoryschema.class: Metagist\CategorySchema
     
 services:
+  metagist.listener.exception_listener:
+        class: Metagist\ServerBundle\Listener\ExceptionListener
+        arguments: ["@templating", "@logger"]
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+            
   metagist_controller_serviceprovider:
     class:     Metagist\ServerBundle\Controller\ServiceProvider
     arguments: ["@service_container"]
@@ -36,7 +42,7 @@ services:
   
   metagist.api.controller:
     class:     "%metagist.api.controller.class%"
-    arguments: ["@metagist_controller_serviceprovider"]
+    arguments: ["@metagist_controller_serviceprovider","@metagist.api.request_validator"]
   
   metagist.user.repository:
         class:           Metagist\ServerBundle\Entity\UserRepository
