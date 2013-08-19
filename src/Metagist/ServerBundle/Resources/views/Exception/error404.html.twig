@@ -2,8 +2,7 @@
 {% set pagetitle = 'metagist.org - Page not found' %}
 
 {% block content %}
-    <h1>Oops! An Error Occurred</h1>
-    <h2>The server returned a "{{ status_code }} {{ status_text }}".</h2>
+    <h1>Page not found</h1>
 
     <div>
         Something is broken. Please e-mail us at [email] and let us know
@@ -11,4 +10,10 @@
         as possible. Sorry for any inconvenience caused.
     </div>
 
+{% if app.environment != 'prod' %}
+    <h2>{{ exception.message}}</h2>
+    <code>
+        {{ exception.traceAsString |nl2br}}
+    </code>
+{% endif %}
 {% endblock %}

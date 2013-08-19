@@ -1,19 +1,13 @@
 hwi_oauth_redirect:
     resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
-    prefix:   /connect
-
-facebook_login:
-    pattern: /login/check-facebook
-
-google_login:
-    pattern: /login/check-google
-
-custom_login:
-    pattern: /login/check-custom
-
-github_login:
-    pattern: /login/check-github
+    prefix:   /login
     
+github_login:
+    pattern: /login/my_github
+
+logout:
+    pattern: /logout
+
 metagist:
     resource: "@MetagistServerBundle/Resources/config/routing.yml"
     

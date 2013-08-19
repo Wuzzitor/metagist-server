@@ -14,6 +14,9 @@ parameters:
     locale:            en
     secret:            ThisTokenIsNotSoSecretChangeIt
 
+    metagist.github.client.id: ~ 
+    metagist.github.client.secret: ~
+
     metagist.api.config:
         metagist.worker.config:
             - base_url: "http://seal/metagist-worker/api/"
@@ -22,3 +25,5 @@ parameters:
         metagist.consumers:
             - worker: "dev-test"
         metagist.services: %kernel.root_dir%/config/services.json
+
+    

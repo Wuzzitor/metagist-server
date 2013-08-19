@@ -18,6 +18,12 @@ abstract class WebDoctrineTestCase extends WebTestCase
      * @var \Doctrine\ORM\EntityManager
      */
     protected $entityManager;
+    
+    /**
+     * test client
+     * 
+     * @var \Symfony\Bundle\FrameworkBundle\Client 
+     */
     protected static $client;
 
     /**

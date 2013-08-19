@@ -1,27 +1,51 @@
 <?php
 namespace Metagist\ServerBundle\Tests\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Metagist\ServerBundle\Tests\WebDoctrineTestCase;
+use Metagist\ServerBundle\Entity\Package;
 
 /**
  * Tests the api controller.
  * 
  * @author Daniel Pozzi <bonndan76@googlemail.com>
  */
-class ApiControllerTest extends WebTestCase
+class ApiControllerTest extends WebDoctrineTestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+        static::$client->followRedirects();
+    }
+    
+    /**
+     * Loads the databse fixture
+     */
+    protected function loadFixtures()
+    {
+        $package = new Package('test/test123');
+        $package->setDescription('test');
+        $package->setType('library');
+        
+        $this->entityManager->persist($package);
+        $this->entityManager->flush();
+    }
+    
     /**
      * Ensures the index action returns the routes.
      */
     public function testIndexReturnsRoutes()
     {
-        $client = static::createClient();
-
-        $client->request('GET', '/api');
-        $json = $client->getResponse()->getContent();
-        $routes = json_decode($json);
-        $this->assertInternalType('array', $routes);
-        $this->assertNotEmpty($routes);
+        $routes = (array)$this->requestJson('/api');
+        $this->assertArrayHasKey('api-homepage', $routes);
+    }
+    
+    /**
+     * Ensures package info is returned as json.
+     */
+    public function testPackageNotFoundByFactory()
+    {
+        $this->setExpectedException("\Exception", "at packagist");
+        $this->requestJson('/api/package/bonndan/metagist-api');
     }
     
     /**
@@ -29,71 +53,28 @@ class ApiControllerTest extends WebTestCase
      */
     public function testPackage()
     {
-        $this->markTestSkipped();
-        $api = $this->createMockApi();
-        $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
-        $api->expects($this->any())
-            ->method('getSerializer')
-            ->will($this->returnValue($serializer));
-        
-        $packageRepo = $this->createPackageRepo('aname', 'apackage');
-        $this->application->expects($this->once())
-            ->method('packages')
-            ->will($this->returnValue($packageRepo));
-        $metainfoRepo = $this->createMetaInfoRepo();
-        $this->application->expects($this->once())
-            ->method('metainfo')
-            ->will($this->returnValue($metainfoRepo));
-        
-        $response = $this->controller->package('aname', 'apackage');
-        $this->assertInstanceOf('\Symfony\Component\HttpFoundation\Response', $response);
-        $package = json_decode($response->getContent());
-        $this->assertEquals('aname/apackage', $package->identifier);
+        $data = $this->requestJson('/api/package/test/test123');
+        $this->assertEquals('test/test123', $data->identifier,  var_export($data, true));
     }
     
     /**
      * Tests the successful execution of pushInfo().
+     * @link https://coderwall.com/p/hwb6qq
      */
     public function testPushInfo()
-    {$this->markTestSkipped();
-        $serviceProvider = new Api\ServiceProvider();
-        
-        $api = $this->createMockApi();
-        $api->expects($this->once())
-            ->method('validateRequest')
-            ->will($this->returnValue('aconsumer'));
-        $api->expects($this->any())
-            ->method('getSerializer')
-            ->will($this->returnValue($serviceProvider->getSerializer()));
-        
-        $api->expects($this->once())
-            ->method('getSchemaValidator')
-            ->will($this->returnValue($serviceProvider->getSchemaValidator()));
-        $api->expects($this->once())
-            ->method('getIncomingRequest')
-            ->will($this->returnValue($this->createPushInfoRequest()));
-        
-        $this->createOpauthListenerMock();
-        
-        //package is found
-        $packageRepo = $this->createPackageRepo('aname', 'apackage');
-        $this->application->expects($this->any())
-            ->method('packages')
-            ->will($this->returnValue($packageRepo));
-        
-        //decode payload
-        $metaInfoRepo = $this->createMetaInfoRepo();
-        $metaInfoRepo->expects($this->once())
-            ->method('save')
-            ->with($this->isInstanceOf("\Metagist\MetaInfo"))
-            ->will($this->returnCallback(array($this, 'validateMetaInfo')));
-        $this->application->expects($this->once())
-            ->method('metainfo')
-            ->will($this->returnValue($metaInfoRepo));
-        
-        $response = $this->controller->pushInfo('aname', 'apackage');
-        $this->assertInstanceOf('\Symfony\Component\HttpFoundation\Response', $response);
-        $this->assertEquals(200, $response->getStatusCode());
+    {
+        $this->markTestSkipped();
+        $pushRequest = $this->createPushInfoRequest();
+        static::$client->request(
+            'POST', 
+            "/api/pushInfo/test/test123", 
+            array(),
+            array(), 
+            $pushRequest->getHeaders()->toArray(),
+            $pushRequest->getBody() 
+        );
+        $response = static::$client->getResponse();
+        $this->assertEquals(200, $response->getStatusCode(), $response->getContent());
     }
     
     /**
@@ -291,7 +272,7 @@ class ApiControllerTest extends WebTestCase
     /**
      * Constructs a post request with payload.
      * 
-     * @return \Symfony\Component\HttpFoundation\Request
+     * @return \Guzzle\Http\Message\EntityEnclosingRequest
      */
     private function createPushInfoRequest()
     {
@@ -306,7 +287,24 @@ class ApiControllerTest extends WebTestCase
         );
         
         $message = $request->__toString();
-        $serviceProvider = new \Metagist\Api\ServiceProvider();
+        $serviceProvider = new \Metagist\Api\Factory();
         return $serviceProvider->getIncomingRequest($message);
+    }
+    
+    /**
+     * Launch a request against the api.
+     * 
+     * @param string $path
+     * @param string $method
+     * @return array
+     */
+    private function requestJson($path, $method = 'GET')
+    {
+        static::$client->request($method, $path);
+        $json = static::$client->getResponse()->getContent();
+        if (static::$client->getResponse()->getStatusCode() != 200) {
+            throw new \Exception('Request failed: ' . $json);
+        }
+        return json_decode($json);
     }
 }

@@ -74,9 +74,13 @@ swiftmailer:
 
 hwi_oauth:
     # name of the firewall in which this bundle is active, this setting MUST be set
-    firewall_name: contribution
+    firewall_name: secured_area
+    connect: true
     resource_owners:
-        guthub:
+        my_github:
             type:                github
-            client_id:           <client_id>
-            client_secret:       <client_secret>
+            client_id:           %metagist.github.client.id%
+            client_secret:       %metagist.github.client.secret%
+            scope:               "user:email"
+            options:
+                csrf:            true

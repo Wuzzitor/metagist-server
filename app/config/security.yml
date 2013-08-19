@@ -7,38 +7,27 @@ security:
         ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
 
     providers:
-        in_memory:
-            memory:
-                users:
-                    user:  { password: userpass, roles: [ 'ROLE_USER' ] }
-                    admin: { password: adminpass, roles: [ 'ROLE_ADMIN' ] }
+        github_hwi_provider:
+             id: metagist.user.provider.entity
 
     firewalls:
         dev:
             pattern:  ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        public:
-            pattern:  ^/
-            anonymous: ~
+        secured_area:
+            anonymous:         ~
+            logout:
+                path: /logout
+                target: /
+            oauth:
+                resource_owners:
+                    my_github:          "/login/check-github"
+                login_path:        /login
+                failure_path:      /login
 
-        contribution:
-           # pattern:    ^/contribute/
-          oauth:
-            resource_owners:
-                facebook:           "/login/check-facebook"
-                google:             "/login/check-google"
-                my_custom_provider: "/login/check-custom"
-                my_github:          "/login/check-github"
-            login_path:        /login
-            failure_path:      /login
-            #anonymous:         ~
-
-            oauth_user_provider:
-                service: metagist.user.provider.entity
+                oauth_user_provider:
+                    service: metagist.user.provider.entity
 
     access_control:
-        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/contribute/, roles: ROLE_USER }
-        - { path: ^/admin/, roles: ROLE_ADMIN }
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }

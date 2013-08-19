@@ -2,6 +2,7 @@
 namespace Metagist\ServerBundle\Controller;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Packagist\Api\Client as PackagistClient;
 
 /**
  * Provides access to often used resources.
@@ -33,24 +34,33 @@ class ServiceProvider
      * @param string $author
      * @param string $name
      * @return Package
+     * @throws \Metagist\Api\Exception
      */
     public function getPackage($author, $name)
     {
         $package = $this->packages()->byAuthorAndName($author, $name);
-        if ($package == null) {
-            $factory = $this->container[ServiceProvider::PACKAGE_FACTORY];
-            /* @var $factory PackageFactory */
-            $package = $factory->byAuthorAndName($author, $name);
-            if ($this->packages()->save($package)) {
-                /* @var $metaInfoRepo MetaInfoRepository */
-                $metaInfoRepo = $this->metainfo();
-                $metaInfoRepo->savePackage($package);
-            }
+        if ($package !== null) {
+            return $package;
         }
-
-        return $package;
+        
+        $factory = $this->getPackageFactory();
+        return $factory->byAuthorAndName($author, $name);
     }
     
+    /**
+     * Returns the package factory.
+     * 
+     * @return \Metagist\ServerBundle\Entity\PackageFactory
+     */
+    private function getPackageFactory()
+    {
+        return new \Metagist\ServerBundle\Entity\PackageFactory(
+            new PackagistClient(),
+            new \Metagist\ServerBundle\Entity\MetainfoFactory($this->logger())
+        );
+    }
+
+
     /**
      * Provides access to the session.
      * 

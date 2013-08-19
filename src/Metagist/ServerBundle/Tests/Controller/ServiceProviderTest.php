@@ -1,7 +1,7 @@
 <?php
 namespace Metagist\ServerBundle\Tests\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Metagist\ServerBundle\Tests\WebDoctrineTestCase;
 use Metagist\ServerBundle\Controller\ServiceProvider;
 
 /**
@@ -9,7 +9,7 @@ use Metagist\ServerBundle\Controller\ServiceProvider;
  * 
  * @author Daniel Pozzi <bonndan76@googlemail.com>
  */
-class ServiceProviderTest extends WebTestCase
+class ServiceProviderTest extends WebDoctrineTestCase
 {
     /**
      * system under test
@@ -24,9 +24,7 @@ class ServiceProviderTest extends WebTestCase
     public function setUp()
     {
         parent::setUp();
-        $kernel = self::createKernel();
-        $kernel->boot();
-        $this->serviceProvider = new ServiceProvider($kernel->getContainer());
+        $this->serviceProvider = new ServiceProvider(static::$client->getContainer());
     }
     
     /**
@@ -93,5 +91,14 @@ class ServiceProviderTest extends WebTestCase
     {
         $factory = $this->serviceProvider->getApiFactory();
         $this->assertInstanceOf("\Metagist\Api\FactoryInterface", $factory);
+    }
+    
+    /**
+     * 
+     */
+    public function testGetPackage()
+    {
+        $this->setExpectedException("\Metagist\Api\Exception");
+        $this->serviceProvider->getPackage('cannot', 'befound');
     }
 }

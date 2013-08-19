@@ -63,7 +63,7 @@ class PackageFactory
         try {
             $packagistPackage = $this->client->get($identifier);
         } catch (\Guzzle\Http\Exception\ClientErrorResponseException $exception) {
-            throw new Exception('Could not find ' . $identifier, Exception::PACKAGE_NOT_FOUND, $exception);
+            throw new \Metagist\Api\Exception('Could not find ' . $identifier . ' at packagist', Exception::PACKAGE_NOT_FOUND, $exception);
         }
         
         $package = new Package($packagistPackage->getName());

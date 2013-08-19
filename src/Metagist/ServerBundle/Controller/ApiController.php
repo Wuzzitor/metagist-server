@@ -8,6 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Guzzle\Http\Message\EntityEnclosingRequestInterface;
 use Metagist\Api\ServerInterface;
 use Metagist\MetainfoInterface;
+use Metagist\Api\RequestValidator;
 
 /**
  * Api Controller.
@@ -25,13 +26,21 @@ class ApiController extends Controller implements ServerInterface
     private $serviceProvider;
     
     /**
+     * request validator
+     * 
+     * @var \Metagist\Api\RequestValidator
+     */
+    private $validator;
+    
+    /**
      * Constructor
      * 
      * @param \Metagist\ServerBundle\Controller\ServiceProvider $serviceProvider
      */
-    public function __construct(ServiceProvider $serviceProvider)
+    public function __construct(ServiceProvider $serviceProvider, RequestValidator $validator)
     {
         $this->serviceProvider = $serviceProvider;
+        $this->validator = $validator;
     }
     
     /**
@@ -73,18 +82,17 @@ class ApiController extends Controller implements ServerInterface
      */
     public function package($author, $name)
     {
-        $package   = $this->getPackage($author, $name);
-        $package->setMetaInfos(
-            $this->application->metainfo()->byPackage($package)
-        );
+        try {
+            $package = $this->serviceProvider->getPackage($author, $name);
+            $serializer = $this->serviceProvider->getApiFactory()->getSerializer();
+            $body = $serializer->serialize($package, 'json');
+            $code = 200;
+        } catch (\Metagist\Api\Exception $exception) {
+            $body = $exception->getMessage();
+            $code = 404;
+        }
         
-        $serializer = $this->application->getApi()->getSerializer();
-        $body = $serializer->serialize($package, 'json');
-        
-        $response = \Symfony\Component\HttpFoundation\Response::create(
-            $body, 200, array('application/json')
-        );
-        return $response;
+        return $this->json($body, $code);
     }
     
     /**
@@ -95,6 +103,7 @@ class ApiController extends Controller implements ServerInterface
      * @param \Metagist\MetaInfo $info
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      * @Route("/pushInfo/{author}/{name}", name="api-pushInfo")
+     * @Method({"POST"})
      */
     public function pushInfoAction($author, $name, MetainfoInterface $info = null)
     {
@@ -111,51 +120,55 @@ class ApiController extends Controller implements ServerInterface
      */
     public function pushInfo($author, $name, MetainfoInterface $info = null)
     {
-        $request = $this->application->getApi()->getIncomingRequest();
+        $factory = $this->serviceProvider->getApiFactory();
+        $request = $factory->getIncomingRequest();
         /* @var $request \Guzzle\Http\Message\EntityEnclosingRequest */
+        if (!$request instanceof \Guzzle\Http\Message\EntityEnclosingRequest) {
+            return $this->json('POST required:', 300);
+        }
         
         //validate oauth
         try {
-            $this->application->getApi()->validateRequest($request);
+            $this->validator->validateRequest($request);
         } catch (\Metagist\Api\Exception $exception) {
-            $this->application->logger()->warning('Error authorizing a pushInfo request: ' . $exception->getMessage());
-            return $this->application->json('Authorization failed: ' . $exception->getMessage(), 403);
+            $this->serviceProvider->logger()->warning('Error authorizing a pushInfo request: ' . $exception->getMessage());
+            return $this->json('Authorization failed: ' . $exception->getMessage(), 403);
         }
         
         //validate json integrity
         try {
-            $validator = $this->application->getApi()->getSchemaValidator();
+            $validator = $factory->getSchemaValidator();
             $validator->validateRequest($request, 'pushInfo');
         } catch (\Metagist\Api\Validation\Exception $exception) {
-            $this->application->logger()->warning('Error validating a pushInfo request: ' . $exception->getMessage());
-            return $this->application->json('Invalid content: ' . $exception->getMessage(), 400);
+            $this->serviceProvider->logger()->warning('Error validating a pushInfo request: ' . $exception->getMessage());
+            return $this->json('Invalid content: ' . $exception->getMessage(), 400);
         }
         
-        $this->application->logger()->info('Received signed and schema-valid pushInfo request.');
+        $this->serviceProvider->logger()->info('Received signed and schema-valid pushInfo request.');
         
         //check package
-        $package = $this->application->packages()->byAuthorAndName($author, $name);
+        $package = $this->serviceProvider->getPackage($author, $name);
         if ($package == null) {
             $message = 'Unknown package ' . $author . '/' . $name;
-            $this->application->logger()->warning($message);
-            return $this->application->json($message, 404);
+            $this->serviceProvider->logger()->warning($message);
+            return $this->json($message, 404);
         }
         
         $metaInfo = $this->extractMetaInfoFromRequest($request);
         if ($metaInfo === null) {
-            return $this->application->json('parsing error', 500);
+            return $this->serviceProvider->json('parsing error', 500);
         }
         $metaInfo->setPackage($package);
         
         try {
-            $this->application->metainfo()->save($metaInfo, 1);
+            $this->serviceProvider->metainfo()->save($metaInfo, 1);
         } catch (\Symfony\Component\Security\Core\Exception\AccessDeniedException $exception) {
-            $this->application->logger()->warning('PushInfo: ' . $exception->getMessage());
-            return $this->application->json($exception->getMessage(), 403);
+            $this->serviceProvider->logger()->warning('PushInfo: ' . $exception->getMessage());
+            return $this->json($exception->getMessage(), 403);
         }
         
-        $this->application->packages()->save($package);
-        return $this->application->json(
+        $this->serviceProvider->packages()->save($package);
+        return $this->json(
             'Received info on ' . $metaInfo->getGroup() . ' for package ' . $package->getIdentifier()
         );
     }
@@ -170,6 +183,21 @@ class ApiController extends Controller implements ServerInterface
     {
         $json = $request->getBody()->__toString();
         $data = json_decode($json, true);
-        return MetaInfo::fromArray($data['info']);
+        return \Metagist\Metainfo::fromArray($data['info']);
+    }
+    
+    /**
+     * Creates a json response.
+     * 
+     * @param string $body
+     * @param int    $code
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    protected function json($body, $code = 200) 
+    {
+        $response = \Symfony\Component\HttpFoundation\Response::create(
+            $body, $code, array('application/json')
+        );
+        return $response;
     }
 }
