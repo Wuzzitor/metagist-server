@@ -77,7 +77,7 @@ hwi_oauth:
     firewall_name: secured_area
     connect: true
     resource_owners:
-        my_github:
+        github:
             type:                github
             client_id:           %metagist.github.client.id%
             client_secret:       %metagist.github.client.secret%

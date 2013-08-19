@@ -22,7 +22,7 @@ security:
                 target: /
             oauth:
                 resource_owners:
-                    my_github:          "/login/check-github"
+                    github:          "/login/check-github"
                 login_path:        /login
                 failure_path:      /login
 

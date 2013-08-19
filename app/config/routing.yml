@@ -3,7 +3,7 @@ hwi_oauth_redirect:
     prefix:   /login
     
 github_login:
-    pattern: /login/my_github
+    pattern: /login/github
 
 logout:
     pattern: /logout
