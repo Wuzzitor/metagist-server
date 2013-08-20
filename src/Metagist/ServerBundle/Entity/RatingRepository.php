@@ -14,7 +14,7 @@ class RatingRepository extends EntityRepository
     /**
      * Retrieves all stored meta info for the given package.
      * 
-     * @param \Metagist\Package $package
+     * @param \Metagist\ServerBundle\Entity\Package $package
      * @param integer           $offset
      * @param integer           $limit
      * @return \Doctrine\Common\Collections\Collection
@@ -22,11 +22,11 @@ class RatingRepository extends EntityRepository
     public function byPackage(Package $package, $offset = 0, $limit = 25)
     {
         $builder = $this->createQueryBuilder('r')
-            ->where('r.package = ?1')
+            ->where('r.package = :package')
             ->setFirstResult($offset)
             ->setMaxResults($limit);
         
-        return new ArrayCollection($builder->getQuery()->execute(array(1 => $package)));
+        return new ArrayCollection($builder->getQuery()->execute(array('package' => $package)));
     }
     
     /**
