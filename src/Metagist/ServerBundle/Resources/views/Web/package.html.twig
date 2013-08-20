@@ -70,8 +70,8 @@
             <div class="span2 text-center">
                 <h2>{% for i in 1..rating.rating %}<i class="icon icon-star"></i>{% endfor %}</h2>
                 <div>
-                    <img src="{{rating.getUser.getAvatarUrl}}" alt="User icon" /><br />
-                    by {{rating.getUser.getUsername}}
+                    <img src="{{rating.user.getAvatarUrl}}" alt="User icon" /><br />
+                    by {{rating.user.getUsername}}
                 </div>
             </div>
             <div class="span10">
