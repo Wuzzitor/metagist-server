@@ -131,14 +131,15 @@ class Metainfo implements MetainfoInterface
      *
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true)
      * })
      */
     private $user;
 
     /**
-     * @var \Packages
-     *
+     * The related package.
+     * 
+     * @var Package
      * @ORM\ManyToOne(targetEntity="Package")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="package_id", referencedColumnName="id")
