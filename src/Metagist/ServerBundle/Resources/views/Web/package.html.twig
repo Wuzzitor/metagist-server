@@ -3,70 +3,69 @@
 
 {% block content %}
 
-<div class="item item-blue">
-    <div class="content">
+<div class="content">
     <h1>{{package.getIdentifier}}</h1>
     <p>{{package.description}}</p>
     <p>
         {% set homepageInfo = package.getMetaInfos('community', 'homepage').first %}
         {% if homepageInfo %}
-        <a href="{{ homepageInfo.getValue }}"><i class="icon-white icon-home"></i> Homepage</a><br />
+            <a href="{{ homepageInfo.getValue }}"><i class="icon-white icon-home"></i> Homepage</a><br />
         {% endif %}
-        <a href="http://packagist.org/packages/{{package.identifier}}">
-            <i class="icon-white icon-archive"></i> See the package at Packagist.org</a>
-        <br />
-    </p>
-    <div class="clearfix"></div>
+            <a href="http://packagist.org/packages/{{package.identifier}}">
+                <i class="icon-white icon-archive"></i> See the package at Packagist.org</a>
+            <br />
+        </p>
+        <div class="clearfix"></div>
     {% for name, data in categories.getCategories() %}
-      <h3>{{name | trans}}</h3>
+        <h3>{{name | trans}}</h3>
       {% if name != 'flags' %}
-      <div class="tab-pane {% if loop.first %}active{%endif%}" id="tab_{{name}}">
-          <div class="pull-right span2">
+        <div class="tab-pane {% if loop.first %}active{%endif%}" id="tab_{{name}}">
+            <div class="pull-right span2">
             {% if (is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')) %}
             {% else %}
-                <a class="btn btn-primary btn-block" href="{{ path('custom_login') }}">
-                    <i class="icon-white icon-4x icon-rocket"></i><br /> {{ 'Contribute!'|trans }}</a>
-                <br />
+                    <a class="btn btn-primary btn-block" href="{{ path('custom_login') }}">
+                        <i class="icon-white icon-4x icon-rocket"></i><br /> {{ 'Contribute!'|trans }}</a>
+                    <br />
             {% endif %}
-        </div>
+                </div>
           {% for group, groupdata in categories.getGroups(name) %}
             {% if (groupdata.access == 'ROLE_ADMIN' and is_granted(groupdata.access)) or groupdata.access != 'ROLE_ADMIN' %}
                 {% set infos = package.getMetaInfos(group)%}
-                    <dl class="dl-horizontal">
-                         <dt title="{{groupdata.description}}">{{ icon(group) }} {{ (group) | trans}}</dt>
+                <dl class="dl-horizontal">
+                    <dt title="{{groupdata.description}}">{{ icon(group) }} {{ (group) | trans}}</dt>
                          {% if infos.count %}
-                            <dd>{{ renderInfos(infos) }}</dd>
+                    <dd>{{ renderInfos(infos) }}</dd>
                          {% else %}
-                            <dd>
+                    <dd>
                             {% if is_granted(groupdata.access) %}
-                                <a href="/contribute/{{package.identifier}}/{{group}}">
-                                    <i class="icon-pencil"></i> add this information
-                                </a>
+                            <a href="/contribute/{{package.identifier}}/{{group}}">
+                                <i class="icon-pencil"></i> add this information
+                            </a>
                             {% else %}
-                                <span class="text-warning">Contribution required</span>
+                            <span class="text-warning">Contribution required</span>
                             {% endif %}
-                            </dd>
+                        </dd>
                          {% endif %}
                     </dl>
             {% endif %}
           {% endfor %}
-      </div>
+                </div>
       {% endif %}
     {% endfor %}
-    
-    <small class="pull-right">Last updated: {{ package.getTimeUpdated |date('d-m-Y') }}</small>
+
+                <small class="pull-right">Last updated: {{ package.getTimeUpdated |date('d-m-Y') }}</small>
     {% if is_granted('ROLE_ADMIN') %}
-        <br /><a class="btn btn-small" href="/update/{{package.identifier}}"><i class="icon-refresh"></i> Update</a>
+                <br /><a class="btn btn-small" href="/update/{{package.identifier}}"><i class="icon-refresh"></i> Update</a>
     {% endif %}
-    <hr />
-    <div class="span4 pull-right text-right">
+                <hr />
+                <div class="span4 pull-right text-right">
         {% if (is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')) %}
-            <a class="btn" href="/rate/{{package.identifier}}"><i class="icon-white icon-star"></i> Rate this package</a> 
+                        <a class="btn" href="{{ path('rate', {'author': package.author, 'name': package.name })}}"><i class="icon-white icon-star"></i> Rate this package</a> 
         {% endif %}
-        <a class="btn" href="/ratings/{{package.getIdentifier}}">more</a>
-    </div>
-    <h2>{{ "Reviews" |trans}}</h2>
-    <div class="row">
+                        <a class="btn" href="{{ path('ratings', {'author': package.author, 'name': package.name })}}">more</a>
+                    </div>
+                    <h2>{{ "Reviews" |trans}}</h2>
+                    <div class="row">
         {% for rating in ratings %}
             <div class="span2 text-center">
                 <h2>{% for i in 1..rating.rating %}<i class="icon icon-star"></i>{% endfor %}</h2>
@@ -80,7 +79,6 @@
                 <p>{{rating.comment | e}}</p>
             </div>
         {% endfor %}
-    </div>
     </div>
 </div>
 {% endblock %}
