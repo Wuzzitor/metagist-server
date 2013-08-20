@@ -45,6 +45,17 @@ class RatingRepository extends EntityRepository
     }
     
     /**
+     * Returns all the user's ratings.
+     * 
+     * @param \Metagist\ServerBundle\Entity\User $user
+     * @return ArrayCollection
+     */
+    public function byUser(User $user)
+    {
+        return new ArrayCollection($this->findBy(array('user' => $user)));
+    }
+    
+    /**
      * Retrieve the latest ratings.
      * 
      * @param int $limit
