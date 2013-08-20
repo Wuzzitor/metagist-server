@@ -7,6 +7,11 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 // these import the "@Route" and "@Template" annotations
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Doctrine\Common\Collections\Collection;
+use Pagerfanta\Adapter\DoctrineCollectionAdapter;
+use Pagerfanta\Pagerfanta;
+use Pagerfanta\View\TwitterBootstrapView;
+use Metagist\ServerBundle\Entity\Rating;
 
 /**
  * Web controller
@@ -42,19 +47,15 @@ class WebController extends Controller
         $routes = array(
             'errors'        => array('match' => '/errors', 'method' => 'errors'),
             'loginNotice'   => array('match' => '/login', 'method' => 'loginNotice'),
-            'login'         => array('match' => '/auth/login', 'method' => 'login'),
             'logout'        => array('match' => '/auth/logout', 'method' => 'logout'),
-            'ratings'       => array('match' => '/ratings/{author}/{name}', 'method' => 'ratings'),
             'ratings-pp'    => array('match' => '/ratings/{author}/{name}/{page}', 'method' => 'ratings'),
             'rate'          => array('match' => '/rate/{author}/{name}', 'method' => 'rate'),
             'contribute-list' => array('match' => '/contribute/list/{author}/{name}', 'method' => 'contributeList'),
             'contribute'    => array('match' => '/contribute/{author}/{name}/{group}', 'method' => 'contribute'),
-            'package'       => array('match' => '/package/{author}/{name}', 'method' => 'package'),
             'search'        => array('match' => '/search', 'method' => 'search'),
             'search-page'   => array('match' => '/search/{query}/{page}', 'method' => 'search'),
             'update'        => array('match' => '/update/{author}/{name}', 'method' => 'update'),
             'latest'        => array('match' => '/latest', 'method' => 'latest'),
-            'about'         => array('match' => '/about', 'method' => 'about'),
         );
 
         foreach ($routes as $name => $data) {
@@ -205,8 +206,10 @@ class WebController extends Controller
      * @param sting  $author
      * @param string $name
      * @return string
+     * @Route("/ratings/{author}/{name}", name="ratings")
+     * @Template()
      */
-    public function ratings($author, $name, $page = 1)
+    public function ratingsAction($author, $name, $page = 1)
     {
         $package  = $this->serviceProvider->packages()->byAuthorAndName($author, $name);
         $ratings  = $this->serviceProvider->ratings()->byPackage($package);
@@ -214,12 +217,11 @@ class WebController extends Controller
         $pager    = $this->getPaginationFor($ratings);
         $pager->setCurrentPage($page);
         $view     = new TwitterBootstrapView();
-        return $this->serviceProvider->render(
-            'ratings.html.twig', array(
-                'package' => $package,
-                'ratings' => $pager,
-                'pagination' => $view->render($pager, $routeGen)
-            )
+        
+        return array(
+            'package' => $package,
+            'ratings' => $pager,
+            'pagination' => $view->render($pager, $routeGen)
         );
     }
     
@@ -229,9 +231,12 @@ class WebController extends Controller
      * @param string $author
      * @param string $name
      * @return string
+     * @Route("/contribute/rate/{author}/{name}", name="rate")
+     * @Template()
      */
-    public function rate($author, $name, Request $request)
+    public function rateAction($author, $name)
     {
+        $request  = $this->getRequest();
         $package  = $this->serviceProvider->packages()->byAuthorAndName($author, $name);
         $flashBag = $this->serviceProvider->session()->getFlashBag();
         $user     = $this->serviceProvider->security()->getToken()->getUser();
@@ -243,21 +248,21 @@ class WebController extends Controller
             if ($form->isValid()) {
                 $data     = $form->getData();
                 $data['package'] = $package;
-                $data['user_id'] = $user->getId();
                 $rating = Rating::fromArray($data);
+                $rating->setUser($user);
                 $this->serviceProvider->ratings()->save($rating);
                 $flashBag->add('success', 'Thanks.');
-                return $this->serviceProvider->redirect('/package/' . $package->getIdentifier());
+                $this->redirect(
+                    $this->generateUrl('package', array('author' => $package->getAuthor(), 'name' => $package->getName()))
+                );
             } else {
                 $form->addError(new FormError('Please check the entered value.'));
             }
         }
         
-        return $this->serviceProvider->render(
-            'rate.html.twig', array(
-                'package' => $package,
-                'form'    => $form->createView()
-            )
+        return array(
+            'package' => $package,
+            'form'    => $form->createView()
         );
     }
 
@@ -439,9 +444,9 @@ class WebController extends Controller
      */
     protected function getFormFactory()
     {
-        return new FormFactory(
-            $this->serviceProvider['form.factory'],
-            $this->serviceProvider[ServiceProvider::CATEGORY_SCHEMA]
+        return new \Metagist\ServerBundle\Form\FormFactory(
+            $this->get('form.factory'),
+            $this->serviceProvider->categories()
         );
     }
     
