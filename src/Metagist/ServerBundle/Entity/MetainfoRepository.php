@@ -86,6 +86,7 @@ class MetainfoRepository extends EntityRepository
     public function save(MetaInfo $info)
     {
         $this->getEntityManager()->persist($info);
+        $this->getEntityManager()->flush();
     }
     
     /**
