@@ -31,10 +31,15 @@ class DependencyFactory
             if (!$dependencyEntries) {
                 $dependencyEntries = array();
             }
-            foreach ($dependencyEntries as $entry) {
+            
+            /*
+             * entry is like array('php' => string '>=5.3.3')
+             */
+            foreach ($dependencyEntries as $identifier => $version) {
                 $dependency = new Dependency();
                 $dependency->setPackageVersion($versionString);
-                $dependency->setDependencyIdentifier($entry);
+                $dependency->setDependencyIdentifier($identifier);
+                $dependency->setDependencyVersion($version);
                 $dependencies[] = $dependency;
             }
         }
