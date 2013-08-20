@@ -1,0 +1,33 @@
+{% extends 'MetagistServerBundle::layout.html.twig' %}
+{% set pagetitle = 'metagist.org - ratings for ' ~ package %}
+
+{% block content %}
+<div class="item item-blue">
+    <div class="content">
+    <div class="page-header">
+        <h1>Ratings and Reviews for<br />{{package}}<br /></h1>
+        <a class="btn" href="{{ path('package', {'author': package.author, 'name': package.name })}}"><i class="icon-backward"></i> back</a> 
+        <a class="btn btn-primary" href="{{ path('rate', {'author': package.author, 'name': package.name })}}"><i class="icon-white icon-star"></i> Rate this package</a>
+    </div>
+    
+    <div class="row-fluid">
+    {% for rating in ratings %}
+        <div class="span2 text-center">
+            <h2>{% for i in 1..rating.rating %}<i class="icon icon-star"></i>{% endfor %}</h2>
+            <div>
+                <img src="{{rating.getUser.getAvatarUrl}}" alt="User icon" /><br />
+                by {{rating.getUser.getUsername}}
+            </div>
+        </div>
+        <div class="span10">
+            <h2>{{rating.title | e}}</h2>
+            <p>{{rating.comment | e}}</p>
+        </div>
+    {% endfor %}
+    </div>
+
+    {{ pagination|raw }}
+                
+    </div>    
+</div>
+{% endblock %}
