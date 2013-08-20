@@ -21,6 +21,9 @@ class RatingRepository extends EntityRepository
      */
     public function byPackage(Package $package, $offset = 0, $limit = 25)
     {
+        if ($package->getId() === null) {
+            throw new \RuntimeException('Package has no id.');
+        }
         $builder = $this->createQueryBuilder('r')
             ->where('r.package = :package')
             ->setFirstResult($offset)
