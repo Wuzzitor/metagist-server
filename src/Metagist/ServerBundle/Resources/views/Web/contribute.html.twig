@@ -1,0 +1,22 @@
+{% extends 'MetagistServerBundle::layout.html.twig' %}
+{% set pagetitle = 'metagist.org - contribute to ' ~ package %}
+
+{% block content %}
+<div class="content">
+    <div class="page-header">
+        <h1>Contribute to {{package}}<br /><small>{{ description }}</small></h1>
+    </div>
+
+    <h2>{{ group | trans}}</h2>
+    <p>{{ ('typehint_' ~ type) | trans}}</p>
+
+    <form action="" method="post" novalidate {{ form_enctype(form) }} class="form-horizontal">
+    {{ form_widget(form) }}
+            <div class="controls">
+                <button type="submit" class="btn btn-primary">{{ 'Send'|trans }}</button>
+                <a href="/package/{{package.identifier}}" class="btn">{{ 'Cancel'|trans }}</a>
+            </div>
+        </form>
+
+    </div>
+{% endblock %}
