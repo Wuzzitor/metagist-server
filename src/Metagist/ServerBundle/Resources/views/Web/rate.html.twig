@@ -1,0 +1,16 @@
+{% extends 'MetagistServerBundle::layout.html.twig' %}
+{% set pagetitle = 'Rate ' ~ package %}
+
+{% block content %}
+<div class="content">
+    <div class="page-header">
+        <h1>Rate {{package}}<br /><small>Please respect the rules.</small></h1>
+    </div>
+
+    <form action="" method="post" role="form" {{ form_enctype(form) }} class="form-horizontal">
+{{ form_widget(form) }}
+            <button type="submit" class="btn btn-primary">{{ 'Send'|trans }}</button>
+            <a href="{{ path('package', {'author': package.author, 'name': package.name})}}" class="btn">{{ 'Cancel'|trans }}</a>
+    </form>
+</div>
+{% endblock %}
