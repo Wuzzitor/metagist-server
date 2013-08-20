@@ -39,6 +39,8 @@ services:
   metagist.web.controller:
     class:     "%metagist.web.controller.class%"
     arguments: ["@metagist_controller_serviceprovider"]
+    calls:
+      - [setContainer, ["@service_container"]]
   
   metagist.api.controller:
     class:     "%metagist.api.controller.class%"
