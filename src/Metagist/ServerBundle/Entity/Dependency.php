@@ -13,6 +13,7 @@ use Metagist\ServerBundle\Entity\Package;
  * Class representing a package dependency.
  * 
  * @author Daniel Pozzi <bonndan76@googlemail.com>
+ * @ORM\Table(name="dependencies")
  * @ORM\Entity(repositoryClass="DependencyRepository")
  */
 class Dependency
