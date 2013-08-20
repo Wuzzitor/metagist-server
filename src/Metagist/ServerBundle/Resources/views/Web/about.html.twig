@@ -1,0 +1,39 @@
+{% extends 'MetagistServerBundle::layout.html.twig' %}
+{% set pagetitle = 'About metagist.org' %}
+
+{% block content %}
+
+<div class="item item-yellow">
+    <div class="content">
+        <h1>About metagist.org</h1>
+        <p>Metagist is an attempt to leverage quality and transparency of <a href="http://getcomposer.org">composer</a> packages by
+            collecting and providing quality-related information. It is meant to be used in addition to <a href="https://packagist.org">Packagist.org</a>.
+            Version {{ constant('METAGIST_VERSION') }} was made by <a href="https://github.com/bonndan">bonndan</a> 
+            with passion, Silex and Twitter Bootstrap.
+        </p>
+        <p>
+            Please feel free to fork <a href="https://github.com/Wuzzitor/metagist.org">Metagist on GitHub</a>. 
+            Any feedback and new ideas are welcome and help is really needed.
+            <br />
+            <a href="https://github.com/bonndan">Daniel</a> 
+        </p>
+        <br />
+        <h4>Contact</h4>
+        <p>
+            bonndan76 (at) gmail.com
+        </p>
+        <br />
+        <h4>Imprint for German law / Impressum</h4>
+        <h5>Dienstanbieter i.S.d. § 2 TMG:</h5>
+        <small>
+        Dr. Daniel Pozzi<br />
+        Am Römerlager 2<br />
+        53117 Bonn<br />
+        E-Mail:  bonndan76 (at) gmail.com
+        </small>
+
+        <h5>Inhaber und verantwortlicher Herausgeber i.S.d. § 55 RStV:</h5>
+        <small>Dr. Daniel Pozzi</small>
+    </div>
+</div>
+{% endblock %}
