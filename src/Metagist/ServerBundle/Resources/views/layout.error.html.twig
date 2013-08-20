@@ -17,23 +17,23 @@
     <link rel="stylesheet" href="{{ app.request.basepath }}/css/bootstrap.css">
     <link rel="stylesheet" href="{{ app.request.basepath }}/assets/css/styles.css">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
-    <script src="{{ app.request.basepath }}/js/libs/modernizr-2.5.3-respond-1.1.0.min.js"></script>
 </head>
 <body>
 <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
-    <div class="container-fluid">
-        <div class="row-fluid">
-            <div class="navbar navbar-static-top">
-                <div class="navbar-inner">
-                  <ul class="nav">
-                      <li><a href="{{ path('homepage') }}" title="Home"><i class="icon icon-home"></i> metagist.org</a></li>
-                  </ul>
-                </div>
+
+<div class="container">
+    <div class="row">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+              <ul class="nav">
+                  <li><a href="{{ path('homepage') }}" title="Home"><i class="icon icon-home"></i> metagist.org</a></li>
+              </ul>
             </div>
         </div>
     </div>
-    <div id="main" role="main" class="row-fluid">
+    <div id="main" role="main" class="row">
         {% block content %}{% endblock %}
     </div>
+</div>
 </body>
 </html>
