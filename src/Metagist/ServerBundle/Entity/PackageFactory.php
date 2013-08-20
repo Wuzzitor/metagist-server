@@ -26,14 +26,22 @@ class PackageFactory
     private $metainfoFactory;
     
     /**
+     * nested dependency factory.
+     * 
+     * @var \Metagist\ServerBundle\Entity\DependencyFactory
+     */
+    private $dependencyFactory;
+    
+    /**
      * Constructor.
      * 
      * @param \Packagist\Api\Client $client
      */
     public function __construct(PackagistClient $client, MetainfoFactory $metainfoFactory)
     {
-        $this->client          = $client;
-        $this->metainfoFactory = $metainfoFactory;
+        $this->client            = $client;
+        $this->metainfoFactory   = $metainfoFactory;
+        $this->dependencyFactory = new DependencyFactory();
     }
     
     /**
@@ -79,6 +87,12 @@ class PackageFactory
         
         $metainfos = $this->metainfoFactory->fromPackagistPackage($packagistPackage);
         $package->setMetaInfos($metainfos);
+        
+        $dependencies = $this->dependencyFactory->fromPackagistPackage($packagistPackage);
+        foreach ($dependencies as $dep) {
+            $dep->setPackage($package);
+        }
+        $package->setDependencies($dependencies);
         
         return $package;
     }
