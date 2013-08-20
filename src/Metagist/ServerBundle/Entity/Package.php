@@ -65,6 +65,14 @@ class Package implements PackageInterface
      * @ORM\OneToMany(targetEntity="Metainfo", mappedBy="package")
      */
     private $metainfos;
+    
+    /**
+     * related dependencies
+     * 
+     * @var Dependency[]
+     * @ORM\OneToMany(targetEntity="Dependency", mappedBy="package")
+     */
+    private $dependencies;
 
     /**
      * Constructor.
@@ -266,4 +274,26 @@ class Package implements PackageInterface
         
         return explode('/', $identifier);
     }
+    
+    /**
+     * Returns the required dependencies.
+     * 
+     * @return Dependency[]
+     */
+    public function getDependencies()
+    {
+        return $this->dependencies;
+    }
+
+    /**
+     * Set the required dependencies
+     * 
+     * @param array $dependencies
+     */
+    public function setDependencies($dependencies)
+    {
+        $this->dependencies = $dependencies;
+    }
+
+
 }
