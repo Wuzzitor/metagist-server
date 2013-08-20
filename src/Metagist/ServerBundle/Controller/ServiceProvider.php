@@ -44,7 +44,8 @@ class ServiceProvider
         }
         
         $factory = $this->getPackageFactory();
-        return $factory->byAuthorAndName($author, $name);
+        $package = $factory->byAuthorAndName($author, $name);
+        return $this->packages()->save($package);
     }
     
     /**
