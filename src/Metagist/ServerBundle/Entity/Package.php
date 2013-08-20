@@ -62,7 +62,7 @@ class Package implements PackageInterface
      * related metainfos
      * 
      * @var Metainfo[]
-     * @ORM\OneToMany(targetEntity="Metainfo", mappedBy="package")
+     * @ORM\OneToMany(targetEntity="Metainfo", mappedBy="package",cascade={"persist"})
      */
     private $metainfos;
     
@@ -70,7 +70,7 @@ class Package implements PackageInterface
      * related dependencies
      * 
      * @var Dependency[]
-     * @ORM\OneToMany(targetEntity="Dependency", mappedBy="package")
+     * @ORM\OneToMany(targetEntity="Dependency", mappedBy="package",cascade={"persist"})
      */
     private $dependencies;
 
