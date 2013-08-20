@@ -67,13 +67,17 @@ class PackageRepository extends EntityRepository
      * Saves a package.
      * 
      * @param \Metagist\PackageInterface $package
-     * @return int
+     * @return \Metagist\ServerBundle\Entity\Package
      */
     public function save(PackageInterface $package)
     {
-        $entity = $this->findOneBy(array('identifier' => $package->getIdentifier()));
-        if ($entity === null) {
-            $entity = new Package($package->getIdentifier());
+        if ($package instanceof \Metagist\Package) {
+            $entity = $this->findOneBy(array('identifier' => $package->getIdentifier()));
+            if ($entity === null) {
+                $entity = new Package($package->getIdentifier());
+            }
+        } else {
+            $entity = $package;
         }
 
         /* @var $entity Package */
@@ -84,5 +88,6 @@ class PackageRepository extends EntityRepository
         
         $this->getEntityManager()->persist($entity);
         $this->getEntityManager()->flush();
+        return $entity;
     }
 }
