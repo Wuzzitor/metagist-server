@@ -67,7 +67,7 @@ class UserProviderTest extends WebDoctrineTestCase
         
         $this->assertInstanceOf('Metagist\ServerBundle\Entity\User', $user);
         $this->assertEquals(1, $user->getId());
-        $this->assertEquals("foo666@bar", $user->getUsername());
+        $this->assertEquals("foo@bar", $user->getUsername());
     }
     
     /**
