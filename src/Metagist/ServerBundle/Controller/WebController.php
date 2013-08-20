@@ -108,8 +108,23 @@ class WebController extends Controller
      * @Route("/about", name="about")
      * @Template()
      */
-    public function about()
+    public function aboutAction()
     {
+        return array();
+    }
+    
+    /**
+     * Show the user profile
+     * 
+     * @return string
+     * @Route("/me", name="profile")
+     * @Template()
+     */
+    public function profileAction()
+    {
+        return array(
+            'user' => $this->getUser()
+        );
     }
 
     /**
