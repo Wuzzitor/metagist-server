@@ -28,6 +28,9 @@ class DependencyFactory
         if ($firstVersion != false) {
             $versionString = $firstVersion->getVersion();
             $dependencyEntries = $firstVersion->getRequire();
+            if (!$dependencyEntries) {
+                $dependencyEntries = array();
+            }
             foreach ($dependencyEntries as $entry) {
                 $dependency = new Dependency();
                 $dependency->setPackageVersion($versionString);
