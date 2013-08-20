@@ -1,0 +1,7 @@
+{% extends 'MetagistServerBundle::layout.html.twig' %}
+{% set pagetitle = 'metagist.org - My Profile' %}
+
+{% block content %}
+    <h1>{{ user.getUsername }}`s Profile</h1>
+    
+{% endblock %}
