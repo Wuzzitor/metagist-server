@@ -12,6 +12,7 @@ use Pagerfanta\Adapter\DoctrineCollectionAdapter;
 use Pagerfanta\Pagerfanta;
 use Pagerfanta\View\TwitterBootstrapView;
 use Metagist\ServerBundle\Entity\Rating;
+use Metagist\ServerBundle\Entity\Metainfo;
 
 /**
  * Web controller
@@ -49,7 +50,6 @@ class WebController extends Controller
             'loginNotice'   => array('match' => '/login', 'method' => 'loginNotice'),
             'logout'        => array('match' => '/auth/logout', 'method' => 'logout'),
             'ratings-pp'    => array('match' => '/ratings/{author}/{name}/{page}', 'method' => 'ratings'),
-            'rate'          => array('match' => '/rate/{author}/{name}', 'method' => 'rate'),
             'contribute-list' => array('match' => '/contribute/list/{author}/{name}', 'method' => 'contributeList'),
             'contribute'    => array('match' => '/contribute/{author}/{name}/{group}', 'method' => 'contribute'),
             'search'        => array('match' => '/search', 'method' => 'search'),
@@ -129,29 +129,6 @@ class WebController extends Controller
     }
 
     /**
-     * Github oAuth, redirect to use the github strategy.
-     */
-    public function login()
-    {
-        return $this->redirect('/auth/login/github');
-    }
-
-    /**
-     * Logout clears the session.
-     * 
-     * @return RedirectResponse
-     */
-    public function logout()
-    {
-        $this->serviceProvider->session()->invalidate();
-        $this->serviceProvider->session()->clear();
-        
-        return $this->serviceProvider->redirect(
-                $this->serviceProvider['url_generator']->generate('homepage')
-        );
-    }
-
-    /**
      * Shows package info.
      * 
      * @param string $author
@@ -197,7 +174,7 @@ class WebController extends Controller
             'success',
             'The package ' . $package->getIdentifier() . ' will be updated. Thanks.'
         );
-        return $this->serviceProvider->redirect('/package/' . $package->getIdentifier());
+        return $this->redirectToPackageView($package);
     }
 
     /**
@@ -252,9 +229,7 @@ class WebController extends Controller
                 $rating->setUser($user);
                 $this->serviceProvider->ratings()->save($rating);
                 $flashBag->add('success', 'Thanks.');
-                $this->redirect(
-                    $this->generateUrl('package', array('author' => $package->getAuthor(), 'name' => $package->getName()))
-                );
+                return $this->redirectToPackageView($package);
             } else {
                 $form->addError(new FormError('Please check the entered value.'));
             }
@@ -267,39 +242,18 @@ class WebController extends Controller
     }
 
     /**
-     * Lists the categories and groups to contribute to.
-     * 
-     * @param string $author
-     * @param string $name
-     * @return string
-     */
-    public function contributeList($author, $name)
-    {
-        $package = $this->serviceProvider->packages()->byAuthorAndName($author, $name);
-        //retrieve the related infos.
-        $metaInfos = $this->serviceProvider->metainfo()->byPackage($package);
-        $package->setMetaInfos($metaInfos);
-        
-        return $this->serviceProvider->render(
-            'contribute-list.html.twig', 
-            array(
-                'package' => $package,
-                'categories' => $this->serviceProvider->categories()
-            )
-        );
-    }
-    
-    /**
      * Contribute to the package (provide information).
      * 
      * @param string  $author
      * @param string  $name
      * @param string  $group
-     * @param Request $request
      * @return string
+     * @Route("/contribute/{author}/{name}/{group}", name="contribute")
+     * @Template()
      */
-    public function contribute($author, $name, $group, Request $request)
+    public function contributeAction($author, $name, $group)
     {
+        $request     = $this->getRequest();
         $package     = $this->serviceProvider->packages()->byAuthorAndName($author, $name);
         $flashBag    = $this->serviceProvider->session()->getFlashBag();
         $category    = $this->serviceProvider->categories()->getCategoryForGroup($group);
@@ -313,7 +267,7 @@ class WebController extends Controller
             $form->bind($request);
             if ($form->isValid()) {
                 $data     = $form->getData();
-                $metaInfo = MetaInfo::fromValue($group, $data['value'], $data['version']);
+                $metaInfo = Metainfo::fromValue($group, $data['value'], $data['version']);
                 $metaInfo->setPackage($package);
                 
                 try {
@@ -324,23 +278,19 @@ class WebController extends Controller
                     $flashBag->add('error', 'Access denied to ' . $group);
                 }
                 
-                return $this->serviceProvider->redirect('/package/' . $package->getIdentifier());
+                return $this->redirectToPackageView($package);
             } else {
                 $form->addError(new FormError('Please check the entered value.'));
             }
         }
 
-
-        return $this->serviceProvider->render(
-            'contribute.html.twig', 
-            array(
-                'package' => $package,
-                'form' => $form->createView(),
-                'category' => $category,
-                'group' => $group,
-                'type'  => $groupData->type,
-                'description' => $groupData->description,
-            )
+        return array(
+            'package' => $package,
+            'form' => $form->createView(),
+            'category' => $category,
+            'group' => $group,
+            'type'  => $groupData->type,
+            'description' => $groupData->description,
         );
     }
     
@@ -462,5 +412,18 @@ class WebController extends Controller
         $pagerfanta = new Pagerfanta($adapter);
         $pagerfanta->setMaxPerPage($maxPerPage);
         return $pagerfanta;
+    }
+    
+    /**
+     * Redirects to the package view.
+     * 
+     * @param \Metagist\ServerBundle\Entity\Package $package
+     * @return RedirectResponse
+     */
+    protected function redirectToPackageView(\Metagist\ServerBundle\Entity\Package $package)
+    {
+        return $this->redirect(
+            $this->generateUrl('package', array('author' => $package->getAuthor(), 'name' => $package->getName()))
+        );
     }
 }
