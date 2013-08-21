@@ -77,11 +77,9 @@ class WebController extends Controller
     public function indexAction()
     {
         $repo    = $this->serviceProvider->metainfo();
-        $ratings = $this->serviceProvider->ratings();
         return array(
             'featured' => $repo->byGroup('featured'),
-            'best' => array(),
-            'latestRatings' => $ratings->latest(1),
+            'packages' => $this->serviceProvider->packages()->random(20)
         );
     }
     
@@ -124,7 +122,8 @@ class WebController extends Controller
     public function profileAction()
     {
         return array(
-            'user' => $this->getUser()
+            'user' => $this->getUser(),
+            'ratings' => $this->serviceProvider->ratings()->byUser($this->getUser())
         );
     }
 
@@ -144,7 +143,8 @@ class WebController extends Controller
         return array(
             'package' => $package,
             'categories' => $this->serviceProvider->categories(),
-            'ratings' => $this->serviceProvider->ratings()->byPackage($package, 0, 5)
+            'ratings' => $this->serviceProvider->ratings()->byPackage($package, 0, 5),
+            'consumers' => $this->serviceProvider->dependencies()->getConsumersOf($package)
         );
     }
     
@@ -269,6 +269,7 @@ class WebController extends Controller
                 $data     = $form->getData();
                 $metaInfo = Metainfo::fromValue($group, $data['value'], $data['version']);
                 $metaInfo->setPackage($package);
+                $metaInfo->setUser($this->getUser());
                 
                 try {
                     $this->serviceProvider->metainfo()->save($metaInfo);
