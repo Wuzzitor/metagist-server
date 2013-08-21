@@ -1,4 +1,5 @@
 <?php
+
 namespace Metagist\ServerBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
@@ -13,13 +14,14 @@ use Metagist\PackageInterface;
  */
 class PackageRepository extends EntityRepository
 {
+
     /**
      * validator instance
      * 
      * @var Validator 
      */
     private $validator;
-    
+
     /**
      * Inject the validator.
      * 
@@ -27,9 +29,9 @@ class PackageRepository extends EntityRepository
      */
     public function setValidator(Validator $validator)
     {
-        $this->validator  = $validator;
+        $this->validator = $validator;
     }
-    
+
     /**
      * Retrieve a package by author and name.
      * 
@@ -42,10 +44,10 @@ class PackageRepository extends EntityRepository
         if (!$this->validator->isValidName($author) || !$this->validator->isValidName($name)) {
             throw new \InvalidArgumentException('The author or package name is invalid.');
         }
-        
+
         return $this->findOneBy(array('identifier' => $author . '/' . $name));
     }
-    
+
     /**
      * Retrieves all packages matching an identifier part.
      * 
@@ -55,14 +57,37 @@ class PackageRepository extends EntityRepository
     public function byIdentifierPart($identifier)
     {
         $result = $this->createQueryBuilder('p')
-           ->where('p.identifier LIKE :part')
-           ->setParameter('part', '%' . $identifier . '%')
-           ->getQuery()
-           ->getResult();
-        
+            ->where('p.identifier LIKE :part')
+            ->setParameter('part', '%' . $identifier . '%')
+            ->getQuery()
+            ->getResult();
+
         return new ArrayCollection($result);
     }
-    
+
+    /**
+     * Selects random packages.
+     * 
+     * @todo assumes there is no gap in ids.
+     * @param int $limit
+     * @return Package
+     */
+    public function random($limit)
+    {
+        $query   = $this->getEntityManager()->createQuery("select max(p.id) from MetagistServerBundle:Package p");
+        $result  = $query->getSingleResult();
+        $highest = $result[1];
+        $limit   = min($highest, $limit);
+        $ids     = array();
+        
+        while (count($ids) < $limit) {
+            $ids[] = rand(1, $highest);
+            $ids = array_unique($ids);
+        }
+        
+        return $this->findBy(array('id' => $ids));
+    }
+
     /**
      * Saves a package.
      * 
@@ -85,9 +110,10 @@ class PackageRepository extends EntityRepository
         $entity->setDescription($package->getDescription());
         $entity->setType($package->getType());
         $entity->setVersions($package->getVersions());
-        
+
         $this->getEntityManager()->persist($entity);
         $this->getEntityManager()->flush();
         return $entity;
     }
+
 }
