@@ -33,7 +33,9 @@
                 {% for metainfo in latestUpdates %}
                     <li class="{{ metainfo.getGroup }}">
                         <strong>{{ icon(metainfo.getGroup) }} {{ (metainfo.getGroup)|trans }}:</strong>  {{ renderInfo(metainfo) }}
-                        <a href="{{ path('package', {'author': metainfo.getPackage.author, 'name': metainfo.getPackage.name}) }}" title="{{ metainfo.getPackage.getIdentifier|e }}"><i class="icon icon-arrow-right"></i> {{ metainfo.getPackage }}</a>
+                        <a href="{{ path('package', {'author': metainfo.package.author, 'name': metainfo.package.name}) }}" title="{{ metainfo.package.getIdentifier|e }}">
+                            <i class="icon icon-arrow-right"></i> {{ metainfo.package }}
+                        </a>
                     </li>
                 {% endfor %}
             </ul>
