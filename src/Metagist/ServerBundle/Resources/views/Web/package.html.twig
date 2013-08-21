@@ -28,6 +28,13 @@
             {% endif %}
         {% endfor %}
         
+        <h2>Packages consuming {{package}}</h2>
+        {% for dep in consumers %}
+            <a href="{{ path('package', {'author': dep.package.author, 'name': dep.package.name})}}">
+                <i class="icon icon-arrow-right"></i> {{ dep.package }}
+            </a>
+        {% endfor %}
+        
     {% for name, data in categories.getCategories() %}
         <h3>{{name | trans}}</h3>
       {% if name != 'flags' %}
