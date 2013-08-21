@@ -68,6 +68,14 @@ class ServiceProviderTest extends WebDoctrineTestCase
     }
     
     /**
+     * dep repo shortcut test
+     */
+    public function testProvidesDependencyRepoShortcut()
+    {
+        $this->serviceProvider->dependencies();
+    }
+    
+    /**
      * schema shortcut test
      */
     public function testProvidesCategorySchemaShortcut()

@@ -133,6 +133,16 @@ class ServiceProvider
     }
 
     /**
+     * Returns the dependency repo.
+     * 
+     * @return \Metagist\ServerBundle\Entity\DependencyRepository
+     */
+    public function dependencies()
+    {
+        return $this->getRepo('MetagistServerBundle:Dependency');
+    }
+    
+    /**
      * Returns the security context.
      * 
      * @return \Symfony\Component\Security\Core\SecurityContext
