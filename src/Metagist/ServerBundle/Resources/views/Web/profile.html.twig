@@ -3,5 +3,18 @@
 
 {% block content %}
     <h1>{{ user.getUsername }}`s Profile</h1>
-    
+    <h2>Ratings</h2>
+    {% for rating in ratings %}
+    <div class="panel panel-default">
+          <!-- Default panel contents -->
+          <div class="panel-heading">{{ stars(rating.rating) }} on 
+              <a href="{{ path('package', {'author': rating.package.author, 'name': rating.package.name })}}">
+                {{ rating.package }}
+              </a>
+          </div>
+          <div class="panel-body">
+              <p>{{ rating.comment }}</p>
+          </div>
+    </div>
+    {% endfor %}
 {% endblock %}
