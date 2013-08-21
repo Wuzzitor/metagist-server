@@ -203,14 +203,19 @@ class Package implements PackageInterface
     }
     
     /**
+     * Set the related metainfos.
      * 
-     * @todo remove
      * @param type $metainfos
      */
     public function setMetaInfos($metainfos)
     {
+        foreach ($metainfos as $metainfo) {
+            $metainfo->setPackage($this);
+        }
+        
         $this->metainfos = $metainfos;
     }
+    
     /**
      * Returns the associated metainfos.
      * 
@@ -292,8 +297,10 @@ class Package implements PackageInterface
      */
     public function setDependencies($dependencies)
     {
+        foreach ($dependencies as $dependency) {
+            $dependency->setPackage($this);
+        }
+        
         $this->dependencies = $dependencies;
     }
-
-
 }
