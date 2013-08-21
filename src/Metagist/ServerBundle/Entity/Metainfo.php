@@ -142,7 +142,7 @@ class Metainfo implements MetainfoInterface
      * @var Package
      * @ORM\ManyToOne(targetEntity="Package")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="package_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="package_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $package;
