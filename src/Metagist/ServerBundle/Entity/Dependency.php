@@ -62,6 +62,15 @@ class Dependency
     private $dependencyVersion;
     
     /**
+     * flag showing it is a dev dependency.
+     * 
+     * @var boolean
+     * @ORM\Column(name="dev", type="boolean", nullable=true)
+     */
+    private $isDevDependency = false;
+    
+    
+    /**
      * Returns the id
      * 
      * @return int|null
@@ -165,5 +174,15 @@ class Dependency
     {
         $parts = \Metagist\Util::splitIdentifier($this->dependencyIdentifier);
         return isset($parts[1]) ? $parts[1] : '';
+    }
+    
+    /**
+     * Set the dev-dep flag.
+     * 
+     * @param bool $flag
+     */
+    public function setIsDevDependency($flag)
+    {
+        $this->isDevDependency = (bool)$flag;
     }
 }
