@@ -145,4 +145,25 @@ class Dependency
     {
         $this->dependencyVersion = $dependencyVersion;
     }
+    
+    /**
+     * Returns the author part of the dep identifier.
+     * 
+     * @return string
+     */
+    public function getAuthor()
+    {
+        return current(\Metagist\Util::splitIdentifier($this->dependencyIdentifier));
+    }
+    
+    /**
+     * Returns the name part of the dep identifier.
+     * 
+     * @return string
+     */
+    public function getName()
+    {
+        $parts = \Metagist\Util::splitIdentifier($this->dependencyIdentifier);
+        return isset($parts[1]) ? $parts[1] : '';
+    }
 }
