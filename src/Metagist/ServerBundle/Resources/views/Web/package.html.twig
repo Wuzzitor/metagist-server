@@ -16,6 +16,18 @@
             <br />
         </p>
         <div class="clearfix"></div>
+        
+        <h2>Dependencies</h2>
+        {% for dep in package.dependencies %}
+            {% if dep.name %}
+            <a href="{{ path('package', {'author': dep.author, 'name': dep.name})}}">
+                <i class="icon-link"></i> {{ dep.dependencyIdentifier }}
+            </a>
+            {% else %}
+                {{ dep.dependencyIdentifier }}
+            {% endif %}
+        {% endfor %}
+        
     {% for name, data in categories.getCategories() %}
         <h3>{{name | trans}}</h3>
       {% if name != 'flags' %}
@@ -38,7 +50,7 @@
                          {% else %}
                     <dd>
                             {% if is_granted(groupdata.access) %}
-                            <a href="/contribute/{{package.identifier}}/{{group}}">
+                            <a href="{{ path('contribute', {'author': package.author, 'name': package.name, 'group': group})}}">
                                 <i class="icon-pencil"></i> add this information
                             </a>
                             {% else %}
