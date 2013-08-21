@@ -42,6 +42,20 @@ class DependencyFactory
                 $dependency->setDependencyVersion($version);
                 $dependencies[] = $dependency;
             }
+            
+            $dependencyEntries = $firstVersion->getRequireDev();
+            if (!$dependencyEntries) {
+                $dependencyEntries = array();
+            }
+            
+            foreach ($dependencyEntries as $identifier => $version) {
+                $dependency = new Dependency();
+                $dependency->setPackageVersion($versionString);
+                $dependency->setDependencyIdentifier($identifier);
+                $dependency->setDependencyVersion($version);
+                $dependency->setIsDevDependency(true);
+                $dependencies[] = $dependency;
+            }
         }
         
         return $dependencies;
