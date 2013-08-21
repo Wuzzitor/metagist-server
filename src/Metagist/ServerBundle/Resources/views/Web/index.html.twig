@@ -3,77 +3,29 @@
 
 {% block content %}
 
-<div id="myCarousel" class="carousel slide" data-slide-to="1">
-  <ol class="carousel-indicators">
-    <li data-target="#myCarousel" data-slide-to="0"></li>
-    <li data-target="#myCarousel" data-slide-to="1"></li>
-  </ol>
-  <!-- Carousel items -->
-  <div class="carousel-inner">
-      {% for metainfo in featured %}
-            <div class="active item item-yellow">
-                <div class="content">
-                    <h3>Featured: {{ metainfo.getPackage|e }} </h3>
-                    <p>{{ metainfo.value|e }}</p>
-                </div>
-                <div class="carousel-caption">
-                      <h4>{{ metainfo.getPackage|e }} 
-                          <a href="/package/{{ metainfo.getPackage.getIdentifier|e }}"><i class="icon icon-arrow-right"></i> </a>
-                      </h4>
-                      <p>{{ metainfo.getPackage.getDescription|e }}</p>
-                </div>
-            </div>
-        {% endfor %}
-        
-        {% for rating in best %}
-          <div class="item item-yellow">
-                <div class="content">
-                    <h3>Best rated: {% for i in 1..rating.rating %}<i class="icon icon-star"></i>{% endfor %} {{ rating.getPackage|e }} </h3>
-                    <p>{{ rating.comment|e }}</p>
-                </div>
-                <div class="carousel-caption">
-                      <h4>
-                            {{ rating.getPackage|e }} 
-                          <a href="/package/{{ rating.getPackage.getIdentifier|e }}"><i class="icon icon-arrow-right"></i> </a>
-                      </h4>
-                      <p>{{ rating.getPackage.getDescription|e }}</p>
+{% for metainfo in featured %}
+    <div class="content">
+        <h3>Featured: {{ metainfo.getPackage|e }} </h3>
+        <p>{{ metainfo.value|e }}</p>
+    </div>
+    <h4>{{ metainfo.getPackage|e }} 
+        <a href="{{ path('package', {'author': package.author, 'name': package.name })}}"><i class="icon icon-arrow-right"></i> </a>
+    </h4>
+    <p>{{ metainfo.getPackage.getDescription|e }}</p>
+{% endfor %}
+
+<div class="row">
+    {% for package in packages %}
+        <div class="col-sm-6 col-md-3">
+            <div class="thumbnail">
+                <img src="http://lorempixel.com/200/200/" alt="placeholder" class="img-rounded"/>
+                <div class="caption">
+                    <h3><a href="{{ path('package', {'author': package.author, 'name': package.name })}}">{{ package }}</a></h3>
+                    <p>{{ package.description | e }}</p>
                 </div>
             </div>
-        {% endfor %}
-        
-        {% for rating in latestRatings %}
-          <div class="item item-yellow">
-                <div class="content">
-                    <h3>Latest Rating</h3>
-                    <div class="row-fluid">
-                        <div class="span2 text-center">
-                            <img src="{{ rating.getUser.getAvatarUrl }}" alt="{{ rating.getUser }}" /><br />
-                        {{ rating.getUser }}
-                        </div>
-                        <div class="span10">
-                            <p>
-                                {{ stars(rating.rating) }} for <a href="/package/{{ rating.getPackage.getIdentifier|e }}">
-                                    <i class="icon icon-arrow-right"></i> {{ rating.getPackage|e }}</a>
-                                <br />
-                                <i class="icon icon-quote-left"></i>
-                                <em>{{ rating.getComment|e }}</em> 
-                                <i class="icon icon-quote-right"></i>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="carousel-caption">
-                      <h4>
-                            {{ rating.getPackage|e }} 
-                          <a href="/package/{{ rating.getPackage.getIdentifier|e }}"><i class="icon icon-arrow-right"></i> </a>
-                      </h4>
-                      <p>{{ rating.getPackage.getDescription|e }}</p>
-                </div>
-            </div>
-        {% endfor %}
-  </div>
-  <!-- Carousel nav -->
-  <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
-  <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+        </div>
+    {% endfor %}
 </div>
+    
 {% endblock %}
