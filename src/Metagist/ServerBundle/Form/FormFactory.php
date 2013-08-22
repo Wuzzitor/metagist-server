@@ -3,6 +3,7 @@ namespace Metagist\ServerBundle\Form;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use Metagist\CategorySchema;
+use Metagist\ServerBundle\Entity\Rating;
 
 /**
  * Factory for forms.
@@ -52,7 +53,7 @@ class FormFactory
      * Returns the rating form.
      * 
      * @param array $versions
-     * @param \Metagist\Rating $rating
+     * @param Rating $rating
      * @return \Symfony\Component\Form\Form
      */
     public function getRateForm(array $versions = array(''), Rating $rating = null)
