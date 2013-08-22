@@ -35,18 +35,19 @@
             </a>
         {% endfor %}
         
+        <div class="pull-right span2">
+        {% if (is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')) %}
+        {% else %}
+                <a class="btn btn-primary btn-block" href="{{ path('github_login') }}">
+                    <i class="icon-white icon-2x icon-rocket"></i><br /> {{ 'Contribute!'|trans }}</a>
+                <br />
+        {% endif %}
+        </div>
+        <h2>Info</h2>
     {% for name, data in categories.getCategories() %}
         <h3>{{name | trans}}</h3>
       {% if name != 'flags' %}
         <div class="tab-pane {% if loop.first %}active{%endif%}" id="tab_{{name}}">
-            <div class="pull-right span2">
-            {% if (is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')) %}
-            {% else %}
-                    <a class="btn btn-primary btn-block" href="{{ path('custom_login') }}">
-                        <i class="icon-white icon-4x icon-rocket"></i><br /> {{ 'Contribute!'|trans }}</a>
-                    <br />
-            {% endif %}
-                </div>
           {% for group, groupdata in categories.getGroups(name) %}
             {% if (groupdata.access == 'ROLE_ADMIN' and is_granted(groupdata.access)) or groupdata.access != 'ROLE_ADMIN' %}
                 {% set infos = package.getMetaInfos(group)%}
