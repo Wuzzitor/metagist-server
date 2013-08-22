@@ -30,21 +30,22 @@ class UserProvider implements UserProviderInterface, OAuthAwareUserProviderInter
     private $repo;
     
     /**
-     * userprovider configuration
+     * admin user accounts.
+     * 
      * @var array
      */
-    private $config;
+    private $admins;
     
     /**
      * Constructor.
      * 
      * @param \Doctrine\ORM\EntityManager $conn
-     * @param array                       $config
+     * @param array                       $admins
      */
-    public function __construct(EntityRepository $repo, array $config = array())
+    public function __construct(EntityRepository $repo, array $admins = array())
     {
         $this->repo   = $repo;
-        $this->config = $config;
+        $this->admins = $admins;
     }
 
     /**
@@ -76,12 +77,7 @@ class UserProvider implements UserProviderInterface, OAuthAwareUserProviderInter
      */
     protected function getRoleByUsername($username)
     {
-        $adminList = isset($this->config[self::CONFIG_ADMIN_LIST]) ? $this->config[self::CONFIG_ADMIN_LIST] : '';
-        $admins = explode(',', $adminList);
-        array_map('trim', $admins);
-        array_map('strtolower', $admins);
-        
-        if (in_array(strtolower($username), $admins)) {
+        if (in_array(strtolower($username), $this->admins)) {
             return User::ROLE_ADMIN;
         }
         

@@ -54,7 +54,7 @@ services:
             
   metagist.user.provider.entity:
     class: Metagist\ServerBundle\Entity\UserProvider
-    arguments: ["@metagist.user.repository"]
+    arguments: ["@metagist.user.repository", %metagist.server.admins%]
     
   metagist.opauth.listener:
     class: Metagist\ServerBundle\EventListener\OpauthListener
