@@ -1,0 +1,26 @@
+{% extends 'MetagistServerBundle::layout.html.twig' %}
+{% set pagetitle = 'metagist.org - Please log in' %}
+
+{% block content %}
+
+    <div class="page-header">
+        <h1>Sign in to use this function.<br /><small>Please use your GitHub accout to authenticate.</small></h1>
+    </div>
+
+    <h2>Why do I see this message?</h2>
+    <p>
+        You have probably accessed a function to contribute information to MetaGist.
+        Contribution of information and the rating of packages is 
+        limited to user who can identify themselves. For metagist for identity 
+        provider is github.com, because metagist will not have its own user database
+        and developer using composer packages will likely have a github account.
+    </p>
+    <p>
+        Authentication is required to ensure that any contribution can be linked to an
+        existing, validated user and to reduce the risk of receiving false or nonsense
+        information.
+    </p>
+    <a class="btn btn-primary" href="{{ path('github_login')}}">Sign in with GitHub</a> 
+    <a class="btn" href="https://github.com/signup">Create a GitHub account</a>
+
+{% endblock %}
