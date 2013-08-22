@@ -216,7 +216,7 @@ class WebController extends Controller
         $request  = $this->getRequest();
         $package  = $this->serviceProvider->packages()->byAuthorAndName($author, $name);
         $flashBag = $this->serviceProvider->session()->getFlashBag();
-        $user     = $this->serviceProvider->security()->getToken()->getUser();
+        $user     = $this->getUser();
         $rating   = $this->serviceProvider->ratings()->byPackageAndUser($package, $user);
         $form     = $this->getFormFactory()->getRateForm($package->getVersions(), $rating);
         
