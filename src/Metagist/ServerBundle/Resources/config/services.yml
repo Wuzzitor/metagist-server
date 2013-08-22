@@ -4,6 +4,12 @@ parameters:
     metagist.categoryschema.class: Metagist\CategorySchema
     
 services:
+  
+  twig.extension.text:
+      class: Twig_Extensions_Extension_Text
+      tags:
+                - { name: twig.extension }
+                
   metagist.listener.exception_listener:
         class: Metagist\ServerBundle\Listener\ExceptionListener
         arguments: ["@templating", "@logger"]

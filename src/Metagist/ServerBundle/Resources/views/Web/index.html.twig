@@ -18,10 +18,10 @@
     {% for package in packages %}
         <div class="col-sm-6 col-md-3">
             <div class="thumbnail">
-                <img src="http://lorempixel.com/200/200/" alt="placeholder" class="img-rounded"/>
+                <img src="http://lorempixel.com/200/200/?{{ random() }}" alt="placeholder" class="img-rounded"/>
                 <div class="caption">
                     <h3><a href="{{ path('package', {'author': package.author, 'name': package.name })}}">{{ package }}</a></h3>
-                    <p>{{ package.description | e }}</p>
+                    <p>{{ package.description | e  | truncate(50)}}</p>
                 </div>
             </div>
         </div>
