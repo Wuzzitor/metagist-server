@@ -3,6 +3,7 @@ namespace Metagist\ServerBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 // these import the "@Route" and "@Template" annotations
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -11,8 +12,10 @@ use Doctrine\Common\Collections\Collection;
 use Pagerfanta\Adapter\DoctrineCollectionAdapter;
 use Pagerfanta\Pagerfanta;
 use Pagerfanta\View\TwitterBootstrapView;
+
 use Metagist\ServerBundle\Entity\Rating;
 use Metagist\ServerBundle\Entity\Metainfo;
+use Metagist\ServerBundle\Entity\Package;
 
 /**
  * Web controller
@@ -303,7 +306,7 @@ class WebController extends Controller
      * @Route("/search", name="search")
      * @Template()
      */
-    public function search(Request $request)
+    public function searchAction(Request $request)
     {
         $query = $request->get('query');
         if ($query == '*') {
@@ -343,14 +346,11 @@ class WebController extends Controller
         $pagerfanta->setCurrentPage($page);
         $view       = new TwitterBootstrapView();
         
-        return $this->serviceProvider->render(
-            'search.html.twig', 
-            array(
-                'query' => $query,
-                'dummy' => isset($dummy) ? $dummy : null,
-                'packages' => $pagerfanta,
-                'pagination' => $view->render($pagerfanta, $routeGenerator)
-            )
+        return array(
+            'query' => $query,
+            'dummy' => isset($dummy) ? $dummy : null,
+            'packages' => $pagerfanta,
+            'pagination' => $view->render($pagerfanta, $routeGenerator)
         );
     }
     

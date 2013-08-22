@@ -1,0 +1,43 @@
+{% extends 'MetagistServerBundle::layout.html.twig' %}
+{% set pagetitle = 'metagist.org' %}
+
+{% block content %}
+<div class="item item-yellow">
+    <div class="content">
+    <div class="page-header">
+        <h1>Search results<br /><small>Packages matching your query "{{query | e}}"</small></h1>
+    </div>
+
+    <div class="row">
+        
+        <div class="span12">
+            <ul class="unstyled">
+                {% for package in packages %}
+                    <li>
+                        <a href="{{ path('package', {'author': package.author, 'name': package.name}) }}">
+                        {{ package.getIdentifier|e }}</a>
+                        <p>
+                        {{ package.getDescription }}
+                        </p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        {% if dummy %}
+        <div class="span12">
+            <h2>Try: <a href="{{ path('package', {'author': dummy.author, 'name': dummy.name}) }}">{{ dummy.getIdentifier|e }}</a></h2>
+        </div>
+        {% endif %}
+        
+        {% if packages.count == 0%}
+        No results found.
+        {% endif %}
+    </div>
+    
+    {% if packages.count > 0%}
+    {{ pagination|raw }}
+    {% endif %}
+    </div>
+</div>
+{% endblock %}
