@@ -4,13 +4,20 @@
 {% block content %}
 <div class="content">
     <div class="page-header">
-        <h1>Rate {{package}}<br /><small>Please respect the rules.</small></h1>
+        <h1>Rate {{package}}<br /><small>Please respect the author's efforts.</small></h1>
     </div>
 
-    <form action="" method="post" role="form" {{ form_enctype(form) }} class="form-horizontal">
-{{ form_widget(form) }}
+    <form action="" method="post" role="form" {{ form_enctype(form) }}>
+        {{ form_errors(form) }}
+        {{ form_row(form.rating) }}
+        {{ form_row(form.version) }}
+        {{ form_row(form.title) }}
+        {{ form_row(form.comment) }}
+        {{ form_rest(form) }}
+        <div class="form-group">
             <button type="submit" class="btn btn-primary">{{ 'Send'|trans }}</button>
             <a href="{{ path('package', {'author': package.author, 'name': package.name})}}" class="btn">{{ 'Cancel'|trans }}</a>
+        </div>
     </form>
 </div>
 {% endblock %}
