@@ -357,11 +357,13 @@ class WebController extends Controller
     /**
      * Just displays the notice that the user has to be logged in.
      * 
-     * @return string
+     * @return array
+     * @Route("/login", name="login")
+     * @Template()
      */
-    public function loginNotice()
+    public function loginAction()
     {
-        return $this->serviceProvider->render('login.html.twig');
+        return array();
     }
 
     /**
