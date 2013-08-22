@@ -3,6 +3,8 @@
 
 {% block content %}
     <h1>{{ user.getUsername }}`s Profile</h1>
+    <img src="{{user.getAvatarUrl}}" alt="User icon" />
+    Role: {{ user.role | trans }}
     <h2>Ratings</h2>
     {% for rating in ratings %}
     <div class="panel panel-default">
