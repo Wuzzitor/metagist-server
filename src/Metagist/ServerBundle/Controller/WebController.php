@@ -227,8 +227,10 @@ class WebController extends Controller
             $form->bind($request);
             if ($form->isValid()) {
                 $data     = $form->getData();
-                $data['package'] = $package;
-                $rating = Rating::fromArray($data);
+                if ($rating === null) {
+                    $data['package'] = $package;
+                    $rating = Rating::fromArray($data);
+                }
                 $rating->setUser($user);
                 $this->serviceProvider->ratings()->save($rating);
                 $average = $this->serviceProvider->ratings()->getAverageForPackage($package);
