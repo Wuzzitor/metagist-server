@@ -24,13 +24,15 @@
                                 <a class="btn btn-primary" href="{{ path('rate', {'author': package.author, 'name': package.name })}}"><i class="icon-white icon-star"></i> Rate this package</a> 
                 {% endif %}
             </div>
-            <h2><a href="{{ path('ratings', {'author': package.author, 'name': package.name })}}">{{ "Reviews" |trans}}</a></h2>
+            <h2><a href="{{ path('ratings', {'author': package.author, 'name': package.name })}}">{{ "Latest Reviews" |trans}}</a></h2>
             {% for rating in ratings %}
                 <div class="panel">
                     <div class="panel-heading">{{ stars(rating.rating) }} {{ rating.title | e}}</div>
                     <div class="panel-body row">
                         <div class="col-md-1">
+                            <a href="{{ path('user', {'name': rating.user.username}) }}">
                             <img src="{{rating.user.getAvatarUrl}}" alt="by {{rating.user.getUsername}}" class="img-rounded" /><br />
+                            </a>
                         </div>
                         <div class="col-md-10 col-md-offset-1">
                         <p>{{rating.comment | e}}</p>
@@ -38,9 +40,7 @@
                     </div>
                 </div>
             {% endfor %}
-        </div>
-        
-        <div class="col-md-4">
+            
             <h2>Dependencies</h2>
             {% for dep in package.dependencies %}
                 {% if dep.name %}
@@ -58,7 +58,9 @@
                     <i class="icon icon-arrow-right"></i> {{ dep.package }}
                 </a>
             {% endfor %}
-
+        </div>
+        
+        <div class="col-md-4">
             <div class="pull-right span2">
             {% if (is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')) %}
             {% else %}
