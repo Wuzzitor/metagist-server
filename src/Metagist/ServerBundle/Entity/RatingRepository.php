@@ -110,27 +110,22 @@ class RatingRepository extends EntityRepository
     }
     
     /**
-     * Creates a Rating instance with a dummy package based on the results
-     * of a joined query.
+     * Retrieves the average rating for a package.
      * 
-     * @param array $data
-     * @return Rating
+     * @param \Metagist\ServerBundle\Entity\Package $package
+     * @return float
+     * @todo select rateavg without the package
      */
-    private function createRatingWithDummyPackage(array $data)
+    public function getAverageForPackage(Package $package)
     {
-        $package = new Package($data['identifier'], $data['package_id']);
-        if (isset($data['description'])) {
-            $package->setDescription($data['description']);
-        }
-        $data['package'] = $package;
+        $builder = $this->createQueryBuilder('r')
+            ->select('avg(r.rating) rateavg, r')
+            ->join('r.package', 'p')
+            ->groupBy('p.id')
+            ->where('r.package = :package')
+            ->orderBy('rateavg', 'DESC');
         
-        if (isset($data['username'])) {
-            $user = new User($data['username'], 'ROLE_USER', $data['avatar_url']);
-            $user->setId($data['user_id']);
-            $data['user'] = $user;
-        }
-        
-        $rating = Rating::fromArray($data);
-        return $rating;
+        $result = $builder->getQuery()->setHydrationMode(\Doctrine\ORM\Query::HYDRATE_SCALAR)->execute(array('package' => $package));
+        return (float)$result[0]['rateavg'];
     }
 }

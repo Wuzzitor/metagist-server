@@ -124,4 +124,31 @@ class RatingRepositoryTest extends WebDoctrineTestCase
         $this->assertInstanceOf("\Metagist\ServerBundle\Entity\Package", $rating);
     }
     
+    /**
+     * Ensures a package is returned if found.
+     */
+    public function testGetAverageForPackage()
+    {
+        $this->loadFixtures();
+        
+        $faker = \Faker\Factory::create();
+        $user = new User($faker->username);
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+        
+        $rating = new Rating();
+        $rating->setPackage($this->package);
+        $rating->setUser($user);
+        $rating->setComment('testcomment');
+        $rating->setRating($faker->randomNumber(1, 5));
+        $rating->setTitle('Superb');
+        $this->entityManager->persist($rating);
+        $this->entityManager->flush();
+        
+        $expected = ($rating->getRating() + $this->rating->getRating()) / 2;
+        $avg = $this->repo->getAverageForPackage($this->package);
+        $this->assertInternalType('float', $avg);
+        $this->assertEquals($expected, $avg);
+    }
+    
 }
