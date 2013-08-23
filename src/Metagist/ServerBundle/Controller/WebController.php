@@ -11,7 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Doctrine\Common\Collections\Collection;
 use Pagerfanta\Adapter\DoctrineCollectionAdapter;
 use Pagerfanta\Pagerfanta;
-use Pagerfanta\View\TwitterBootstrapView;
+use Metagist\ServerBundle\TWBS\TwitterBootstrapView;
 
 use Metagist\ServerBundle\Entity\Rating;
 use Metagist\ServerBundle\Entity\Metainfo;
@@ -146,7 +146,7 @@ class WebController extends Controller
         return array(
             'package' => $package,
             'categories' => $this->serviceProvider->categories(),
-            'ratings' => $this->serviceProvider->ratings()->byPackage($package, 0, 5),
+            'ratings' => $this->serviceProvider->ratings()->byPackage($package, 0, 3),
             'consumers' => $this->serviceProvider->dependencies()->getConsumersOf($package)
         );
     }
