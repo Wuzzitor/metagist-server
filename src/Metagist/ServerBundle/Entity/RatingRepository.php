@@ -27,6 +27,7 @@ class RatingRepository extends EntityRepository
         $builder = $this->createQueryBuilder('r')
             ->where('r.package = :package')
             ->setFirstResult($offset)
+            ->orderBy('r.timeUpdated', 'DESC')
             ->setMaxResults($limit);
         
         return new ArrayCollection($builder->getQuery()->execute(array('package' => $package)));
