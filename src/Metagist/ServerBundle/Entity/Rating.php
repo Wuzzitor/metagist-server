@@ -3,11 +3,12 @@
 namespace Metagist\ServerBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
- * Ratings
+ * Rating
  *
- * @ORM\Table(name="ratings")
+ * @ORM\Table(name="ratings",uniqueConstraints={@UniqueConstraint(name="user_rating_idx", columns={"user_id", "package_id"})})
  * @ORM\Entity(repositoryClass="RatingRepository")
  * @ORM\HasLifecycleCallbacks
  */
