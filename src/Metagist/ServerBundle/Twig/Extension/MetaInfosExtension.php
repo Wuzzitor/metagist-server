@@ -113,7 +113,7 @@ class MetaInfosExtension extends \Twig_Extension
         }
         
         
-        $buffer = '<ul class="unstyled">';
+        $buffer = '<ul class="list-unstyled">';
         foreach ($collection as $metaInfo) {
             $buffer .= '<li>' . $this->renderMetaInfo($metaInfo, $config). '</li>' . PHP_EOL;
         }
