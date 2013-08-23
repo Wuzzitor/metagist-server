@@ -181,6 +181,29 @@ class WebController extends Controller
     }
 
     /**
+     * Shows a users profile
+     * 
+     * @param string $name
+     * @return string
+     * @Route("/user/{name}", name="user")
+     * @Template()
+     */
+    public function userAction($name)
+    {
+        $repo = $this->getDoctrine()->getEntityManager()->getRepository('MetagistServerBundle:User');
+        $user = $repo->findOneBy(array('username' => $name));
+        
+        if (!$user) {
+            return $this->redirect('/');
+        }
+        
+        return array(
+            'user' => $user,
+            'ratings' => $this->serviceProvider->ratings()->byUser($user)
+        );
+    }
+    
+    /**
      * Shows the package ratings.
      * 
      * @param sting  $author
