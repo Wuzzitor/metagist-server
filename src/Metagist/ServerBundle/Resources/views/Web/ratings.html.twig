@@ -10,21 +10,22 @@
         <a class="btn btn-primary" href="{{ path('rate', {'author': package.author, 'name': package.name })}}"><i class="icon-white icon-star"></i> Rate this package</a>
     </div>
     
-    <div class="row-fluid">
     {% for rating in ratings %}
-        <div class="span2 text-center">
-            <h2>{% for i in 1..rating.rating %}<i class="icon icon-star"></i>{% endfor %}</h2>
-            <div>
-                <img src="{{rating.getUser.getAvatarUrl}}" alt="User icon" /><br />
-                by {{rating.getUser.getUsername}}
+            <div class="panel">
+                <div class="panel-heading">{{ stars(rating.rating) }} {{ rating.title | e}}</div>
+                <div class="panel-body row">
+                    <div class="col-md-1">
+                        <a href="{{ path('user', {'name': rating.user.username}) }}">
+                            <img src="{{rating.user.getAvatarUrl}}" alt="by {{rating.user.getUsername}}" class="img-rounded" /><br />
+                        </a>
+                    </div>
+                    <div class="col-md-10 col-md-offset-1">
+                        <p>{{rating.comment | e}}</p>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="span10">
-            <h2>{{rating.title | e}}</h2>
-            <p>{{rating.comment | e}}</p>
-        </div>
+            
     {% endfor %}
-    </div>
 
     {{ pagination|raw }}
                 
