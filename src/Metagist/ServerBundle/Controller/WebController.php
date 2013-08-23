@@ -231,6 +231,10 @@ class WebController extends Controller
                 $rating = Rating::fromArray($data);
                 $rating->setUser($user);
                 $this->serviceProvider->ratings()->save($rating);
+                $average = $this->serviceProvider->ratings()->getAverageForPackage($package);
+                $package->setOverallRating($average);
+                $this->serviceProvider->packages()->save($package);
+                
                 $flashBag->add('success', 'Thanks.');
                 return $this->redirectToPackageView($package);
             } else {
