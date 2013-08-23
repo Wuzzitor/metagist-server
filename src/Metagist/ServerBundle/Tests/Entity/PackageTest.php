@@ -3,13 +3,14 @@ namespace Metagist\ServerBundle\Tests\Entity;
 
 use Metagist\ServerBundle\Entity\Package;
 use Metagist\ServerBundle\Entity\Metainfo;
+use Metagist\ServerBundle\Tests\WebDoctrineTestCase;
 
 /**
  * Tests the package class.
  * 
  * @author Daniel Pozzi <bonndan76@googlemail.com>
  */
-class PackageTest extends \PHPUnit_Framework_TestCase
+class PackageTest extends WebDoctrineTestCase
 {
     /**
      * system under test
@@ -130,5 +131,36 @@ class PackageTest extends \PHPUnit_Framework_TestCase
     public function testToStringReturnsOnlyTheName()
     {
         $this->assertEquals('123', $this->package->__toString());
+    }
+    
+    /**
+     * Ensures the overall rating can be set.
+     */
+    public function testOveralRating()
+    {
+        $this->package->setDescription('');
+        
+        $this->package->setOverallRating(4.2);
+        $this->entityManager->persist($this->package);
+        $this->entityManager->flush();
+        $this->assertEquals(4.2, $this->package->getOverallRating());
+    }
+    
+    /**
+     * Ensures the overall rating is checked if within bounds.
+     */
+    public function testOveralRatingOutOfBoundsWhenLowerZero()
+    {
+        $this->setExpectedException("\OutOfBoundsException");
+        $this->package->setOverallRating(-0.1);
+    }
+    
+    /**
+     * Ensures the overall rating is checked if within bounds.
+     */
+    public function testOveralRatingOutOfBoundsWhenAbove5()
+    {
+        $this->setExpectedException("\OutOfBoundsException");
+        $this->package->setOverallRating(5.1);
     }
 }

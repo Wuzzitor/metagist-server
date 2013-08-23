@@ -73,6 +73,14 @@ class Package implements PackageInterface
      * @ORM\OneToMany(targetEntity="Dependency", mappedBy="package",cascade={"persist"})
      */
     private $dependencies;
+    
+    /**
+     * overall rating (average or the like)
+     * 
+     * @var float
+     * @ORM\Column(name="overall_rating", type="decimal", precision=2, scale=1)
+     */
+    private $overallRating = 0.0;
 
     /**
      * Constructor.
@@ -303,4 +311,30 @@ class Package implements PackageInterface
         
         $this->dependencies = $dependencies;
     }
+    
+    /**
+     * Returns the computed overall rating
+     * 
+     * @return float
+     */
+    public function getOverallRating()
+    {
+        return $this->overallRating;
+    }
+
+    /**
+     * Set the overall rating.
+     * 
+     * @param float $overallRating
+     * @throws \OutOfBoundsException
+     */
+    public function setOverallRating($overallRating)
+    {
+        if ($overallRating > 5 || $overallRating < 0) {
+            throw new \OutOfBoundsException('The overall rating is out of limits.');
+        }
+        $this->overallRating = $overallRating;
+    }
+
+
 }
