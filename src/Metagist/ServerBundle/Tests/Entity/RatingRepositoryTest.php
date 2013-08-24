@@ -22,6 +22,11 @@ class RatingRepositoryTest extends WebDoctrineTestCase
     
     private $package;
     private $user;
+    
+    /**
+     *
+     * @var Rating
+     */
     private $rating;
         
     /**
@@ -95,19 +100,12 @@ class RatingRepositoryTest extends WebDoctrineTestCase
     }
     
     /**
-     * Ensures a package can be saved.
+     * Ensures a rating can be saved.
      */
     public function testSave()
     {
-        $rating = Rating::fromArray(array(
-            'package' => $this->package,
-            'user' => $this->user,
-            'title' => 'test',
-            'comment' => 'test',
-            'rating' => 4,
-        ));
-        
-        $this->repo->save($rating);
+        $this->rating->setComment('test123');
+        $this->repo->save($this->rating);
     }
     
     /**
