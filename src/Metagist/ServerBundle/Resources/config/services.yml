@@ -16,7 +16,7 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
             
-  metagist_controller_serviceprovider:
+  metagist.controller.serviceprovider:
     class:     Metagist\ServerBundle\Controller\ServiceProvider
     arguments: ["@service_container"]
     
@@ -44,13 +44,13 @@ services:
 
   metagist.web.controller:
     class:     "%metagist.web.controller.class%"
-    arguments: ["@metagist_controller_serviceprovider"]
+    arguments: ["@metagist.controller.serviceprovider"]
     calls:
       - [setContainer, ["@service_container"]]
   
   metagist.api.controller:
     class:     "%metagist.api.controller.class%"
-    arguments: ["@metagist_controller_serviceprovider","@metagist.api.request_validator"]
+    arguments: ["@metagist.controller.serviceprovider","@metagist.api.request_validator"]
   
   metagist.user.repository:
         class:           Metagist\ServerBundle\Entity\UserRepository
