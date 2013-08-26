@@ -17,7 +17,7 @@
 <div class="row">
     {% for package in packages %}
         <div class="col-sm-6 col-md-3">
-            <div class="thumbnail">
+            <div class="thumbnail package-teaser">
                 <img src="http://lorempixel.com/200/200/?{{ random() }}" alt="placeholder" class="img-rounded"/>
                 <div class="caption">
                     {{ stars(package.overallrating) }} <a href="{{ path('package', {'author': package.author, 'name': package.name })}}">{{ package.identifier }}</a>
