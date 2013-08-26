@@ -27,7 +27,7 @@
         "twitter/bootstrap":    "dev-3.0.0-wip",
         "knplabs/packagist-api" : "0.1.*@dev",
         "pagerfanta/pagerfanta" : "v1.0.0",
-        "bonndan/RMT"           : "@dev",
+        "bonndan/ReleaseManager"  : "0.2.1",
         "wuzzitor/metagist-api" : "0.0.5"
     },
     "require-dev": {
@@ -52,7 +52,7 @@
     "config": {
         "bin-dir": "bin"
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "beta",
     "extra": {
         "symfony-app-dir": "app",
         "symfony-web-dir": "web",
@@ -71,12 +71,12 @@
         { 
             "type": "package",
             "package": {
-                "name": "bonndan/RMT",
-                "version": "0.0.0",
+                "name": "bonndan/ReleaseManager",
+                "version": "0.2.1",
                 "source": {
-                    "url": "http://github.com/bonndan/RMT.git",
+                    "url": "http://github.com/bonndan/ReleaseManager.git",
                     "type": "git",
-                    "reference": "0e6e2798939e651a20aa6c1f698a10db210d4cc5"
+                    "reference": "0.2.1"
                 }
             }
         }
