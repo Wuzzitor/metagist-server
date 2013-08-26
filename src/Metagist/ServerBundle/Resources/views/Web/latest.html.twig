@@ -6,23 +6,26 @@
     <div class="content">
         <div class="span6">
         {% if latestRatings %}
-            {% for latestRating in latestRatings %}
             <h2>Latest Ratings</h2>
+            {% for rating in latestRatings %}
 
-            <div class="row-fluid">
-                <div class="span2 text-center">
-                    <img src="{{ latestRating.getUser.getAvatarUrl }}" alt="{{ latestRating.getUser }}" /><br />
-                {{ latestRating.getUser }}
+            <div class="panel">
+                <div class="panel-heading">
+                {{ stars(rating.rating) }} {{ rating.title | e}} on
+                <a href="{{ path('package', {'author': rating.package.author, 'name': rating.package.name}) }}" title="{{ rating.package.getIdentifier|e }}">{{ rating.package.getIdentifier|e }}</a>
                 </div>
-                <div class="span10">
-                    <p>
-                        {{ stars(latestRating.rating) }} for <a href="{{ path('package', {'author': latestRating.getPackage.author, 'name': latestRating.getPackage.name}) }}{{ latestRating.getPackage.getIdentifier|e }}"><i class="icon icon-arrow-right"></i> {{ latestRating.getPackage|e }}</a><br />
-                        <i class="icon icon-quote-left"></i>
-                        <em>{{ latestRating.getComment|e }}</em> 
-                        <i class="icon icon-quote-right"></i>
-                    </p>
+                <div class="panel-body row">
+                    <div class="col-md-1">
+                        <a href="{{ path('user', {'name': rating.user.username}) }}">
+                        <img src="{{rating.user.getAvatarUrl}}" alt="by {{rating.user.getUsername}}" class="img-rounded" /><br />
+                        </a>
+                    </div>
+                    <div class="col-md-10 col-md-offset-1">
+                    <p>{{rating.comment | e}}</p>
+                    </div>
                 </div>
             </div>
+            
             {% endfor %}
         {% endif %}
         </div>
