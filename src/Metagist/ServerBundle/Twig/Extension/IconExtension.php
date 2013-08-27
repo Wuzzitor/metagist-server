@@ -7,6 +7,8 @@ use Metagist\ServerBundle\Entity\Metainfo;
 /**
  * Twig extension to create icons.
  * 
+ * To be used with twitter bootstrap.
+ * 
  * @author Daniel Pozzi <bonndan76@googlemail.com>
  */
 class IconExtension extends \Twig_Extension
@@ -43,12 +45,14 @@ class IconExtension extends \Twig_Extension
                 'callback' => function ($value) { return ($value > 1); },
                 'icon'     => 'volume-up',
                 'title'    => 'This package is maintained by more than one person.',
+                'class'    => 'text-success'
             ),
             'one_maintainer' => array(
                 'group'    => 'maintainers',
                 'callback' => function ($value) { return ($value == 1); },
                 'icon'     => 'meh',
                 'title'    => 'This package is only maintained by one person.',
+                'class'    => 'text-warning'
             )
         );
     }
@@ -126,16 +130,42 @@ class IconExtension extends \Twig_Extension
         if (($metainfos = $package->getMetaInfos()) !== null) {
             foreach ($this->specs as $spec => $data) {
                 if ($this->metainfosProvide($metainfos, $data)) {
-                    $symbols[$data['icon']] = $data['title'];
+                    $symbols[$data['icon']] = $data;
                 }
             }
         }
         
         $buffer = '';
-        foreach ($symbols as $icon => $title) {
-            $buffer .= '<i class="icon icon-' . $icon . ' icon-' . $magnification . 'x" title="' . $title . '"></i>';
+        foreach ($symbols as $icon => $display) {
+            if (is_string($display)) {
+                $class = '';
+                $title = $display;
+            } else {
+                $title = $display['title'];
+                $icon  = $display['icon'];
+                $class = @$display['class'];
+            }
+            
+            $buffer .= $this->renderIcon($icon, $title, $magnification, $class);
         }
         return $buffer;
+    }
+    
+    /**
+     * Renders a twbs icon.
+     * 
+     * @param string $icon
+     * @param string $title
+     * @param int    $magnification
+     * @param string $class
+     * @return string
+     */
+    private function renderIcon($icon, $title, $magnification = 1, $class = '')
+    {
+        return '<i class="icon icon-' . $icon 
+            . ' icon-' . $magnification . 'x ' 
+            . $class 
+            . '" title="' . $title . '"></i>';
     }
     
     /**
