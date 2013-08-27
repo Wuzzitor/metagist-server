@@ -5,7 +5,12 @@
 */
 
 .package-teaser {
-    height: 300px;
+    height:250px;
     overflow: hidden;
     margin-bottom: 1em;
+}
+
+.symbol {
+    margin-right: 0.1em;
+    margin-bottom: 0.1em;
 }
