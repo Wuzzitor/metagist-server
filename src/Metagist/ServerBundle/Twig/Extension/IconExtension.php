@@ -1,6 +1,8 @@
 <?php
 namespace Metagist\ServerBundle\Twig\Extension;
 
+use Metagist\ServerBundle\Entity\Package;
+
 /**
  * Twig extension to create icons.
  * 
@@ -34,6 +36,7 @@ class IconExtension extends \Twig_Extension
         return array(
             'icon'  => new \Twig_Function_Method($this, 'icon', array("is_safe" => array("html"))),
             'stars' => new \Twig_Function_Method($this, 'stars', array("is_safe" => array("html"))),
+            'symbols' => new \Twig_Function_Method($this, 'symbols', array("is_safe" => array("html"))),
         );
     }
     
@@ -63,10 +66,32 @@ class IconExtension extends \Twig_Extension
     {
         $buffer = '';
         // {% for i in 1..latestRating.rating %}{% endfor %}
-        for ($i=0; $i<$rating; $i++) {
-            $buffer .= '<i class="icon icon-star"></i>';
+        for ($i=0; $i<5; $i++) {
+            $iconType = ($i < $rating) ? 'icon-star' : 'icon-star-empty';
+            $buffer .= '<i class="symbol icon ' . $iconType . '"></i>';
         }
         
+        return $buffer;
+    }
+    
+    /**
+     * Returns the symbols for a package
+     * 
+     * @param Package $package
+     * @param int     $magnification
+     * @return string
+     */
+    public function symbols(Package $package, $magnification = 1)
+    {
+        $symbols = array();
+        if ($package->getType() == 'library') {
+            $symbols['wrench'] = 'This package is a library';
+        }
+        
+        $buffer = '';
+        foreach ($symbols as $icon => $title) {
+            $buffer .= '<i class="icon icon-' . $icon . ' icon-' . $magnification . 'x" title="' . $title . '"></i>';
+        }
         return $buffer;
     }
     
