@@ -69,7 +69,7 @@
               {
                   "name": "version-stamp",
                   "const": "METAGIST_VERSION",
-                  "file": "src/Metagist/ServerBundle/version.php",
+                  "file": "src/Metagist/ServerBundle/version.php"
               },
               "composer-update",
               {
