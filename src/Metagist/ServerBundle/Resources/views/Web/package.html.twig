@@ -72,31 +72,27 @@
             <h2>Info</h2>
             {% for name, data in categories.getCategories() %}
                 <h3>{{name | trans}}</h3>
-              {% if name != 'flags' %}
-                <div class="tab-pane {% if loop.first %}active{%endif%}" id="tab_{{name}}">
                   {% for group, groupdata in categories.getGroups(name) %}
                     {% if (groupdata.access == 'ROLE_ADMIN' and is_granted(groupdata.access)) or groupdata.access != 'ROLE_ADMIN' %}
                         {% set infos = package.getMetaInfos(group)%}
                         <dl class="dl-horizontal">
                             <dt title="{{groupdata.description}}">{{ icon(group) }} {{ (group) | trans}}</dt>
-                                 {% if infos.count %}
-                            <dd>{{ renderInfos(infos) }}</dd>
-                                 {% else %}
-                            <dd>
+                             {% if infos.count %}
+                                <dd>{{ renderInfos(infos) }}</dd>
+                             {% else %}
+                                <dd>
                                     {% if is_granted(groupdata.access) %}
                                     <a href="{{ path('contribute', {'author': package.author, 'name': package.name, 'group': group})}}">
                                         <i class="icon-pencil"></i> add this information
                                     </a>
                                     {% else %}
-                                    <span class="text-warning">Contribution required</span>
+                                    <span>?</span>
                                     {% endif %}
                                 </dd>
-                                 {% endif %}
+                             {% endif %}
                             </dl>
                     {% endif %}
                   {% endfor %}
-                        </div>
-              {% endif %}
             {% endfor %}
 
                         <small class="pull-right">Last updated: {{ package.getTimeUpdated |date('d-m-Y') }}</small>
