@@ -53,6 +53,13 @@ class IconExtension extends \Twig_Extension
                 'icon'     => 'meh',
                 'title'    => 'This package is only maintained by one person.',
                 'class'    => 'text-warning'
+            ),
+            'hiddengem' => array(
+                'group'    => 'hiddengem',
+                'callback' => function ($value) { return ($value != null); },
+                'icon'     => 'gift',
+                'title'    => 'This package is considered a hidden gem.',
+                'class'    => 'text-primary'
             )
         );
     }
