@@ -22,7 +22,7 @@
                 <br />
                 <br />
                 {{ stars(package.overallrating) }} <a href="{{ path('package', {'author': package.author, 'name': package.name })}}">{{ package.identifier }}</a>
-                <p>{{ package.description | e  | truncate(50)}}</p>
+                <p>{{ package.description | e  | truncate(100)}}</p>
             </div>
         </div>
     {% endfor %}
