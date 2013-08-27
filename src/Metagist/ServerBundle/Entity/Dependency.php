@@ -30,7 +30,7 @@ class Dependency
      * The package having the dependency
      * 
      * @var Package
-     * @ORM\ManyToOne(targetEntity="Package")
+     * @ORM\ManyToOne(targetEntity="Package", inversedBy="dependencies")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="package_id", referencedColumnName="id")
      * })
