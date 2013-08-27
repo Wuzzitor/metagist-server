@@ -2,6 +2,7 @@
 namespace Metagist\ServerBundle\Twig\Extension;
 
 use Metagist\ServerBundle\Entity\Package;
+use Metagist\ServerBundle\Entity\Metainfo;
 
 /**
  * Twig extension to create icons.
@@ -17,6 +18,12 @@ class IconExtension extends \Twig_Extension
     protected $mapping = array();
     
     /**
+     * "Tests"
+     * @var array
+     */
+    private $specs = array();
+    
+    /**
      * Init with the mapping to use.
      * 
      * @param array $mapping
@@ -24,6 +31,26 @@ class IconExtension extends \Twig_Extension
     public function __construct( $mapping)
     {
         $this->mapping = $mapping;
+        $this->specs = array(
+            'featured' => array(
+                'group'    => 'featured',
+                'callback' => function ($value) { return ($value == 1); },
+                'icon'     => 'volume-up',
+                'title'    => 'This package is featured.'
+            ),
+            'maintainers' => array(
+                'group'    => 'maintainers',
+                'callback' => function ($value) { return ($value > 1); },
+                'icon'     => 'volume-up',
+                'title'    => 'This package is maintained by more than one person.',
+            ),
+            'one_maintainer' => array(
+                'group'    => 'maintainers',
+                'callback' => function ($value) { return ($value == 1); },
+                'icon'     => 'meh',
+                'title'    => 'This package is only maintained by one person.',
+            )
+        );
     }
     
     /**
@@ -87,12 +114,47 @@ class IconExtension extends \Twig_Extension
         if ($package->getType() == 'library') {
             $symbols['wrench'] = 'This package is a library';
         }
+        if ($package->getType() == 'application') {
+            $symbols['cog'] = 'This package is an application';
+        }
+        
+        if ($package->getOverallRating() >= 4) {
+            $symbols['star'] = 'This package has a high rating.';
+        }
+        
+        //metainfos
+        if (($metainfos = $package->getMetaInfos()) !== null) {
+            foreach ($this->specs as $spec => $data) {
+                if ($this->metainfosProvide($metainfos, $data)) {
+                    $symbols[$data['icon']] = $data['title'];
+                }
+            }
+        }
         
         $buffer = '';
         foreach ($symbols as $icon => $title) {
             $buffer .= '<i class="icon icon-' . $icon . ' icon-' . $magnification . 'x" title="' . $title . '"></i>';
         }
         return $buffer;
+    }
+    
+    /**
+     * Check that a group info provides the required value.
+     * 
+     * @param array  $metainfos
+     * @param array $data spec data
+     * 
+     * @return boolean
+     */
+    private function metainfosProvide($metainfos, array $data)
+    {
+        foreach ($metainfos as $metainfo) {
+            /* @var $metainfo \Metagist\ServerBundle\Entity\Metainfo */
+            if ($metainfo->getGroup() == $data['group']) {
+                $callback = $data['callback'];
+                return $callback($metainfo->getValue());
+            }
+        }
     }
     
     /**

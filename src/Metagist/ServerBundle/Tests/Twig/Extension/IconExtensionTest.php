@@ -87,6 +87,17 @@ class IconExtensionTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Ensures metainfos are traversed and checked agains specs.
+     */
+    public function testSymbolsWithMetainfos()
+    {
+        $package = new \Metagist\ServerBundle\Entity\Package('test/test');
+        $package->setMetaInfos(array(\Metagist\ServerBundle\Entity\Metainfo::fromValue('featured', true)));
+        
+        $this->assertContains('icon-volume-up', $this->extension->symbols($package));
+    }
+    
+    /**
      * Test the name of the extension.
      */
     public function testGetName()
