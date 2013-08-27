@@ -64,15 +64,12 @@ class ApiControllerTest extends WebDoctrineTestCase
     public function testPushInfo()
     {
         $this->markTestSkipped();
-        $pushRequest = $this->createPushInfoRequest();
-        static::$client->request(
-            'POST', 
-            "/api/pushInfo/test/test123", 
-            array(),
-            array(), 
-            $pushRequest->getHeaders()->toArray(),
-            $pushRequest->getBody() 
-        );
+        $pushRequest     = $this->createPushInfoRequest();
+        /* @var $serviceProvider \Metagist\ServerBundle\Controller\ServiceProvider */
+        $serviceProvider = static::$client->getContainer()->get('metagist.controller.serviceprovider');
+        $serviceProvider->getApiFactory()->setIncomingRequestMessage($pushRequest->__toString());
+
+        static::$client->request('POST', '/api/pushInfo/test/test123');
         $response = static::$client->getResponse();
         $this->assertEquals(200, $response->getStatusCode(), $response->getContent());
     }

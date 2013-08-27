@@ -28,7 +28,13 @@ security:
 
                 oauth_user_provider:
                     service: metagist.user.provider.entity
+                    
+        api:
+            pattern: /api
+            stateless: true
+            api: true
 
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/contribute, roles: ROLE_USER }
+        - { path: ^/api/package, roles: IS_AUTHENTICATED_ANONYMOUSLY }

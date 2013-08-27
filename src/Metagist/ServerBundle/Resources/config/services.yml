@@ -65,6 +65,7 @@ services:
   metagist.opauth.listener:
     class: Metagist\ServerBundle\EventListener\OpauthListener
     arguments: ["@doctrine.orm.entity_manager"]
+  
     
   metagist.api:
     class: Metagist\Api\Factory
@@ -74,3 +75,17 @@ services:
   metagist.api.request_validator:
     class: Metagist\Api\RequestValidator
     arguments: ["@event_dispatcher"]
+    
+  metagist.api.oauth_validator:
+    class:            Metagist\Api\OAuthValidator
+    factory_service:  metagist.api
+    factory_method:   getOauthValidator
+    
+  api.security.authentication.provider:
+        class:  Metagist\ServerBundle\Security\Authentication\Provider\ApiProvider
+        arguments: [""]
+
+  api.security.authentication.listener:
+        class:  Metagist\ServerBundle\Security\Firewall\ApiListener
+        arguments: ["@security.context", "@security.authentication.manager", "@metagist.api", "@logger"]
+        

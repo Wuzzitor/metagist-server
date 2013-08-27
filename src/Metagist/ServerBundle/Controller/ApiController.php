@@ -9,6 +9,8 @@ use Guzzle\Http\Message\EntityEnclosingRequestInterface;
 use Metagist\Api\ServerInterface;
 use Metagist\MetainfoInterface;
 use Metagist\Api\RequestValidator;
+use Metagist\ServerBundle\Entity\Package;
+use Metagist\ServerBundle\Entity\Metainfo;
 
 /**
  * Api Controller.
@@ -105,9 +107,9 @@ class ApiController extends Controller implements ServerInterface
      * @Route("/pushInfo/{author}/{name}", name="api-pushInfo")
      * @Method({"POST"})
      */
-    public function pushInfoAction($author, $name, MetainfoInterface $info = null)
+    public function pushInfoAction($author, $name)
     {
-        return $this->pushInfo($author, $name, $info);
+        return $this->pushInfo($author, $name);
     }
     
     /**
@@ -154,11 +156,10 @@ class ApiController extends Controller implements ServerInterface
             return $this->json($message, 404);
         }
         
-        $metaInfo = $this->extractMetaInfoFromRequest($request);
+        $metaInfo = $this->extractMetaInfoFromRequest($request, $package);
         if ($metaInfo === null) {
             return $this->serviceProvider->json('parsing error', 500);
         }
-        $metaInfo->setPackage($package);
         
         try {
             $this->serviceProvider->metainfo()->save($metaInfo, 1);
@@ -174,16 +175,24 @@ class ApiController extends Controller implements ServerInterface
     }
     
     /**
-     * Parses the body payload.
+     * Parses the body payload and creates a metainfo entity.
      * 
      * @param \Guzzle\Http\Message\EntityEnclosingRequestInterface $request
-     * @return null
+     * @return Metainfo
      */
-    protected function extractMetaInfoFromRequest(EntityEnclosingRequestInterface $request)
+    protected function extractMetaInfoFromRequest(EntityEnclosingRequestInterface $request, Package $package)
     {
-        $json = $request->getBody()->__toString();
-        $data = json_decode($json, true);
-        return \Metagist\Metainfo::fromArray($data['info']);
+        $json     = $request->getBody()->__toString();
+        $data     = json_decode($json, true);
+        if ($data === null) {
+            return null;
+        }
+        
+        $incoming = \Metagist\Metainfo::fromArray($data['info']);
+        $entity   = Metainfo::fromValue($incoming->getGroup(), $incoming->getValue(), $incoming->getVersion());
+        $entity->setPackage($package);
+        
+        return $entity;
     }
     
     /**
