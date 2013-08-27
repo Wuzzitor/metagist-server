@@ -140,7 +140,7 @@ class Metainfo implements MetainfoInterface
      * The related package.
      * 
      * @var Package
-     * @ORM\ManyToOne(targetEntity="Package")
+     * @ORM\ManyToOne(targetEntity="Package", inversedBy="metainfos")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="package_id", referencedColumnName="id", nullable=false)
      * })
