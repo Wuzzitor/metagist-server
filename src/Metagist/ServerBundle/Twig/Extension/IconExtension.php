@@ -169,7 +169,7 @@ class IconExtension extends \Twig_Extension
      */
     private function renderIcon($icon, $title, $magnification = 1, $class = '')
     {
-        return '<i class="icon icon-' . $icon 
+        return '<i class="symbol icon icon-' . $icon 
             . ' icon-' . $magnification . 'x ' 
             . $class 
             . '" title="' . $title . '"></i>';
