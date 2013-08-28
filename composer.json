@@ -2,7 +2,7 @@
    "name": "symfony\/framework-standard-edition",
    "license": "MIT",
    "type": "project",
-   "version": "0.0.0",
+   "version": "0.1.0",
    "description": "The \"Symfony Standard Edition\" distribution",
    "autoload": {
       "psr-0": {
@@ -95,7 +95,7 @@
          "type": "package",
          "package": {
             "name": "bonndan\/ReleaseManager",
-            "version": "0.2.1",
+            "version": "0.1.0",
             "source": {
                "url": "http:\/\/github.com\/bonndan\/ReleaseManager.git",
                "type": "git",
