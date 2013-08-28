@@ -7,7 +7,7 @@
    "autoload": {
       "psr-0": {
          "_empty_": "src\/",
-         "Metagist\\Api": "vendor\/wuzzitor\/metagist-api\/src"
+         "Metagist": "src\/"
       }
    },
    "require": {
@@ -24,7 +24,7 @@
       "sensio\/generator-bundle": "2.3.*",
       "incenteev\/composer-parameter-handler": "~2.0",
       "hwi\/oauth-bundle": "0.3.*@dev",
-      "twitter\/bootstrap": "dev-3.0.0-wip",
+      "twitter\/bootstrap": "v3.0.0",
       "knplabs\/packagist-api": "0.1.*@dev",
       "pagerfanta\/pagerfanta": "v1.0.0",
       "bonndan\/ReleaseManager": "0.2.1",
@@ -52,7 +52,7 @@
    "config": {
       "bin-dir": "bin"
    },
-   "minimum-stability": "beta",
+   "minimum-stability": "stable",
    "extra": {
       "symfony-app-dir": "app",
       "symfony-web-dir": "web",
