@@ -2,12 +2,12 @@
    "name": "symfony\/framework-standard-edition",
    "license": "MIT",
    "type": "project",
-   "version": "0.0.0",
+   "version": "0.1.0",
    "description": "The \"Symfony Standard Edition\" distribution",
    "autoload": {
       "psr-0": {
          "_empty_": "src\/",
-         "Metagist\\Api": "vendor\/wuzzitor\/metagist-api\/src"
+         "Metagist": "src\/"
       }
    },
    "require": {
@@ -24,10 +24,11 @@
       "sensio\/generator-bundle": "2.3.*",
       "incenteev\/composer-parameter-handler": "~2.0",
       "hwi\/oauth-bundle": "0.3.*@dev",
-      "twitter\/bootstrap": "dev-3.0.0-wip",
+      "twitter\/bootstrap": "v3.0.0",
       "knplabs\/packagist-api": "0.1.*@dev",
       "pagerfanta\/pagerfanta": "v1.0.0",
       "bonndan\/ReleaseManager": "0.2.1",
+      "vierbergenlars/php-semver": "2.0.5",
       "wuzzitor\/metagist-api": "0.0.5"
    },
    "require-dev": {
@@ -52,7 +53,7 @@
    "config": {
       "bin-dir": "bin"
    },
-   "minimum-stability": "beta",
+   "minimum-stability": "stable",
    "extra": {
       "symfony-app-dir": "app",
       "symfony-web-dir": "web",
@@ -69,7 +70,7 @@
               {
                   "name": "version-stamp",
                   "const": "METAGIST_VERSION",
-                  "file": "src/Metagist/ServerBundle/version.php",
+                  "file": "src/Metagist/ServerBundle/version.php"
               },
               "composer-update",
               {
@@ -79,7 +80,7 @@
               },
               "vcs-commit"
          ],
-         "versionPersister": "changelog",
+         "versionPersister": "vcs-tag",
          "postReleaseActions": [
             
          ]
@@ -94,7 +95,7 @@
          "type": "package",
          "package": {
             "name": "bonndan\/ReleaseManager",
-            "version": "0.2.1",
+            "version": "0.1.0",
             "source": {
                "url": "http:\/\/github.com\/bonndan\/ReleaseManager.git",
                "type": "git",
