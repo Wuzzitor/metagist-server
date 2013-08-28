@@ -28,6 +28,7 @@
       "knplabs\/packagist-api": "0.1.*@dev",
       "pagerfanta\/pagerfanta": "v1.0.0",
       "bonndan\/ReleaseManager": "0.2.1",
+      "vierbergenlars/php-semver": "2.0.5",
       "wuzzitor\/metagist-api": "0.0.5"
    },
    "require-dev": {
@@ -79,7 +80,7 @@
               },
               "vcs-commit"
          ],
-         "versionPersister": "changelog",
+         "versionPersister": "vcs-tag",
          "postReleaseActions": [
             
          ]
