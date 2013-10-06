@@ -85,6 +85,10 @@ class PackageRepository extends EntityRepository
             $ids = array_unique($ids);
         }
         
+        if (count($ids) == 0) {
+            return array();
+        }
+        
         return $this->findBy(array('id' => $ids));
     }
 
