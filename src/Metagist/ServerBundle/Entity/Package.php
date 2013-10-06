@@ -83,6 +83,14 @@ class Package implements PackageInterface
     private $overallRating = 0.0;
 
     /**
+     * related image
+     * 
+     * @var Image
+     * @ORM\OneToOne(targetEntity="Image", mappedBy="package",cascade={"persist"})
+     */
+    private $image;
+    
+    /**
      * Constructor.
      * 
      * @param string  $identifier
