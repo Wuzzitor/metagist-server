@@ -46,15 +46,23 @@ class Image
     private $package;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * update time
+     * @var string
+     * @ORM\Column(name="path", type="string")
      */
-    public $path;
+    private $path;
+    
+    /**
+     * update time
+     * @var \DateTime
+     * @ORM\Column(name="updated_at", type="datetime")
+     */
+    private $updatedAt;
 
     /**
-     * @Assert\File(maxSize="6000000")
+     * @Assert\File(maxSize="600000")
      */
     private $file;
-    private $temp;
 
     /**
      * Get file.
@@ -90,7 +98,12 @@ class Image
     {
         // the absolute directory path where uploaded
         // documents should be saved
-        return __DIR__ . '/../../../../web/images';
+        return realpath(__DIR__ . '/../../../../web/' . $this->getUploadDir() .'/') ;
+    }
+
+    protected function getUploadDir()
+    {
+        return 'images';
     }
 
     /**
@@ -101,14 +114,9 @@ class Image
     public function setFile(UploadedFile $file = null)
     {
         $this->file = $file;
-        // check if we have an old image path
-        if (isset($this->path)) {
-            // store the old name to delete after the update
-            $this->temp = $this->path;
-            $this->path = null;
-        } else {
-            $this->path = 'initial';
-        }
+        $filename = str_replace('/', '_', $this->package->getIdentifier());
+        $this->path = $filename . '.' . $this->getFile()->guessExtension();
+        
     }
 
     /**
@@ -118,8 +126,7 @@ class Image
     public function preUpload()
     {
         if (null !== $this->getFile()) {
-            $filename = str_replace('/', '_', $this->package->getIdentifier());
-            $this->path = $filename . '.' . $this->getFile()->guessExtension();
+            $this->updatedAt = new \DateTime();
         }
     }
 
@@ -133,19 +140,13 @@ class Image
             return;
         }
 
+        if (!$this->getFile()->isValid()) {
+            throw new \Exception('Upload error ');
+        }
         // if there is an error when moving the file, an exception will
         // be automatically thrown by move(). This will properly prevent
         // the entity from being persisted to the database on error
         $this->getFile()->move($this->getUploadRootDir(), $this->path);
-
-        // check if we have an old image
-        if (isset($this->temp)) {
-            // delete the old image
-            unlink($this->getUploadRootDir() . '/' . $this->temp);
-            // clear the temp image path
-            $this->temp = null;
-        }
-        $this->file = null;
     }
 
     /**
