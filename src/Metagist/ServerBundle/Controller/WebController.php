@@ -1,10 +1,10 @@
 <?php
+
 namespace Metagist\ServerBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-
 // these import the "@Route" and "@Template" annotations
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -12,7 +12,6 @@ use Doctrine\Common\Collections\Collection;
 use Pagerfanta\Adapter\DoctrineCollectionAdapter;
 use Pagerfanta\Pagerfanta;
 use Metagist\ServerBundle\TWBS\TwitterBootstrapView;
-
 use Metagist\ServerBundle\Entity\Rating;
 use Metagist\ServerBundle\Entity\Metainfo;
 use Metagist\ServerBundle\Entity\Package;
@@ -24,13 +23,14 @@ use Metagist\ServerBundle\Entity\Package;
  */
 class WebController extends Controller
 {
+
     /**
      * service provider
      * 
      * @var \Metagist\ServerBundle\Controller\ServiceProvider
      */
     private $serviceProvider;
-    
+
     /**
      * Constructor
      * 
@@ -40,8 +40,8 @@ class WebController extends Controller
     {
         $this->serviceProvider = $serviceProvider;
     }
-    
-   /**
+
+    /**
      * Routing setup.
      * 
      * 
@@ -49,16 +49,16 @@ class WebController extends Controller
     protected function initRoutes()
     {
         $routes = array(
-            'errors'        => array('match' => '/errors', 'method' => 'errors'),
-            'loginNotice'   => array('match' => '/login', 'method' => 'loginNotice'),
-            'logout'        => array('match' => '/auth/logout', 'method' => 'logout'),
-            'ratings-pp'    => array('match' => '/ratings/{author}/{name}/{page}', 'method' => 'ratings'),
+            'errors' => array('match' => '/errors', 'method' => 'errors'),
+            'loginNotice' => array('match' => '/login', 'method' => 'loginNotice'),
+            'logout' => array('match' => '/auth/logout', 'method' => 'logout'),
+            'ratings-pp' => array('match' => '/ratings/{author}/{name}/{page}', 'method' => 'ratings'),
             'contribute-list' => array('match' => '/contribute/list/{author}/{name}', 'method' => 'contributeList'),
-            'contribute'    => array('match' => '/contribute/{author}/{name}/{group}', 'method' => 'contribute'),
-            'search'        => array('match' => '/search', 'method' => 'search'),
-            'search-page'   => array('match' => '/search/{query}/{page}', 'method' => 'search'),
-            'update'        => array('match' => '/update/{author}/{name}', 'method' => 'update'),
-            'latest'        => array('match' => '/latest', 'method' => 'latest'),
+            'contribute' => array('match' => '/contribute/{author}/{name}/{group}', 'method' => 'contribute'),
+            'search' => array('match' => '/search', 'method' => 'search'),
+            'search-page' => array('match' => '/search/{query}/{page}', 'method' => 'search'),
+            'update' => array('match' => '/update/{author}/{name}', 'method' => 'update'),
+            'latest' => array('match' => '/latest', 'method' => 'latest'),
         );
 
         foreach ($routes as $name => $data) {
@@ -79,13 +79,13 @@ class WebController extends Controller
      */
     public function indexAction()
     {
-        $repo    = $this->serviceProvider->metainfo();
+        $repo = $this->serviceProvider->metainfo();
         return array(
             'featured' => $repo->byGroup('featured'),
             'packages' => $this->serviceProvider->packages()->random(20)
         );
     }
-    
+
     /**
      * Show the latest updates and ratings.
      * 
@@ -95,14 +95,14 @@ class WebController extends Controller
      */
     public function latestAction()
     {
-        $repo    = $this->serviceProvider->metainfo();
+        $repo = $this->serviceProvider->metainfo();
         $ratings = $this->serviceProvider->ratings();
         return array(
             'latestUpdates' => $repo->latest(),
             'latestRatings' => $ratings->latest(5),
         );
     }
-    
+
     /**
      * Show the about info
      * 
@@ -114,7 +114,7 @@ class WebController extends Controller
     {
         return array();
     }
-    
+
     /**
      * Show the user profile
      * 
@@ -142,7 +142,7 @@ class WebController extends Controller
     public function packageAction($author, $name)
     {
         $package = $this->serviceProvider->getPackage($author, $name);
-        
+
         return array(
             'package' => $package,
             'categories' => $this->serviceProvider->categories(),
@@ -150,7 +150,7 @@ class WebController extends Controller
             'consumers' => $this->serviceProvider->dependencies()->getConsumersOf($package)
         );
     }
-    
+
     /**
      * Updates package info by invoking the worker.
      * 
@@ -166,16 +166,14 @@ class WebController extends Controller
             $this->serviceProvider->getApi()->worker()->scan($author, $name);
         } catch (\Exception $exception) {
             $flashBag->add(
-                'error',
-                'Error while updating the package: ' . $exception->getMessage()
+                'error', 'Error while updating the package: ' . $exception->getMessage()
             );
             $this->serviceProvider->logger()->error('Exception: ' . $exception->getMessage());
             return $this->serviceProvider->redirect('/');
         }
-        
+
         $flashBag->add(
-            'success',
-            'The package ' . $package->getIdentifier() . ' will be updated. Thanks.'
+            'success', 'The package ' . $package->getIdentifier() . ' will be updated. Thanks.'
         );
         return $this->redirectToPackageView($package);
     }
@@ -192,17 +190,17 @@ class WebController extends Controller
     {
         $repo = $this->getDoctrine()->getEntityManager()->getRepository('MetagistServerBundle:User');
         $user = $repo->findOneBy(array('username' => $name));
-        
+
         if (!$user) {
             return $this->redirect('/');
         }
-        
+
         return array(
             'user' => $user,
             'ratings' => $this->serviceProvider->ratings()->byUser($user)
         );
     }
-    
+
     /**
      * Shows the package ratings.
      * 
@@ -214,20 +212,22 @@ class WebController extends Controller
      */
     public function ratingsAction($author, $name, $page = 1)
     {
-        $package  = $this->serviceProvider->packages()->byAuthorAndName($author, $name);
-        $ratings  = $this->serviceProvider->ratings()->byPackage($package);
-        $routeGen = function($page) { return '/ratings/'.$page;};
-        $pager    = $this->getPaginationFor($ratings);
+        $package = $this->serviceProvider->packages()->byAuthorAndName($author, $name);
+        $ratings = $this->serviceProvider->ratings()->byPackage($package);
+        $routeGen = function($page) {
+                return '/ratings/' . $page;
+            };
+        $pager = $this->getPaginationFor($ratings);
         $pager->setCurrentPage($page);
-        $view     = new TwitterBootstrapView();
-        
+        $view = new TwitterBootstrapView();
+
         return array(
             'package' => $package,
             'ratings' => $pager,
             'pagination' => $view->render($pager, $routeGen)
         );
     }
-    
+
     /**
      * Rate a package.
      * 
@@ -239,17 +239,17 @@ class WebController extends Controller
      */
     public function rateAction($author, $name)
     {
-        $request  = $this->getRequest();
-        $package  = $this->serviceProvider->packages()->byAuthorAndName($author, $name);
+        $request = $this->getRequest();
+        $package = $this->serviceProvider->packages()->byAuthorAndName($author, $name);
         $flashBag = $this->serviceProvider->session()->getFlashBag();
-        $user     = $this->getUser();
-        $rating   = $this->serviceProvider->ratings()->byPackageAndUser($package, $user);
-        $form     = $this->getFormFactory()->getRateForm($package->getVersions(), $rating);
-        
+        $user = $this->getUser();
+        $rating = $this->serviceProvider->ratings()->byPackageAndUser($package, $user);
+        $form = $this->getFormFactory()->getRateForm($package->getVersions(), $rating);
+
         if ($request->isMethod('POST')) {
             $form->bind($request);
             if ($form->isValid()) {
-                $data     = $form->getData();
+                $data = $form->getData();
                 if ($rating === null) {
                     $data['package'] = $package;
                     $rating = Rating::fromArray($data);
@@ -259,17 +259,17 @@ class WebController extends Controller
                 $average = $this->serviceProvider->ratings()->getAverageForPackage($package);
                 $package->setOverallRating($average);
                 $this->serviceProvider->packages()->save($package);
-                
+
                 $flashBag->add('success', 'Thanks.');
                 return $this->redirectToPackageView($package);
             } else {
                 $form->addError(new FormError('Please check the entered value.'));
             }
         }
-        
+
         return array(
             'package' => $package,
-            'form'    => $form->createView()
+            'form' => $form->createView()
         );
     }
 
@@ -285,24 +285,24 @@ class WebController extends Controller
      */
     public function contributeAction($author, $name, $group)
     {
-        $request     = $this->getRequest();
-        $package     = $this->serviceProvider->packages()->byAuthorAndName($author, $name);
-        $flashBag    = $this->serviceProvider->session()->getFlashBag();
-        $category    = $this->serviceProvider->categories()->getCategoryForGroup($group);
-        $groups      = $this->serviceProvider->categories()->getGroups($category);
-        $groupData   = $groups[$group];
-        $form        = $this->getFormFactory()->getContributeForm(
-                            $package->getVersions(), $groupData->type
-                       );
-        
+        $request = $this->getRequest();
+        $package = $this->serviceProvider->packages()->byAuthorAndName($author, $name);
+        $flashBag = $this->serviceProvider->session()->getFlashBag();
+        $category = $this->serviceProvider->categories()->getCategoryForGroup($group);
+        $groups = $this->serviceProvider->categories()->getGroups($category);
+        $groupData = $groups[$group];
+        $form = $this->getFormFactory()->getContributeForm(
+            $package->getVersions(), $groupData->type
+        );
+
         if ($request->isMethod('POST')) {
             $form->bind($request);
             if ($form->isValid()) {
-                $data     = $form->getData();
+                $data = $form->getData();
                 $metaInfo = Metainfo::fromValue($group, $data['value'], $data['version']);
                 $metaInfo->setPackage($package);
                 $metaInfo->setUser($this->getUser());
-                
+
                 try {
                     $this->serviceProvider->metainfo()->save($metaInfo);
                     $flashBag->add('success', 'Info saved. Thank you.');
@@ -310,7 +310,7 @@ class WebController extends Controller
                     $this->serviceProvider->logger()->warn($exception->getMessage());
                     $flashBag->add('error', 'Access denied to ' . $group);
                 }
-                
+
                 return $this->redirectToPackageView($package);
             } else {
                 $form->addError(new FormError('Please check the entered value.'));
@@ -322,11 +322,11 @@ class WebController extends Controller
             'form' => $form->createView(),
             'category' => $category,
             'group' => $group,
-            'type'  => $groupData->type,
+            'type' => $groupData->type,
             'description' => $groupData->description,
         );
     }
-    
+
     /**
      * Search for a package.
      * 
@@ -341,7 +341,7 @@ class WebController extends Controller
         if ($query == '*') {
             $query = '';
         }
-        $page  = $request->get('page');
+        $page = $request->get('page');
         if (intval($page) == 0) {
             $page = 1;
         }
@@ -362,19 +362,19 @@ class WebController extends Controller
         } catch (\Exception $exception) {
             $this->serviceProvider->logger()->info('Search failed: ' . $exception->getMessage());
         }
-        
+
         $packages = $this->serviceProvider->packages()->byIdentifierPart($author);
-        
+
         $routeGenerator = function($page) use ($query) {
-            if ($query == '') {
-                $query = '*';
-            }
-            return '/search/' . urlencode($query) . '/'.$page;
-        };
+                if ($query == '') {
+                    $query = '*';
+                }
+                return '/search/' . urlencode($query) . '/' . $page;
+            };
         $pagerfanta = $this->getPaginationFor($packages);
         $pagerfanta->setCurrentPage($page);
-        $view       = new TwitterBootstrapView();
-        
+        $view = new TwitterBootstrapView();
+
         return array(
             'query' => $query,
             'dummy' => isset($dummy) ? $dummy : null,
@@ -382,7 +382,7 @@ class WebController extends Controller
             'pagination' => $view->render($pagerfanta, $routeGenerator)
         );
     }
-    
+
     /**
      * Just displays the notice that the user has to be logged in.
      * 
@@ -393,6 +393,43 @@ class WebController extends Controller
     public function loginAction()
     {
         return array();
+    }
+
+    /**
+     * Just displays the notice that the user has to be logged in.
+     * 
+     * @return array
+     * @Route("/uploadimage/{author}/{name}", name="uploadimage")
+     * @Template()
+     */
+    public function uploadimageAction($author, $name, Request $request)
+    {
+        $flashBag = $this->serviceProvider->session()->getFlashBag();
+        $package = $this->serviceProvider->packages()->byAuthorAndName($author, $name);
+        $repo = $this->getDoctrine()->getRepository("\Metagist\ServerBundle\Entity\Image");
+        $image = $repo->byPackage($package);
+        $form = $this->createFormBuilder($image)
+            ->add('file')
+            ->getForm();
+
+        $form->handleRequest($request);
+        if ($request->isMethod('POST')) {
+            if ($form->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($image);
+                $em->flush();
+                $flashBag->add('success', 'Image received.');
+
+                return $this->redirectToPackageView($package);
+            } else {
+                $flashBag->add('error', 'Invalid file uploaded.');
+            }
+        }
+
+        return array(
+            'form' => $form->createView(),
+            'package' => $package
+        );
     }
 
     /**
@@ -427,11 +464,10 @@ class WebController extends Controller
     protected function getFormFactory()
     {
         return new \Metagist\ServerBundle\Form\FormFactory(
-            $this->get('form.factory'),
-            $this->serviceProvider->categories()
+            $this->get('form.factory'), $this->serviceProvider->categories()
         );
     }
-    
+
     /**
      * Creates a pagination for the given collection.
      * 
@@ -445,7 +481,7 @@ class WebController extends Controller
         $pagerfanta->setMaxPerPage($maxPerPage);
         return $pagerfanta;
     }
-    
+
     /**
      * Redirects to the package view.
      * 
@@ -455,7 +491,8 @@ class WebController extends Controller
     protected function redirectToPackageView(\Metagist\ServerBundle\Entity\Package $package)
     {
         return $this->redirect(
-            $this->generateUrl('package', array('author' => $package->getAuthor(), 'name' => $package->getName()))
+                $this->generateUrl('package', array('author' => $package->getAuthor(), 'name' => $package->getName()))
         );
     }
+
 }
