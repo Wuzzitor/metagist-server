@@ -1,9 +1,9 @@
 {
-   "name": "symfony\/framework-standard-edition",
+   "name": "wuzzitor/metagist-server",
    "license": "MIT",
    "type": "project",
    "version": "0.1.0",
-   "description": "The \"Symfony Standard Edition\" distribution",
+   "description": "",
    "autoload": {
       "psr-0": {
          "_empty_": "src\/",
@@ -25,11 +25,13 @@
       "incenteev\/composer-parameter-handler": "~2.0",
       "hwi\/oauth-bundle": "0.3.*@dev",
       "twitter\/bootstrap": "v3.0.0",
+      "mopa/bootstrap-bundle": "3.*@dev",
       "knplabs\/packagist-api": "0.1.*@dev",
       "pagerfanta\/pagerfanta": "v1.0.0",
-      "bonndan\/ReleaseManager": "0.2.1",
+      "bonndan\/release-manager": "0.2.*",
       "vierbergenlars/php-semver": "2.0.5",
-      "wuzzitor\/metagist-api": "0.0.5"
+      "wuzzitor\/metagist-api": "0.0.5",
+      "liip/imagine-bundle": "dev-master"
    },
    "require-dev": {
       "fzaninotto\/faker": "v1.2.0"
@@ -72,17 +74,14 @@
                   "const": "METAGIST_VERSION",
                   "file": "src/Metagist/ServerBundle/version.php"
               },
-              "composer-update",
               {
                 "name": "changelog-update",
                 "format": "semantic",
                 "dump-commits": true
-              },
-              "vcs-commit"
+              }
          ],
-         "versionPersister": "vcs-tag",
          "postReleaseActions": [
-            
+            "vcs-commit"
          ]
       }
    },
@@ -90,18 +89,6 @@
       {
          "type": "vcs",
          "url": "https:\/\/github.com\/Wuzzitor\/metagist-api.git"
-      },
-      {
-         "type": "package",
-         "package": {
-            "name": "bonndan\/ReleaseManager",
-            "version": "0.1.0",
-            "source": {
-               "url": "http:\/\/github.com\/bonndan\/ReleaseManager.git",
-               "type": "git",
-               "reference": "0.2.1"
-            }
-         }
       }
    ]
 }

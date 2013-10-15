@@ -3,35 +3,21 @@
 
 {% block content %}
 
-<div class="row">
-    <div class="col-md-9">
-        {% for package in packages %}
-            <div class="col-sm-6 col-md-3">
-                <div class="package-teaser">
-                    {{ symbols(package, 2) }}
-                    <br />
-                    <br />
-                    {{ stars(package.overallrating) }} <a href="{{ path('package', {'author': package.author, 'name': package.name })}}">{{ package.identifier }}</a>
-                    <p>{{ package.description | e  | truncate(100)}}</p>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-    <div class="col-md-3">
-    {% for metainfo in featured %}
-    <div class="panel">
-        <div class="panel-heading">{{ metainfo.value|e }}</div>
-        <div class="panel-body">
-            <h4>
-                <a href="{{ path('package', {'author': metainfo.getPackage.author, 'name': metainfo.getPackage.name })}}">
-                {{ metainfo.getPackage|e }} <i class="icon icon-arrow-right"></i> 
-                </a>
-            </h4>
-            <p>{{ metainfo.getPackage.getDescription|e }}</p>
+
+{% for package in packages %}
+    <div class="row">
+        <div class="package-teaser" {% if package.image %}style="{{package.image.style}}"{% endif %}>
+            <div class="pull-right">{{ stars(package.overallrating) }} | {{ symbols(package, 2) }}</div>
+            {% if package.image %}
+                <img class="logo" src="{{ package.image.getWebPath() | imagine_filter('my_thumb') }}" alt="logo for {{ package.identifier }}"/>
+            {% endif %}
+            
+            <h3>
+                <a href="{{ path('package', {'author': package.author, 'name': package.name })}}">{{ package.identifier }}</a>
+            </h3>
+            <p>{{ package.description | e  | truncate(100)}}</p>
         </div>
     </div>
-    {% endfor %}
-    </div>
-</div>
+{% endfor %}
     
 {% endblock %}

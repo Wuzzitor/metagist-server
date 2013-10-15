@@ -3,11 +3,26 @@
     Created on : 26.08.2013, 18:51:03
     Author     : daniel
 */
+body {
+    background-color: black;
+}
+
+.container {
+    background-color: white;
+}
+
+.package {
+    padding: 1em;
+}
 
 .package-teaser {
-    height:250px;
-    overflow: hidden;
-    margin-bottom: 1em;
+    border-bottom: 1px solid black;
+    padding: 1em;
+}
+
+.package-teaser .logo, .package .logo {
+    width: 150px;
+    height: auto;
 }
 
 .symbol {

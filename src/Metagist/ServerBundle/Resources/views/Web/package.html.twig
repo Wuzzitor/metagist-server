@@ -3,8 +3,16 @@
 
 {% block content %}
 
-    <h1>{{ stars(package.overallrating) }} {{package.getIdentifier}}</h1>
-    <p>{{package.description}}</p>
+    <div class="package" {% if package.image.style %}style="{{package.image.style}}"{% endif %}>
+        {% if package.image %}
+            <img class="logo" src="{{ package.image.getWebPath() | imagine_filter('my_thumb') }}" alt="logo for {{ package.identifier }}"/>
+        {% endif %}
+         <h1>{{ stars(package.overallrating) }} {{package.getIdentifier}}</h1>
+         <p>{{package.description}}</p>
+    </div>
+
+   
+    
     <p>
         {% set homepageInfo = package.getMetaInfos('community', 'homepage').first %}
         {% if homepageInfo %}
@@ -14,6 +22,20 @@
                 <i class="icon-white icon-archive"></i> See the package at Packagist.org</a>
             <br />
     </p>
+    
+    {% if is_granted('ROLE_ADMIN') %}
+        <div class="navbar navbar-default">
+            <a class="navbar-text">Admin:</a>
+            <ul class="nav navbar-nav">
+                <li>
+                <a class="btn btn-small" href="/update/{{package.identifier}}"><i class="icon-refresh"></i> Update</a>
+                </li>
+                <li>
+                <a class="btn btn-small" href="{{ path('uploadimage', {'author': package.author, 'name': package.name })}}"><i class="icon-upload"></i> Upload image</a>
+                </li>
+            </ul>
+        </div>
+    {% endif %}
     <div class="clearfix"></div>
     
     <div class="row">
@@ -94,11 +116,7 @@
                     {% endif %}
                   {% endfor %}
             {% endfor %}
-
-                        <small class="pull-right">Last updated: {{ package.getTimeUpdated |date('d-m-Y') }}</small>
-            {% if is_granted('ROLE_ADMIN') %}
-                        <br /><a class="btn btn-small" href="/update/{{package.identifier}}"><i class="icon-refresh"></i> Update</a>
-            {% endif %}
+            <small class="pull-right">Last updated: {{ package.getTimeUpdated |date('d-m-Y') }}</small>
                 
         </div>
     </div>
