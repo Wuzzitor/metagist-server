@@ -344,5 +344,13 @@ class Package implements PackageInterface
         $this->overallRating = $overallRating;
     }
 
-
+    /**
+     * Returns the associated image.
+     * 
+     * @return Image
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
 }

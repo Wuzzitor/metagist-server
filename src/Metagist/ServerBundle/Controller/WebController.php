@@ -410,6 +410,7 @@ class WebController extends Controller
         $image = $repo->byPackage($package);
         $form = $this->createFormBuilder($image)
             ->add('file')
+            ->add('style')
             ->getForm();
 
         $form->handleRequest($request);

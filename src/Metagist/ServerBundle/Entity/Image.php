@@ -53,6 +53,14 @@ class Image
     private $path;
     
     /**
+     * custom css
+     * 
+     * @var string
+     * @ORM\Column(name="style", type="string", nullable=true)
+     */
+    private $style;
+    
+    /**
      * update time
      * @var \DateTime
      * @ORM\Column(name="updated_at", type="datetime")
@@ -158,5 +166,26 @@ class Image
             unlink($file);
         }
     }
+
+    /**
+     * Returns the custom css style
+     * 
+     * @return string
+     */
+    public function getStyle()
+    {
+        return $this->style;
+    }
+
+    /**
+     * Set the custom style.
+     * 
+     * @param string$style
+     */
+    public function setStyle($style)
+    {
+        $this->style = $style;
+    }
+
 
 }
