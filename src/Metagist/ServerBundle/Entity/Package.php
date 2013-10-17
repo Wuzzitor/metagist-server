@@ -277,7 +277,7 @@ class Package implements PackageInterface
      */
     public function __toString()
     {
-        return substr($this->identifier, strpos($this->identifier, '/') + 1);
+        return $this->identifier;
     }
     
     /**

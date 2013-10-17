@@ -126,11 +126,11 @@ class PackageTest extends WebDoctrineTestCase
     }
     
     /**
-     * Ensures the toString method returns the name without author/owner
+     * Ensures the toString works
      */
-    public function testToStringReturnsOnlyTheName()
+    public function testToStringReturnsTheIdentifier()
     {
-        $this->assertEquals('123', $this->package->__toString());
+        $this->assertEquals($this->package->getIdentifier(), $this->package->__toString());
     }
     
     /**
