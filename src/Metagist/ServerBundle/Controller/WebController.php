@@ -351,6 +351,7 @@ class WebController extends Controller
      * @return string
      * @Route("/search", name="search")
      * @Template()
+     * @link http://www.terrymatula.com/development/2013/some-packagist-api-hacks/
      */
     public function searchAction(Request $request)
     {
@@ -379,8 +380,17 @@ class WebController extends Controller
         } catch (\Exception $exception) {
             $this->serviceProvider->logger()->info('Search failed: ' . $exception->getMessage());
         }
-
-        $packages = $this->serviceProvider->packages()->byIdentifierPart($author);
+        
+        $api = new \Packagist\Api\Client();
+        $response = $api->search($query, array('page' => $page));
+        
+        $packages = new \Doctrine\Common\Collections\ArrayCollection();
+        foreach ($response as $result) {
+            /* @var $result \Packagist\Api\Result\Result */
+            $package = new Package($result->getName());
+            $package->setDescription($result->getDescription());
+            $packages->add($package);
+        }
 
         $routeGenerator = function($page) use ($query) {
                 if ($query == '') {
@@ -416,7 +426,7 @@ class WebController extends Controller
      * Just displays the notice that the user has to be logged in.
      * 
      * @return array
-     * @Route("/uploadimage/{author}/{name}", name="uploadimage")
+     * @Route("/admin/style/{author}/{name}", name="style")
      * @Template()
      */
     public function uploadimageAction($author, $name, Request $request)
