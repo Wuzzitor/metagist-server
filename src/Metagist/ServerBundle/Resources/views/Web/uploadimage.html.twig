@@ -1,18 +1,21 @@
 {% extends 'MetagistServerBundle::layout.html.twig' %}
-{% set pagetitle = 'Rate ' ~ package %}
+{% set pagetitle = 'Style ' ~ package %}
 
 {% block content %}
-<div class="content">
+{% set class = "" %}
+{% set style = "" %}
+{% if package.image and package.image.style != "" %}
+    {% set style = package.image.style %}
+{% else %}
+    {% set class = "default-gradient" %}
+{% endif %}
+<div class="row package {{class}}" {% if style %}style="{{style}}"{% endif %}>
     
-    <div class="page-header">
-        <h1>Upload an image for {{package.author}}/{{package.name}}<br /></h1>
-    </div>
     
-    <div class="package-teaser" {% if package.image.style %}style="{{package.image.style}}"{% endif %}>
     {% if package.image %}
-        <img class="logo" src="{{ package.image.getWebPath() | imagine_filter('my_thumb') }}" alt="logo for {{ package.identifier }}"/>
+    <img class="logo" src="{{ package.image.getWebPath() | imagine_filter('my_thumb') }}" alt="logo for {{ package.identifier }}"/>
     {% endif %}
-    </div>
+    <h1>Upload an image for {{package.author}}/{{package.name}}</h1>
 
     <form action="" method="post" role="form" {{ form_enctype(form) }}>
         {{ form_errors(form) }}

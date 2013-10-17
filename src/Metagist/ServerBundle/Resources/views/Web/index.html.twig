@@ -6,24 +6,7 @@
 <h1 class="hidden">{{ 'Random Packages' | trans}}</h1>
 <div class="row">
 {% for package in packages %}
-    {% set class = "" %}
-    {% set style = "" %}
-    {% if package.image and package.image.style != "" %}
-        {% set style = package.image.style %}
-    {% else %}
-        {% set class = "default-gradient" %}
-    {% endif %}
-    <div class="col-lg-2 col-md-4 package-teaser {{class}}" {% if style %}style="{{style}}"{% endif %}>
-        {% if package.image %}
-            <img class="logo" src="{{ package.image.getWebPath() | imagine_filter('my_thumb') }}" alt="logo for {{ package.identifier }}"/>
-        {% endif %}
-
-        
-        <h3>{{ stars(package.overallrating) }}<br />
-            <a href="{{ path('package', {'author': package.author, 'name': package.name })}}">{{ package.identifier }}</a>
-        </h3>
-        <p>{{ package.description | e  | truncate(100)}}</p>
-    </div>
+    {% include 'MetagistServerBundle::packageteaser.html.twig' with {'package': package} %}
 {% endfor %}
 </div>
     
