@@ -2,123 +2,80 @@
 {% set pagetitle = 'metagist.org on ' ~ package %}
 
 {% block content %}
-
-    <div class="package" {% if package.image.style %}style="{{package.image.style}}"{% endif %}>
+{% set class = "" %}
+{% set style = "" %}
+{% if package.image and package.image.style != "" %}
+    {% set style = package.image.style %}
+{% else %}
+    {% set class = "default-gradient" %}
+{% endif %}
+<div class="row package {{class}}" {% if style %}style="{{style}}"{% endif %}>
+    <div class="col-lg-10">
         {% if package.image %}
             <img class="logo" src="{{ package.image.getWebPath() | imagine_filter('my_thumb') }}" alt="logo for {{ package.identifier }}"/>
         {% endif %}
-         <h1>{{ stars(package.overallrating) }} {{package.getIdentifier}}</h1>
-         <p>{{package.description}}</p>
-    </div>
+            <h1>{{ stars(package.overallrating) }} {{package.getIdentifier}}</h1>
+            <p>{{package.description}}</p>
 
-   
-    
-    <p>
-        {% set homepageInfo = package.getMetaInfos('community', 'homepage').first %}
-        {% if homepageInfo %}
-            <a href="{{ homepageInfo.getValue }}"><i class="icon-white icon-home"></i> Homepage</a><br />
-        {% endif %}
-            <a href="http://packagist.org/packages/{{package.identifier}}">
-                <i class="icon-white icon-archive"></i> See the package at Packagist.org</a>
-            <br />
-    </p>
-    
-    {% if is_granted('ROLE_ADMIN') %}
-        <div class="navbar navbar-default">
-            <a class="navbar-text">Admin:</a>
-            <ul class="nav navbar-nav">
-                <li>
-                <a class="btn btn-small" href="/update/{{package.identifier}}"><i class="icon-refresh"></i> Update</a>
-                </li>
-                <li>
-                <a class="btn btn-small" href="{{ path('uploadimage', {'author': package.author, 'name': package.name })}}"><i class="icon-upload"></i> Upload image</a>
-                </li>
-            </ul>
-        </div>
-    {% endif %}
-    <div class="clearfix"></div>
-    
-    <div class="row">
-    
-        <div class="col-md-8">
-            <div class=" pull-right text-right">
-                {% if (is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')) %}
-                                <a class="btn btn-primary" href="{{ path('rate', {'author': package.author, 'name': package.name })}}"><i class="icon-white icon-star"></i> Rate this package</a> 
-                {% endif %}
-            </div>
-            <h2><a href="{{ path('ratings', {'author': package.author, 'name': package.name })}}">{{ "Latest Reviews" |trans}}</a></h2>
-            {% for rating in ratings %}
+        <h2><a href="{{ path('ratings', {'author': package.author, 'name': package.name })}}">{{ "Latest Reviews" |trans}}</a></h2>
+        {% for rating in ratings %}
                 <div class="panel">
                     <div class="panel-heading">{{ stars(rating.rating) }} {{ rating.title | e}}</div>
                     <div class="panel-body row">
                         <div class="col-md-1">
                             <a href="{{ path('user', {'name': rating.user.username}) }}">
-                            <img src="{{rating.user.getAvatarUrl}}" alt="by {{rating.user.getUsername}}" class="img-rounded" /><br />
+                                <img src="{{rating.user.getAvatarUrl}}" alt="by {{rating.user.getUsername}}" class="img-rounded" /><br />
                             </a>
                         </div>
                         <div class="col-md-10 col-md-offset-1">
-                        <p>{{rating.comment | e}}</p>
+                            <p>{{rating.comment | e}}</p>
                         </div>
                     </div>
                 </div>
-            {% endfor %}
+        {% endfor %}
             
-            <h2>Dependencies</h2>
-            {% for dep in package.dependencies %}
-                {% if dep.name %}<a href="{{ path('package', {'author': dep.author, 'name': dep.name})}}">{% endif %}
-                    <span class="badge"><i class="icon-link"></i>  {{ dep.dependencyIdentifier }}</span>
-                {% if dep.name %}</a>{% endif %}
-            {% endfor %}
-
-            {% if consumers | length %}
-                <h2>Packages consuming {{package}}</h2>
-                {% for dep in consumers %}
-                    <a class="btn bnt-default" href="{{ path('package', {'author': dep.package.author, 'name': dep.package.name})}}">
-                        <i class="icon icon-arrow-right"></i> {{ dep.package }}
-                    </a>
-                {% endfor %}
-            {% endif %}
-        </div>
-        
-        <div class="col-md-4">
-            <div class="pull-right span2">
-            {% if (is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')) %}
-            {% else %}
-                    <a class="btn btn-primary btn-block" href="{{ path('github_login') }}">
-                        <i class="icon-white icon-2x icon-rocket"></i><br /> {{ 'Contribute!'|trans }}</a>
-                    <br />
-            {% endif %}
-            </div>
-            
-            
-            <h2>Info</h2>
-            {% for name, data in categories.getCategories() %}
-                <h3>{{name | trans}}</h3>
-                  {% for group, groupdata in categories.getGroups(name) %}
-                    {% if (groupdata.access == 'ROLE_ADMIN' and is_granted(groupdata.access)) or groupdata.access != 'ROLE_ADMIN' %}
-                        {% set infos = package.getMetaInfos(group)%}
-                        <dl class="dl-horizontal">
-                            <dt title="{{groupdata.description}}">{{ icon(group) }} {{ (group) | trans}}</dt>
-                             {% if infos.count %}
-                                <dd>{{ renderInfos(infos) }}</dd>
-                             {% else %}
-                                <dd>
-                                    {% if is_granted(groupdata.access) %}
-                                    <a href="{{ path('contribute', {'author': package.author, 'name': package.name, 'group': group})}}">
-                                        <i class="icon-pencil"></i> add this information
-                                    </a>
-                                    {% else %}
-                                    <span>?</span>
-                                    {% endif %}
-                                </dd>
-                             {% endif %}
-                            </dl>
-                    {% endif %}
-                  {% endfor %}
-            {% endfor %}
-            <small class="pull-right">Last updated: {{ package.getTimeUpdated |date('d-m-Y') }}</small>
-                
-        </div>
+        {% if (is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')) %}
+            <a class="btn btn-primary" href="{{ path('rate', {'author': package.author, 'name': package.name })}}"><i class="icon-white icon-star"></i> Rate this package</a> 
+        {% else %}
+            <a class="btn btn-primary" href="{{ path('github_login')}}"><i class="icon-white icon-rocket"></i> Contribute</a> 
+        {% endif %}
     </div>
         
+    <div class="col-lg-2">
+        {% if is_granted('ROLE_ADMIN') %}
+            <a class="btn btn-warning btn-block" href="/update/{{package.identifier}}"><i class="icon-refresh"></i> Update</a>
+            <a class="btn btn-warning btn-block" href="{{ path('style', {'author': package.author, 'name': package.name })}}"><i class="icon-wrench"></i> Style</a>
+        {% endif %}
+            
+        {% set homepageInfo = package.getMetaInfos('homepage').first %}
+        {% if homepageInfo %}
+        <a class="btn btn-default btn-block" href="{{ homepageInfo.getValue }}"><i class="icon-home"></i> Homepage</a><br />
+        {% endif %}
+        {% set homepageInfo = package.getMetaInfos('repository').first %}
+        {% if homepageInfo %}
+        <a class="btn btn-default btn-block" href="{{ homepageInfo.getValue }}"><i class="icon-archive"></i> Repository</a><br />
+        {% endif %}
+        <a class="btn btn-default btn-block" href="http://packagist.org/packages/{{package.identifier}}"><i class="icon-archive"></i> at Packagist.org</a>
+
+        <h2>Dependencies</h2>
+        {% for dep in package.dependencies %}
+            {% if dep.name %}<a href="{{ path('package', {'author': dep.author, 'name': dep.name})}}">{% endif %}
+                    <span class="badge"><i class="icon-link"></i>  {{ dep.dependencyIdentifier }}</span>
+            {% if dep.name %}</a>{% endif %}
+        {% endfor %}
+
+        {% if consumers | length %}
+            <h2>Packages consuming {{package}}</h2>
+            {% for dep in consumers %}
+                <a class="btn bnt-default" href="{{ path('package', {'author': dep.package.author, 'name': dep.package.name})}}">
+                    <i class="icon icon-arrow-right"></i> {{ dep.package }}
+                </a>
+            {% endfor %}
+        {% endif %}
+    </div>
+        
+</div>          
+
+            
+<small class="pull-right">Last updated: {{ package.getTimeUpdated |date('d-m-Y') }}</small>
 {% endblock %}
