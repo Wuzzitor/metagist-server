@@ -79,12 +79,29 @@ class WebController extends Controller
      */
     public function indexAction()
     {
+        return array(
+            'packages' => $this->serviceProvider->packages()->random(20),
+            'categories' => $this->getCategories()
+        );
+    }
+    
+    /**
+     * Features packages.
+     * 
+     * @return string
+     * @Route("/featured", name="featured")
+     * @Template()
+     */
+    public function featuredAction()
+    {
         $repo = $this->serviceProvider->metainfo();
         return array(
             'featured' => $repo->byGroup('featured'),
-            'packages' => $this->serviceProvider->packages()->random(20)
+            'categories' => $this->getCategories()
         );
     }
+    
+    
 
     /**
      * Show the latest updates and ratings.
@@ -496,4 +513,10 @@ class WebController extends Controller
         );
     }
 
+    protected function getCategories()
+    {
+        return array(
+            'featured' => $this->generateUrl('featured')
+        );
+    }
 }
