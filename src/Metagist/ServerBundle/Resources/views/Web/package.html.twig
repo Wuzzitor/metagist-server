@@ -33,15 +33,15 @@
                     </div>
                 </div>
         {% endfor %}
-            
-        {% if (is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')) %}
-            <a class="btn btn-primary" href="{{ path('rate', {'author': package.author, 'name': package.name })}}"><i class="icon-white icon-star"></i> Rate this package</a> 
-        {% else %}
-            <a class="btn btn-primary" href="{{ path('github_login')}}"><i class="icon-white icon-rocket"></i> Contribute</a> 
-        {% endif %}
     </div>
         
     <div class="col-lg-2">
+        {% if (is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')) %}
+            <a class="btn btn-primary btn-block" href="{{ path('rate', {'author': package.author, 'name': package.name })}}"><i class="icon-white icon-star"></i> Rate this package</a> 
+        {% else %}
+            <a class="btn btn-primary btn-block" href="{{ path('github_login')}}"><i class="icon-white icon-rocket"></i> Contribute</a> 
+        {% endif %}
+            
         {% if is_granted('ROLE_ADMIN') %}
             <a class="btn btn-warning btn-block" href="/update/{{package.identifier}}"><i class="icon-refresh"></i> Update</a>
             <a class="btn btn-warning btn-block" href="{{ path('style', {'author': package.author, 'name': package.name })}}"><i class="icon-wrench"></i> Style</a>
