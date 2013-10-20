@@ -291,6 +291,25 @@ class WebController extends Controller
     }
 
     /**
+     * Lists the categories and groups to contribute to.
+     * 
+     * @param string $author
+     * @param string $name
+     * @return string
+     * @Route("/contribute-list/{author}/{name}", name="contribute-list")
+     * @Template()
+     */
+    public function contributeListAction($author, $name)
+    {
+        $package = $this->serviceProvider->packages()->byAuthorAndName($author, $name);
+        
+        return array(
+            'package' => $package,
+            'categories' => $this->serviceProvider->categories()
+        );
+    }
+    
+    /**
      * Contribute to the package (provide information).
      * 
      * @param string  $author
