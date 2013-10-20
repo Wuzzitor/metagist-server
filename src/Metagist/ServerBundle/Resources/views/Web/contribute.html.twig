@@ -2,21 +2,28 @@
 {% set pagetitle = 'metagist.org - contribute to ' ~ package %}
 
 {% block content %}
-<div class="content">
+{% set class = "" %}
+{% set style = "" %}
+{% if package.image and package.image.style != "" %}
+    {% set style = package.image.style %}
+{% else %}
+    {% set class = "default-gradient" %}
+{% endif %}
+<div class="row padded package {{class}}" {% if style %}style="{{style}}"{% endif %}>
     <div class="page-header">
         <h1>Contribute to {{package}}<br /><small>{{ description }}</small></h1>
     </div>
 
-    <h2>{{ group | trans}}</h2>
     <p>{{ ('typehint_' ~ type) | trans}}</p>
 
-    <form action="" method="post" novalidate {{ form_enctype(form) }} class="form-horizontal">
-    {{ form_widget(form) }}
-            <div class="controls">
-                <button type="submit" class="btn btn-primary">{{ 'Send'|trans }}</button>
-                <a href="/package/{{package.identifier}}" class="btn">{{ 'Cancel'|trans }}</a>
-            </div>
-        </form>
-
-    </div>
+    <form action="" method="post" role="form" {{ form_enctype(form) }}>
+        {{ form_errors(form) }}
+        {{ form_row(form.version) }}
+        {{ form_rest(form) }}
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">{{ 'Send'|trans }}</button>
+            <a href="{{ path('package', {'author': package.author, 'name': package.name})}}" class="btn">{{ 'Cancel'|trans }}</a>
+        </div>
+    </form>
+</div>
 {% endblock %}
