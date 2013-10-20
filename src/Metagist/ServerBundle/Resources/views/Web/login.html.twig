@@ -2,7 +2,7 @@
 {% set pagetitle = 'metagist.org - Please log in' %}
 
 {% block content %}
-
+<div class="row padded default-gradient">
     <div class="page-header">
         <h1>Sign in to use this function.<br /><small>Please use your GitHub accout to authenticate.</small></h1>
     </div>
@@ -22,5 +22,6 @@
     </p>
     <a class="btn btn-primary" href="{{ path('github_login')}}">Sign in with GitHub</a> 
     <a class="btn" href="https://github.com/signup">Create a GitHub account</a>
+</div>
 
 {% endblock %}
