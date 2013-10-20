@@ -3,35 +3,11 @@
 
 {% block content %}
 
+<h1 class="hidden">{{ 'Random Packages' | trans}}</h1>
 <div class="row">
-    <div class="col-md-9">
-        {% for package in packages %}
-            <div class="col-sm-6 col-md-3">
-                <div class="package-teaser">
-                    {{ symbols(package, 2) }}
-                    <br />
-                    <br />
-                    {{ stars(package.overallrating) }} <a href="{{ path('package', {'author': package.author, 'name': package.name })}}">{{ package.identifier }}</a>
-                    <p>{{ package.description | e  | truncate(100)}}</p>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-    <div class="col-md-3">
-    {% for metainfo in featured %}
-    <div class="panel">
-        <div class="panel-heading">{{ metainfo.value|e }}</div>
-        <div class="panel-body">
-            <h4>
-                <a href="{{ path('package', {'author': metainfo.getPackage.author, 'name': metainfo.getPackage.name })}}">
-                {{ metainfo.getPackage|e }} <i class="icon icon-arrow-right"></i> 
-                </a>
-            </h4>
-            <p>{{ metainfo.getPackage.getDescription|e }}</p>
-        </div>
-    </div>
-    {% endfor %}
-    </div>
+{% for package in packages %}
+    {% include 'MetagistServerBundle::packageteaser.html.twig' with {'package': package} %}
+{% endfor %}
 </div>
     
 {% endblock %}

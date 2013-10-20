@@ -3,11 +3,40 @@
     Created on : 26.08.2013, 18:51:03
     Author     : daniel
 */
+body {
+    background-color: black;
+    padding-top: 50px;
+}
+
+.container {
+    max-width: none;
+    padding: none;
+}
+
+.package, .padded {
+    padding: 1em;
+}
 
 .package-teaser {
-    height:250px;
+    padding: 1em;
+    height: 25em;
     overflow: hidden;
-    margin-bottom: 1em;
+}
+
+.default-gradient {
+    background: #d4e4ef; /* Old browsers */
+background: -moz-linear-gradient(-45deg, #d4e4ef 0%, #86aecc 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#d4e4ef), color-stop(100%,#86aecc)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(-45deg, #d4e4ef 0%,#86aecc 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(-45deg, #d4e4ef 0%,#86aecc 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(-45deg, #d4e4ef 0%,#86aecc 100%); /* IE10+ */
+background: linear-gradient(135deg, #d4e4ef 0%,#86aecc 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d4e4ef', endColorstr='#86aecc',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
+
+.package-teaser .logo, .package .logo {
+    width: 150px;
+    height: auto;
 }
 
 .symbol {

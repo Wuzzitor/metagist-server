@@ -2,11 +2,18 @@
 {% set pagetitle = 'metagist.org - ratings for ' ~ package %}
 
 {% block content %}
-<div class="item item-blue">
-    <div class="content">
+{% set class = "" %}
+{% set style = "" %}
+{% if package.image and package.image.style != "" %}
+    {% set style = package.image.style %}
+{% else %}
+    {% set class = "default-gradient" %}
+{% endif %}
+<div class="row package {{class}}" {% if style %}style="{{style}}"{% endif %}>
     <div class="page-header">
-        <h1>Ratings and Reviews for<br />{{package}}<br /></h1>
-        <a class="btn" href="{{ path('package', {'author': package.author, 'name': package.name })}}"><i class="icon-backward"></i> back</a> 
+        <h1>Ratings and Reviews for<br />
+            <a href="{{ path('package', {'author': package.author, 'name': package.name })}}">{{package}}</a>
+        </h1>
         <a class="btn btn-primary" href="{{ path('rate', {'author': package.author, 'name': package.name })}}"><i class="icon-white icon-star"></i> Rate this package</a>
     </div>
     
@@ -27,8 +34,11 @@
             
     {% endfor %}
 
-    {{ pagination|raw }}
+    {% if ratings | length %}
+        {{ pagination|raw }}
+    {% else %}
+        No reviews found.
+    {% endif %}
                 
-    </div>    
 </div>
 {% endblock %}

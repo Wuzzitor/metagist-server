@@ -10,4 +10,7 @@ logout:
 
 metagist:
     resource: "@MetagistServerBundle/Resources/config/routing.yml"
-    
+
+_imagine:
+    resource: .
+    type:     imagine

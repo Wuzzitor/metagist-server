@@ -10,3 +10,5 @@
 /bin/
 /composer.phar
 composer.lock
+/web/images/
+web/media

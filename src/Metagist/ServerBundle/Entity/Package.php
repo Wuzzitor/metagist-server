@@ -83,6 +83,14 @@ class Package implements PackageInterface
     private $overallRating = 0.0;
 
     /**
+     * related image
+     * 
+     * @var Image
+     * @ORM\OneToOne(targetEntity="Image", mappedBy="package",cascade={"persist"})
+     */
+    private $image;
+    
+    /**
      * Constructor.
      * 
      * @param string  $identifier
@@ -269,7 +277,7 @@ class Package implements PackageInterface
      */
     public function __toString()
     {
-        return substr($this->identifier, strpos($this->identifier, '/') + 1);
+        return $this->identifier;
     }
     
     /**
@@ -336,5 +344,13 @@ class Package implements PackageInterface
         $this->overallRating = $overallRating;
     }
 
-
+    /**
+     * Returns the associated image.
+     * 
+     * @return Image
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
 }
