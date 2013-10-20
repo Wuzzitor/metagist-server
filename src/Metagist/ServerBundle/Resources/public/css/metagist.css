@@ -13,7 +13,7 @@ body {
     padding: none;
 }
 
-.package {
+.package, .padded {
     padding: 1em;
 }
 
