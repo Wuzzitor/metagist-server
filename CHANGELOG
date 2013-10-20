@@ -2,5 +2,47 @@
 VERSION 0  FIRST RELEASE
 ========================
 
+   Version 0.2 - New UI, dropped some technical info for now
+      20/10/2013 19:43  0.2.0  initial release
+         6256bae renamed release manager path (after upgrade)
+         c2e0dec updated in-dev screenshot
+         413d292 package view improvement
+         03f3719 fixed package consumer listing
+         a461875 css changes
+         185b7f4 improved contribute form to use url-type
+         c3ce92c ported translations
+         702f05e styled the about page
+         5a10c8a changed the top menu, added footer
+         1c6e7c3 improved package page
+         5a4f640 styled the contribute page
+         8b79f64 ported the contribute-list view
+         d56cda8 updated security access control
+         ad6610a styled the login page
+         47c4924 styled profile page
+         4c07c5e imporved rate page
+         0fb2e83 improved package page
+         577876f styled ratings page, showing pagination only if results
+         2f4c86b Merge branch 'feature/search_on_packagist' into develop
+         4303799 styling view
+         a1f6ddc updated in-dev screenshot
+         830e6b7 using packagist api to search
+         1808061 change package toString() behaviour
+         ef5fc14 rearranged package packge layout, dropped tech stuff
+         e042225 using include in index and search
+         3ea6ff3 deafult gradient update
+         8f0ba27 package teaser include file
+         700410b new front page
+         a5ed3c5 Merge branch 'feature/image_upload' into develop
+         8b5e44b Image upload
+         6074c22 code tweaks
+         ef64135 fixed webcontroller image upload
+         67a1b3b removed acme demo images
+         1baf628 package image entity
+         da7c512 Merge branch 'master' into feature/image_upload
+         163b4f1 updated composer config
+         c8735c0 fixed random package query when db empty
+         8c8d28b Merge branch 'master' into develop
+         69062b2 Merge branch 'release/0.1.0' into develop
+
    Version 0.1 - First release
       28/08/2013 07:03  0.1.0  initial release

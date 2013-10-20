@@ -1,8 +1,8 @@
 {
-   "name": "wuzzitor/metagist-server",
+   "name": "wuzzitor\/metagist-server",
    "license": "MIT",
    "type": "project",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "description": "",
    "autoload": {
       "psr-0": {
@@ -25,13 +25,13 @@
       "incenteev\/composer-parameter-handler": "~2.0",
       "hwi\/oauth-bundle": "0.3.*@dev",
       "twitter\/bootstrap": "v3.0.0",
-      "mopa/bootstrap-bundle": "3.*@dev",
+      "mopa\/bootstrap-bundle": "3.*@dev",
       "knplabs\/packagist-api": "0.1.*@dev",
       "pagerfanta\/pagerfanta": "v1.0.0",
       "bonndan\/release-manager": "0.2.*",
-      "vierbergenlars/php-semver": "2.0.5",
+      "vierbergenlars\/php-semver": "2.0.5",
       "wuzzitor\/metagist-api": "0.0.5",
-      "liip/imagine-bundle": "dev-master"
+      "liip\/imagine-bundle": "dev-master"
    },
    "require-dev": {
       "fzaninotto\/faker": "v1.2.0"
@@ -67,18 +67,21 @@
       },
       "rmt": {
          "vcs": "git",
-         "prerequisites": ["working-copy-check", "display-last-changes"],
+         "prerequisites": [
+            "working-copy-check",
+            "display-last-changes"
+         ],
          "preReleaseActions": [
-              {
-                  "name": "version-stamp",
-                  "const": "METAGIST_VERSION",
-                  "file": "src/Metagist/ServerBundle/version.php"
-              },
-              {
-                "name": "changelog-update",
-                "format": "semantic",
-                "dump-commits": true
-              }
+            {
+               "name": "version-stamp",
+               "const": "METAGIST_VERSION",
+               "file": "src\/Metagist\/ServerBundle\/version.php"
+            },
+            {
+               "name": "changelog-update",
+               "format": "semantic",
+               "dump-commits": true
+            }
          ],
          "postReleaseActions": [
             "vcs-commit"
