@@ -72,13 +72,11 @@
         <div class="btn-group-vertical btn-block">
         {% for dep in package.dependencies %}
             {% if dep.name %}
-            <a class="btn btn-default" href="{{ path('package', {'author': dep.author, 'name': dep.name})}}">
-                    <i class="icon-link"></i>  {{ dep.dependencyIdentifier }}
-            </a>
+                <a class="btn btn-default" href="{{ path('package', {'author': dep.author, 'name': dep.name})}}">
+                        <i class="icon-link"></i>  {{ dep.dependencyIdentifier }}
+                </a>
             {% else %}
-            <a class="btn btn-default" href="#">
-                  {{ dep.dependencyIdentifier }}
-            </a>
+                <a class="btn btn-default" href="#">{{ dep.dependencyIdentifier }}</a>
             {% endif %}
         {% endfor %}
         </div>
@@ -88,10 +86,10 @@
         {% if consumers | length %}
         Packages consuming {{package}}
         <div class="btn-group-vertical btn-block">
-            {% for dep in consumers %}
-                {% if dep.name %}<a class="btn btn-default" href="{{ path('package', {'author': dep.author, 'name': dep.name})}}">{% endif %}
-                        <i class="icon-link"></i>  {{ dep.dependencyIdentifier }}
-                {% if dep.name %}</a>{% endif %}
+            {% for cons in consumers %}
+                {% if cons.name %}<a class="btn btn-default" href="{{ path('package', {'author': cons.author, 'name': cons.name})}}">{% endif %}
+                        <i class="icon-link"></i>  {{ cons.package }}
+                {% if cons.name %}</a>{% endif %}
             {% endfor %}
         </div>
         {% endif %}
