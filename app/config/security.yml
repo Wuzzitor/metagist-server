@@ -36,5 +36,7 @@ security:
 
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/contribute, roles: ROLE_USER }
         - { path: ^/api/package, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/contribute, roles: ROLE_USER }
+        - { path: ^/contribute-list, roles: ROLE_USER }
+        - { path: ^/update, roles: ROLE_ADMIN }
