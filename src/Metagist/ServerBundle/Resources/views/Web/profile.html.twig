@@ -2,23 +2,34 @@
 {% set pagetitle = 'metagist.org - My Profile' %}
 
 {% block content %}
-    <h1>{{ user.getUsername }}`s Profile</h1>
-    <img src="{{user.getAvatarUrl}}" alt="User icon" />
-    Role: {{ user.role | trans }}
+<div class="row default-gradient padded">
+    <h1><img src="{{user.getAvatarUrl}}" alt="User icon" title=" Role: {{ user.role | trans }}"/> {{ user.getUsername }}</h1>
+    
+   
     <h2>Ratings</h2>
-    {% for rating in ratings %}
-    <div class="panel panel-default">
-          <!-- Default panel contents -->
-          <div class="panel-heading"> on 
-              {{ stars(rating.package.overallrating) }} 
-              <a href="{{ path('package', {'author': rating.package.author, 'name': rating.package.name })}}">
-                {{ rating.package }}
-              </a>
-          </div>
-          <div class="panel-body">
-              <h3>{{ stars(rating.rating) }} {{ rating.title}}</h3>
-              <p>{{ rating.comment }}</p>
-          </div>
+</div>
+
+{% for rating in ratings %}
+    {% set package = rating.package %}
+    {% set class = "" %}
+    {% set style = "" %}
+    {% if package.image and package.image.style != "" %}
+        {% set style = package.image.style %}
+    {% else %}
+        {% set class = "default-gradient" %}
+    {% endif %}
+    <div class="row package-teaser {{class}}" {% if style %}style="{{style}}"{% endif %}>
+        <div class="col-md-3 col-lg-2">
+            {% if package.image %}
+            <img class="logo" src="{{ package.image.getWebPath() | imagine_filter('my_thumb') }}" alt="logo for {{ package.identifier }}"/>
+            <br /><br />
+            {% endif %}
+            <a href="{{ path('package', {'author': package.author, 'name': package.name })}}">{{ package.identifier }}</a>
+        </div>
+        <div class="col-md-9 col-lg-10">
+            <h3>{{ stars(rating.rating) }}<br />{{ rating.title}}</h3>
+            <p>{{ rating.comment }}</p>
+        </div>
     </div>
-    {% endfor %}
+{% endfor %}
 {% endblock %}
