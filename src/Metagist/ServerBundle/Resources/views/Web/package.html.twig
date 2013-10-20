@@ -22,12 +22,12 @@
         {% for rating in ratings %}
                     <h3>{{ stars(rating.rating) }} {{ rating.title | e}}</h3>
                     <div class="row rating">
-                        <div class="col-md-1">
+                        <div class="col-md-2 col-lg-1">
                             <a href="{{ path('user', {'name': rating.user.username}) }}">
                                 <img src="{{rating.user.getAvatarUrl}}" alt="by {{rating.user.getUsername}}" class="img-rounded" /><br />
                             </a>
                         </div>
-                        <div class="col-md-11">
+                        <div class="col-md-10 col-lg-11">
                             <p>{{rating.comment | e}}</p>
                         </div>
                     </div>
