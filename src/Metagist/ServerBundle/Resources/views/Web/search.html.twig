@@ -2,19 +2,23 @@
 {% set pagetitle = 'metagist.org' %}
 
 {% block content %}
-<div class="row">
-    <div class="default-gradient">
+<div class="row default-gradient">
+    <div class="padded">
         <h1>Search results matching your query "{{query | e}}"</h1>
     </div>
+    
+    <div>
+        {% for package in packages %}
+            {% include 'MetagistServerBundle::packageteaser.html.twig' with {'package': package} %}
+        {% endfor %}
+        {% if packages.count == 0%}
+            No results found.
+        {% endif %}
+    </div>
+</div>
 
-    {% for package in packages %}
-        {% include 'MetagistServerBundle::packageteaser.html.twig' with {'package': package} %}
-    {% endfor %}
-        
-        
-    {% if packages.count == 0%}
-        No results found.
-    {% else %}
+<div class="row default-gradient padded">
+    {% if packages.count > 0%}
         {{ pagination|raw }}
     {% endif %}
 </div>

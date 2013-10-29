@@ -2,7 +2,7 @@
    "name": "wuzzitor\/metagist-server",
    "license": "MIT",
    "type": "project",
-   "version": "0.2.0",
+   "version": "0.2.1",
    "description": "",
    "autoload": {
       "psr-0": {
@@ -26,11 +26,11 @@
       "hwi\/oauth-bundle": "0.3.*@dev",
       "twitter\/bootstrap": "v3.0.0",
       "mopa\/bootstrap-bundle": "3.*@dev",
-      "knplabs\/packagist-api": "0.1.*@dev",
+      "knplabs\/packagist-api": "1.0",
       "pagerfanta\/pagerfanta": "v1.0.0",
       "bonndan\/release-manager": "0.2.*",
       "vierbergenlars\/php-semver": "2.0.5",
-      "wuzzitor\/metagist-api": "0.0.5",
+      "wuzzitor\/metagist-api": "0.0.6",
       "liip\/imagine-bundle": "dev-master"
    },
    "require-dev": {
