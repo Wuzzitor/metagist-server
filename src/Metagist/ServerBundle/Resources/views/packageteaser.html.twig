@@ -7,7 +7,9 @@
 {% endif %}
 <div class="col-lg-2 col-md-4 package-teaser {{class}}" {% if style %}style="{{style}}"{% endif %}>
     {% if package.image %}
-    <img class="logo" src="{{ package.image.getWebPath() | imagine_filter('my_thumb') }}" alt="logo for {{ package.identifier }}"/>
+        <a href="{{ path('package', {'author': package.author, 'name': package.name })}}" title="{{ package.identifier }}">
+            <img class="logo" src="{{ package.image.getWebPath() | imagine_filter('my_thumb') }}" alt="logo for {{ package.identifier }}"/>
+        </a>
     {% endif %}
 
 
