@@ -3,6 +3,14 @@ VERSION 0  FIRST RELEASE
 ========================
 
    Version 0.2 - New UI, dropped some technical info for now
+      29/10/2013 21:46  0.2.1  Improved search
+         0704257 package teaser images are linked
+         5230fc0 improved the search page
+         fc2b6e6 Set packagist api version to 1.0
+         511792b improved package repo arg checking
+         002fea2 updated metagist-api version
+         f5e1832 improved the about page
+         ebdacca Merge branch 'release/0.2.0' into develop
       20/10/2013 19:43  0.2.0  initial release
          6256bae renamed release manager path (after upgrade)
          c2e0dec updated in-dev screenshot
