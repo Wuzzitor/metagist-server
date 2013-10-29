@@ -368,32 +368,34 @@ class WebController extends Controller
      * 
      * @param Request $request
      * @return string
-     * @Route("/search", name="search")
+     * @Route(
+     *     "/search/{page}/{query}",
+     *     defaults={"page" = 1, "query" = ""},
+     *     requirements={"page" = "\d+"},
+     *     name="search"
+     * )
+     * @Route("/search?query={query}")
      * @Template()
      * @link http://www.terrymatula.com/development/2013/some-packagist-api-hacks/
      */
-    public function searchAction(Request $request)
+    public function searchAction($page, $query, Request $request)
     {
-        $query = $request->get('query');
-        if ($query == '*') {
-            $query = '';
+        
+        if (empty($query)) {
+            $query = $request->query->get('query');
+            if (empty($query)) {
+                $flashBag = $this->serviceProvider->session()->getFlashBag();
+                $flashBag->add('error', 'Please enter a search query.');
+                return $this->redirect($this->generateUrl('homepage'));
+            }
         }
-        $page = $request->get('page');
-        if (intval($page) == 0) {
-            $page = 1;
-        }
+        
         @list ($author, $name) = explode('/', $query);
         $package = null;
         try {
             $package = $this->serviceProvider->packages()->byAuthorAndName($author, $name);
             if ($package !== null) {
-                $this->redirectToPackageView($package);
-            } else {
-                /*
-                 * Creating a dummy package, triggers the creation process if
-                 * user follows the link.
-                 */
-                $dummy = new Package($author . '/' . $name);
+                return $this->redirectToPackageView($package);
             }
         } catch (\Exception $exception) {
             $this->serviceProvider->logger()->info('Search failed: ' . $exception->getMessage());
@@ -401,6 +403,7 @@ class WebController extends Controller
         
         $api = new \Packagist\Api\Client();
         $response = $api->search($query, array('page' => $page));
+        
         
         $packages = new \Doctrine\Common\Collections\ArrayCollection();
         foreach ($response as $result) {
@@ -417,10 +420,7 @@ class WebController extends Controller
 
         $that = $this;
         $routeGenerator = function($page) use ($that, $query) {
-            if ($query == '') {
-                $query = '*';
-            }
-            return $this->generateUrl('search', array('query' => urlencode($query), 'page' => $page));
+            return $that->generateUrl('search', array('query' => urlencode($query), 'page' => $page));
         };
         $pagerfanta = $this->getPaginationFor($packages);
         $pagerfanta->setCurrentPage($page);
@@ -428,7 +428,6 @@ class WebController extends Controller
 
         return array(
             'query' => $query,
-            'dummy' => isset($dummy) ? $dummy : null,
             'packages' => $pagerfanta,
             'pagination' => $view->render($pagerfanta, $routeGenerator)
         );

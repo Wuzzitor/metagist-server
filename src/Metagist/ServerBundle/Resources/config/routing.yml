@@ -1,6 +1,5 @@
 web:
     resource: "@MetagistServerBundle/Controller/WebController.php"
-   # resource: "@metagist.web.controller"
     type:     annotation
     prefix:   /
 

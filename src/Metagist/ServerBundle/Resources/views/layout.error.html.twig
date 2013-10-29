@@ -3,37 +3,35 @@
 <!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
 <!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-    <title>{{ pagetitle|trans }}</title>
+        <title>{{ pagetitle|trans }}</title>
 
-    <meta name="description" content="Metagist error page">
-    <meta name="author" content="">
+        <meta name="description" content="Metagist error page">
+        <meta name="author" content="">
 
-    <meta name="viewport" content="width=device-width">
+        <meta name="viewport" content="width=device-width">
 
-    <link rel="stylesheet" href="{{ app.request.basepath }}/css/bootstrap.css">
-    <link rel="stylesheet" href="{{ app.request.basepath }}/bundles/metagistserver/css/metagist.css">
-    <link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
-</head>
-<body>
-<!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
-
-<div class="container">
-    <div class="row">
-        <div class="navbar navbar-default">
-            <div class="navbar-inner">
-              <ul class="nav">
-                  <li><a href="{{ path('homepage') }}" title="Home"><i class="icon icon-home"></i> metagist.org</a></li>
-              </ul>
+        <link rel="stylesheet" href="{{ app.request.basepath }}/css/bootstrap.css">
+        <link rel="stylesheet" href="{{ app.request.basepath }}/bundles/metagistserver/css/metagist.css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="{{ path('homepage') }}">metagist.org</a>
+                </div>
             </div>
         </div>
-    </div>
-    <div id="main" role="main" class="row">
-        {% block content %}{% endblock %}
-    </div>
-</div>
-</body>
+        
+        <div class="container  default-gradient">
+            <div id="main" role="main" class="padded">{% block content %}{% endblock %}</div>
+        </div>
+        <footer class="padded">
+                <a href="{{ path('about') }}"><i class="icon icon-info-sign"></i> About</a>
+        </footer>
+    </body>
 </html>
