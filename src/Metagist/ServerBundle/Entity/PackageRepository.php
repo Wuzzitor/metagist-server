@@ -114,7 +114,7 @@ class PackageRepository extends EntityRepository
 
         /* @var $entity Package */
         $entity->setTimeUpdated(new \DateTime());
-        $entity->setDescription($package->getDescription());
+        $entity->setDescription((string)$package->getDescription());
         $entity->setType($package->getType());
         $entity->setVersions($package->getVersions());
 
