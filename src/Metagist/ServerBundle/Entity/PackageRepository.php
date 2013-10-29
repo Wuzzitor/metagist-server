@@ -41,8 +41,11 @@ class PackageRepository extends EntityRepository
      */
     public function byAuthorAndName($author, $name)
     {
-        if (!$this->validator->isValidName($author) || !$this->validator->isValidName($name)) {
-            throw new \InvalidArgumentException('The author or package name is invalid.');
+        if (!$this->validator->isValidName($author)) {
+            throw new \InvalidArgumentException('The author name ' . $author . ' is invalid.');
+        }
+        if (!$this->validator->isValidName($name)) {
+            throw new \InvalidArgumentException('The package name ' . $name . ' is invalid.');
         }
 
         return $this->findOneBy(array('identifier' => $author . '/' . $name));
