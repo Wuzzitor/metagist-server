@@ -387,8 +387,7 @@ class WebController extends Controller
         try {
             $package = $this->serviceProvider->packages()->byAuthorAndName($author, $name);
             if ($package !== null) {
-                $url = '/' . $package->getIdentifier();
-                return new \Symfony\Component\HttpFoundation\RedirectResponse($url);
+                $this->redirectToPackageView($package);
             } else {
                 /*
                  * Creating a dummy package, triggers the creation process if
@@ -406,17 +405,23 @@ class WebController extends Controller
         $packages = new \Doctrine\Common\Collections\ArrayCollection();
         foreach ($response as $result) {
             /* @var $result \Packagist\Api\Result\Result */
-            $package = new Package($result->getName());
-            $package->setDescription($result->getDescription());
+            $identifier = $result->getName();
+            list ($author, $name) = Package::splitIdentifier($identifier);
+            $package = $this->serviceProvider->packages()->byAuthorAndName($author, $name);
+            if (!$package) {
+                $package = new Package($identifier);
+                $package->setDescription($result->getDescription());
+            }
             $packages->add($package);
         }
 
-        $routeGenerator = function($page) use ($query) {
-                if ($query == '') {
-                    $query = '*';
-                }
-                return '/search/' . urlencode($query) . '/' . $page;
-            };
+        $that = $this;
+        $routeGenerator = function($page) use ($that, $query) {
+            if ($query == '') {
+                $query = '*';
+            }
+            return $this->generateUrl('search', array('query' => urlencode($query), 'page' => $page));
+        };
         $pagerfanta = $this->getPaginationFor($packages);
         $pagerfanta->setCurrentPage($page);
         $view = new TwitterBootstrapView();
