@@ -3,6 +3,10 @@ VERSION 0  FIRST RELEASE
 ========================
 
    Version 0.2 - New UI, dropped some technical info for now
+      29/10/2013 23:00  0.2.2  Improved search
+         cf99220 improved the error pages
+         4d89ef2 improved the search handling
+         cd0c992 Merge branch 'release/0.2.1' into develop
       29/10/2013 21:46  0.2.1  Improved search
          0704257 package teaser images are linked
          5230fc0 improved the search page
