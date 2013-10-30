@@ -3,6 +3,16 @@ VERSION 0  FIRST RELEASE
 ========================
 
    Version 0.2 - New UI, dropped some technical info for now
+      30/10/2013 21:43  0.2.3  Improved search and pagination
+         a2fdaa2 improved ratings pagination
+         d41f923 webcontroller uses packagist cached client for search
+         b452592 service provider caches packagist responses for 60 secs
+         8937bc8 service provider returns a packagist api client using apc cache
+         a1257f0 search pagination is a navbar
+         8f24e62 modified twbs template file not to contain markup
+         f66330d using apc for caching
+         b882f67 fix against package return null as description
+         6673871 Merge branch 'release/0.2.2' into develop
       29/10/2013 23:00  0.2.2  Improved search
          cf99220 improved the error pages
          4d89ef2 improved the search handling
