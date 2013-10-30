@@ -3,6 +3,8 @@ namespace Metagist\ServerBundle\Controller;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Packagist\Api\Client as PackagistClient;
+use Guzzle\Cache\DoctrineCacheAdapter;
+use Guzzle\Plugin\Cache\CachePlugin;
 
 /**
  * Provides access to often used resources.
@@ -56,7 +58,7 @@ class ServiceProvider
     private function getPackageFactory()
     {
         return new \Metagist\ServerBundle\Entity\PackageFactory(
-            new PackagistClient(),
+            $this->getPackagistApiClient(),
             new \Metagist\ServerBundle\Entity\MetainfoFactory($this->logger())
         );
     }
@@ -182,5 +184,25 @@ class ServiceProvider
     private function getValidator()
     {
         return $this->container->get('metagist.validator');
+    }
+    
+    /**
+     * Creates a packagist api client instance.
+     * 
+     * The api client uses a http client with an apc cache.
+     * 
+     * @return \Packagist\Api\Client
+     * @link http://guzzlephp.org/guide/http/caching.html
+     */
+    public function getPackagistApiClient()
+    {
+        $httpClient = new \Guzzle\Http\Client();
+        $cache = new \Doctrine\Common\Cache\ApcCache();
+        $adapter = new DoctrineCacheAdapter($cache);
+        $cachePlugin = new CachePlugin($adapter, true);
+        $httpClient->addSubscriber($cachePlugin);
+        
+        $packagistClient = new PackagistClient($httpClient);
+        return $packagistClient;
     }
 }

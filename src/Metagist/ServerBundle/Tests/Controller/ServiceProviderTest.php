@@ -109,4 +109,9 @@ class ServiceProviderTest extends WebDoctrineTestCase
         $this->setExpectedException("\Metagist\Api\Exception");
         $this->serviceProvider->getPackage('cannot', 'befound');
     }
+    
+    public function testGetPackagistApiClient()
+    {
+        $this->assertInstanceOf("\Packagist\Api\Client", $this->serviceProvider->getPackagistApiClient());
+    }
 }
