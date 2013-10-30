@@ -401,7 +401,7 @@ class WebController extends Controller
             $this->serviceProvider->logger()->info('Search failed: ' . $exception->getMessage());
         }
         
-        $api = new \Packagist\Api\Client();
+        $api = $this->serviceProvider->getPackagistApiClient();
         $response = $api->search($query, array('page' => $page));
         
         

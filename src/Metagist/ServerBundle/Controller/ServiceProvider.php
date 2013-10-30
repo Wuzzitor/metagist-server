@@ -3,6 +3,9 @@ namespace Metagist\ServerBundle\Controller;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Packagist\Api\Client as PackagistClient;
+use Guzzle\Cache\DoctrineCacheAdapter;
+use Guzzle\Plugin\Cache\CachePlugin;
+use Guzzle\Plugin\Cache\CallbackCanCacheStrategy;
 
 /**
  * Provides access to often used resources.
@@ -56,7 +59,7 @@ class ServiceProvider
     private function getPackageFactory()
     {
         return new \Metagist\ServerBundle\Entity\PackageFactory(
-            new PackagistClient(),
+            $this->getPackagistApiClient(),
             new \Metagist\ServerBundle\Entity\MetainfoFactory($this->logger())
         );
     }
@@ -182,5 +185,47 @@ class ServiceProvider
     private function getValidator()
     {
         return $this->container->get('metagist.validator');
+    }
+    
+    /**
+     * Creates a packagist api client instance.
+     * 
+     * The api client uses a http client with an apc cache. Cache-control
+     * headers of responses are ignored.
+     * 
+     * @return \Packagist\Api\Client
+     * @link http://guzzlephp.org/guide/http/caching.html
+     */
+    public function getPackagistApiClient()
+    {
+        $cache = new \Doctrine\Common\Cache\ApcCache();
+        $adapter = new DoctrineCacheAdapter($cache);
+        $cachePlugin = new CachePlugin(array(
+            'storage' => new \Guzzle\Plugin\Cache\DefaultCacheStorage($adapter),
+            'can_cache' => $this->getPackagistCanCacheStrategy()
+        ));
+        
+        $httpClient = new \Guzzle\Http\Client();
+        $httpClient->addSubscriber($cachePlugin);
+        return new PackagistClient($httpClient);
+    }
+    
+    /**
+     * Creates a caching stragegy which caches all packagist api requests.
+     * 
+     * @return \Guzzle\Plugin\Cache\CallbackCanCacheStrategy
+     */
+    private function getPackagistCanCacheStrategy()
+    {
+        $callback = function(){return true;};
+        $responseCallback = function(\Guzzle\Http\Message\Response $response){
+            /* @var $cacheControl \Guzzle\Http\Message\Header\CacheControl */
+            $cacheControl = $response->getHeader('Cache-Control');
+            $cacheControl->addDirective('max-age', 60);
+            return true;
+        };
+        $canCache = new CallbackCanCacheStrategy($callback, $responseCallback);
+        
+        return $canCache;
     }
 }

@@ -43,3 +43,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d4e4ef', end
     margin-right: 0.1em;
     margin-bottom: 0.1em;
 }
+
+.pagination-nav {
+    margin-bottom: 0;
+}

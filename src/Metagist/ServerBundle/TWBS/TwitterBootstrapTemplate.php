@@ -25,8 +25,6 @@ class TwitterBootstrapTemplate extends PagerfantaTwitterBootstrapTemplate
      */
     public function container()
     {
-        return sprintf('<ul class="%s">%%pages%%</ul>',
-            $this->option('css_container_class')
-        );
+        return '%pages%';
     }
 }
