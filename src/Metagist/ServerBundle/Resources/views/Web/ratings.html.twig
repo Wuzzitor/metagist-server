@@ -34,11 +34,18 @@
             
     {% endfor %}
 
-    {% if ratings | length %}
-        {{ pagination|raw }}
-    {% else %}
+    {% if ratings | length == 0 %}
         No reviews found.
     {% endif %}
                 
+</div>
+<div class="row">
+    {% if ratings | length %}
+        <nav class="navbar navbar-inverse navbar-static-top pagination-nav" role="navigation">
+            <ul class="nav navbar-nav">
+                {{ pagination|raw }}
+            </ul>
+        </nav>
+    {% endif %}
 </div>
 {% endblock %}
