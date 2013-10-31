@@ -16,6 +16,7 @@ class BrandingType extends AbstractType
     {
         $builder
             ->add('vendor')
+            ->add('file', 'file', array('required' => false))
             ->add('less')
         ;
     }
