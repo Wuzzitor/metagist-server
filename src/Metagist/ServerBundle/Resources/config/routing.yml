@@ -7,6 +7,6 @@ api:
     resource: "@MetagistServerBundle/Controller/ApiController.php"
     type:     annotation
 
-api:
+admin:
     resource: "@MetagistServerBundle/Controller/BrandingController.php"
     type:     annotation
