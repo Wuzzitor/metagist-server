@@ -2,14 +2,12 @@
 {% set pagetitle = 'contribute to ' ~ package %}
 
 {% block content %}
-{% set class = "" %}
-{% set style = "" %}
-{% if package.image and package.image.style != "" %}
-    {% set style = package.image.style %}
+{% if package.branding %}
+    {% set class = package.branding.vendor %}
 {% else %}
     {% set class = "default-gradient" %}
 {% endif %}
-<div class="row package {{class}}" {% if style %}style="{{style}}"{% endif %}>
+<div class="row package {{class}}">
     <div class="page-header">
         <h1>contribute to<br />{{package}}<br />
         <small>Pick one of the points of the categories listed below.</small></h1>
