@@ -12,3 +12,4 @@
 composer.lock
 /web/images/
 web/media
+web/css/brandings.css

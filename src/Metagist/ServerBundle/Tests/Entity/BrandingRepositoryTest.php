@@ -44,17 +44,15 @@ class BrandingRepositoryTest extends WebDoctrineTestCase
         $this->entityManager->flush();
     }
 
-    public function testCompilesCss()
+    public function testCompilesLess()
     {
         $tempDir = sys_get_temp_dir();
-        @unlink($tempDir . '/metagist.css');
-        $this->repo->compileAllToCss($tempDir, $tempDir);
+        @unlink($tempDir . '/brandings.less');
+        $this->repo->compileAllToLess($tempDir);
         
-        $this->assertFileExists($tempDir . '/brandings.css');
-        $contents = file_get_contents($tempDir . '/brandings.css');
-        $this->assertContains('.test1', $contents);
-        $this->assertContains('.test1 a', $contents);
-        $this->assertContains('.test2', $contents);
-        $this->assertContains('.test2 a', $contents);
+        $this->assertFileExists($tempDir . '/brandings.less');
+        $contents = file_get_contents($tempDir . '/brandings.less');
+        $this->assertContains('.test1{' . PHP_EOL . 'a{', $contents);
+        $this->assertContains('.test2{' . PHP_EOL . 'a{', $contents);
     }
 }

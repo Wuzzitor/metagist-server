@@ -14,19 +14,15 @@ class BrandingRepository extends EntityRepository
      * Compiles all branding less into css.
      * 
      * @param string $sourceDir
-     * @param string $targetDir
-     * @throws \Metagist\Exception
+     * @return string the less file path
      * @todo move out of repo
      */
-    public function compileAllToCss($sourceDir, $targetDir)
+    public function compileAllToLess($sourceDir)
     {
         if (!is_dir($sourceDir)) {
             throw new \InvalidArgumentException($sourceDir . ' is not a dir.');
         }
         
-        if (!is_dir($targetDir)) {
-            throw new \InvalidArgumentException($targetDir . ' is not a dir.');
-        }
         $all = $this->findAll();
         $lessFile = $sourceDir . '/brandings.less';
         $handle = fopen($lessFile, 'w+');
@@ -36,10 +32,6 @@ class BrandingRepository extends EntityRepository
         }
         fclose($handle);
         
-        $output = system('lessc ' . $lessFile . ' ' . $targetDir . '/brandings.css', $returnVal);
-        
-        if ($returnVal != 0) {
-            throw new \Metagist\Exception('Less compilation failed:  ' . $output);
-        }
+        return $lessFile;
     }
 }
