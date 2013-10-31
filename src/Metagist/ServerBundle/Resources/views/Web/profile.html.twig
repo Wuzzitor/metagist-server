@@ -12,16 +12,15 @@
 {% for rating in ratings %}
     {% set package = rating.package %}
     {% set class = "" %}
-    {% set style = "" %}
-    {% if package.image and package.image.style != "" %}
-        {% set style = package.image.style %}
+    {% if package.branding %}
+        {% set class = package.branding.vendor %}
     {% else %}
         {% set class = "default-gradient" %}
     {% endif %}
-    <div class="row package-teaser {{class}}" {% if style %}style="{{style}}"{% endif %}>
+    <div class="row package-teaser {{class}}">
         <div class="col-md-3 col-lg-2">
-            {% if package.image %}
-            <img class="logo" src="{{ package.image.getWebPath() | imagine_filter('my_thumb') }}" alt="logo for {{ package.identifier }}"/>
+            {% if package.branding %}
+            <img class="logo" src="{{ package.branding.getWebPath() | imagine_filter('my_thumb') }}" alt="logo for {{ package.identifier }}"/>
             <br /><br />
             {% endif %}
             <a href="{{ path('package', {'author': package.author, 'name': package.name })}}">{{ package.identifier }}</a>
