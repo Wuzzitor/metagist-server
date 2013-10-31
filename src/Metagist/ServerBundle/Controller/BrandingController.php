@@ -35,6 +35,7 @@ class BrandingController extends Controller
             'entities' => $entities,
         );
     }
+
     /**
      * Creates a new Branding entity.
      *
@@ -59,17 +60,17 @@ class BrandingController extends Controller
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
     /**
-    * Creates a form to create a Branding entity.
-    *
-    * @param Branding $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to create a Branding entity.
+     *
+     * @param Branding $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createCreateForm(Branding $entity)
     {
         $form = $this->createForm(new BrandingType(), $entity, array(
@@ -92,11 +93,11 @@ class BrandingController extends Controller
     public function newAction()
     {
         $entity = new Branding();
-        $form   = $this->createCreateForm($entity);
+        $form = $this->createCreateForm($entity);
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -120,7 +121,7 @@ class BrandingController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
-            'entity'      => $entity,
+            'entity' => $entity,
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -146,19 +147,19 @@ class BrandingController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
 
     /**
-    * Creates a form to edit a Branding entity.
-    *
-    * @param Branding $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to edit a Branding entity.
+     *
+     * @param Branding $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createEditForm(Branding $entity)
     {
         $form = $this->createForm(new BrandingType(), $entity, array(
@@ -170,6 +171,7 @@ class BrandingController extends Controller
 
         return $form;
     }
+
     /**
      * Edits an existing Branding entity.
      *
@@ -198,11 +200,12 @@ class BrandingController extends Controller
         }
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
+
     /**
      * Deletes a Branding entity.
      *
@@ -239,13 +242,13 @@ class BrandingController extends Controller
     private function createDeleteForm($id)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('admin_branding_delete', array('id' => $id)))
-            ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
+                ->setAction($this->generateUrl('admin_branding_delete', array('id' => $id)))
+                ->setMethod('DELETE')
+                ->add('submit', 'submit', array('label' => 'Delete'))
+                ->getForm()
         ;
     }
-    
+
     /**
      * Returns the branding repo.
      * 
@@ -253,12 +256,20 @@ class BrandingController extends Controller
      */
     private function getRepo()
     {
-        return $em->getRepository('MetagistServerBundle:Branding');
+        return $this->get('doctrine')->getEntityManager()->getRepository('MetagistServerBundle:Branding');
     }
-    
+
     private function compileBrandings()
     {
-        $targetPath = $this->get('kernel')->getRootDir() . '/../web';
-        $this->getRepo()->compileAllToCss(sys_get_temp_dir(), $targetPath);
+        $sourcePath = $this->get('kernel')->getCacheDir();
+        $lessFile   = $this->getRepo()->compileAllToLess($sourcePath);
+        $targetPath = $this->get('kernel')->getRootDir() . '/../web/css/brandings.css';
+        $lessComp   = new \lessc();
+        try {
+            file_put_contents($targetPath, $lessComp->compileFile($lessFile));
+        } catch (\Exception $e) {
+            echo "fatal error: " . $e->getMessage();
+        }
     }
+
 }
