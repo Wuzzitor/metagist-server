@@ -85,11 +85,21 @@ class Branding
     }
 
     /**
-     * Get less, surround with the vendor class.
+     * Get less
      *
      * @return string 
      */
     public function getLess()
+    {
+        return $this->less;
+    }
+    
+    /**
+     * Get less, surround with the vendor class.
+     *
+     * @return string 
+     */
+    public function getLessWithVendor()
     {
         return '.' . $this->vendor . '{' . PHP_EOL
             . $this->less . PHP_EOL

@@ -32,7 +32,7 @@ class BrandingRepository extends EntityRepository
         $handle = fopen($lessFile, 'w+');
         foreach ($all as $branding) {
             /* @var $branding \Metagist\ServerBundle\Entity\Branding */
-            fwrite($handle, $branding->getLess());
+            fwrite($handle, $branding->getLessWithVendor());
         }
         fclose($handle);
         

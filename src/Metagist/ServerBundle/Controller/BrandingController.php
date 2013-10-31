@@ -13,7 +13,7 @@ use Metagist\ServerBundle\Form\BrandingType;
 /**
  * Branding controller.
  *
- * @Route("/admin/branding")
+ * @Route("/admin/brandings")
  */
 class BrandingController extends Controller
 {
@@ -52,6 +52,7 @@ class BrandingController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
+            $this->compileBrandings();
 
             return $this->redirect($this->generateUrl('admin_branding_show', array('id' => $entity->getId())));
         }
@@ -180,7 +181,7 @@ class BrandingController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('MetagistServerBundle:Branding')->find($id);
+        $entity = $this->getRepo()->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Branding entity.');
@@ -192,7 +193,7 @@ class BrandingController extends Controller
 
         if ($editForm->isValid()) {
             $em->flush();
-
+            $this->compileBrandings();
             return $this->redirect($this->generateUrl('admin_branding_edit', array('id' => $id)));
         }
 
@@ -243,5 +244,21 @@ class BrandingController extends Controller
             ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()
         ;
+    }
+    
+    /**
+     * Returns the branding repo.
+     * 
+     * @return \Metagist\ServerBundle\Entity\BrandingRepository
+     */
+    private function getRepo()
+    {
+        return $em->getRepository('MetagistServerBundle:Branding');
+    }
+    
+    private function compileBrandings()
+    {
+        $targetPath = $this->get('kernel')->getRootDir() . '/../web';
+        $this->getRepo()->compileAllToCss(sys_get_temp_dir(), $targetPath);
     }
 }
