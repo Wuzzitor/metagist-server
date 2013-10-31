@@ -61,6 +61,19 @@ class Branding
     private $packages;
 
     /**
+     * Constructor
+     * 
+     * @param string $vendor
+     */
+    public function __construct($vendor = null)
+    {
+        if ($vendor !== null) {
+            $this->vendor = $vendor;
+        }
+        $this->updatedAt = new \DateTime();
+    }
+    
+    /**
      * Get id
      *
      * @return integer 
