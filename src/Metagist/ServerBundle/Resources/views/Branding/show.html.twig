@@ -1,0 +1,38 @@
+{% extends 'MetagistServerBundle::layout.html.twig' %}
+{% set pagetitle = 'Show branding' %}
+{% block content -%}
+<div class="row padded {{ entity.vendor }}">
+    <h1>{{ entity.vendor }}</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Vendor</th>
+                <td>{{ entity.vendor }}</td>
+            </tr>
+            <tr>
+                <th>Less</th>
+                <td><pre>{{ entity.less | raw}}</pre></td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('admin_branding') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('admin_branding_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+</div>
+{% endblock %}

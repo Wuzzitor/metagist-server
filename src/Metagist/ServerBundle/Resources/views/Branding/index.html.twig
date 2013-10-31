@@ -1,0 +1,33 @@
+{% extends 'MetagistServerBundle::layout.html.twig' %}
+{% set pagetitle = 'Brandings' %}
+
+{% block content -%}
+<div class="row default-gradient padded">
+    
+    <h1>Branding list</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Vendor</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td><a href="{{ path('admin_branding_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{{ entity.vendor }}</td>
+                <td>
+                    <a class="btn btn-default" href="{{ path('admin_branding_edit', { 'id': entity.id }) }}">edit</a>
+                    <a class="btn btn-default" href="{{ path('admin_branding_show', { 'id': entity.id }) }}">show</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a class="btn btn-default" href="{{ path('admin_branding_new') }}">Create a branding</a>
+</div>
+{% endblock %}
