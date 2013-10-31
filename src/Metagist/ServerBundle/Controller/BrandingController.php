@@ -189,12 +189,21 @@ class BrandingController extends Controller
             throw $this->createNotFoundException('Unable to find Branding entity.');
         }
 
+        $flashBag = $this->get('session')->getFlashBag();
         $deleteForm = $this->createDeleteForm($id);
         $editForm = $this->createEditForm($entity);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
+            $em->persist($entity);
             $em->flush();
+            $entity->upload();
+            $flashBag->add('success', 'Image received.');
+            
+            $webDir = $this->get('kernel')->getRootDir() . '/../web';
+            $file = $webDir . '/media/cache/my_thumb/images/'.basename($entity->getWebPath());
+            @unlink($file);
+        
             $this->compileBrandings();
             return $this->redirect($this->generateUrl('admin_branding_edit', array('id' => $id)));
         }
