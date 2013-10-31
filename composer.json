@@ -31,7 +31,8 @@
       "bonndan\/release-manager": "0.2.*",
       "vierbergenlars\/php-semver": "2.0.5",
       "wuzzitor\/metagist-api": "0.0.6",
-      "liip\/imagine-bundle": "dev-master"
+      "liip\/imagine-bundle": "dev-master",
+      "leafo/lessphp": "0.4.0"
    },
    "require-dev": {
       "fzaninotto\/faker": "v1.2.0"

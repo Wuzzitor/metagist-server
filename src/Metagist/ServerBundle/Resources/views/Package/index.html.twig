@@ -1,0 +1,46 @@
+{% extends 'MetagistServerBundle::layout.html.twig' %}
+{% set pagetitle = 'Packages' %}
+
+{% block content -%}
+<div class="row padded default-gradient">
+    
+<h1>Package list</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Identifier</th>
+            <th>Description</th>
+            <th>Type</th>
+            <th>Timeupdated</th>
+            <th>Overallrating</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entity in entities %}
+        <tr>
+            <td><a href="{{ path('admin_packages_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+            <td><a href="{{ path('package', { 'author': entity.author, 'name': entity.name   }) }}">{{ entity.identifier }}</a></td>
+            <td>{{ entity.description }}</td>
+            <td>{{ entity.type }}</td>
+            <td>{% if entity.timeUpdated %}{{ entity.timeUpdated|date('Y-m-d H:i:s') }}{% endif %}</td>
+            <td>{{ entity.overallRating }}</td>
+            <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('admin_packages_show', { 'id': entity.id }) }}">show</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('admin_packages_edit', { 'id': entity.id }) }}">edit</a>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'MetagistServerBundle::layout.html.twig' %}
+{% set pagetitle = 'Edit branding' %}
+
+{% block content -%}
+<div class="row {{ entity.vendor }} padded">
+    <img class="logo" src="{{ entity.getWebPath() | imagine_filter('my_thumb') }}"/>
+    <h1>Edit "{{ entity.vendor }}" Branding</h1>
+
+    {{ form(edit_form) }}
+
+        <a class="btn btn-default" href="{{ path('admin_branding') }}">Back to the list</a>
+    {{ form(delete_form) }}
+</div>
+{% endblock %}

@@ -40,3 +40,4 @@ security:
         - { path: ^/contribute, roles: ROLE_USER }
         - { path: ^/contribute-list, roles: ROLE_USER }
         - { path: ^/update, roles: ROLE_ADMIN }
+        - { path: ^/admin, roles: ROLE_ADMIN }

@@ -2,9 +2,10 @@
 namespace Metagist\ServerBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use Metagist\Validator;
 use Metagist\PackageInterface;
-use Doctrine\ORM\Mapping\UniqueConstraint;
+use Metagist\ServerBundle\Entity\Branding;
 
 /**
  * Package
@@ -83,12 +84,12 @@ class Package implements PackageInterface
     private $overallRating = 0.0;
 
     /**
-     * related image
+     * related branding
      * 
-     * @var Image
-     * @ORM\OneToOne(targetEntity="Image", mappedBy="package",cascade={"persist"})
+     * @var Branding
+     * @ORM\ManyToOne(targetEntity="Branding", inversedBy="packages",cascade={"persist"})
      */
-    private $image;
+    private $branding;
     
     /**
      * Constructor.
@@ -345,12 +346,22 @@ class Package implements PackageInterface
     }
 
     /**
-     * Returns the associated image.
+     * Returns the associated branding.
      * 
-     * @return Image
+     * @return Branding
      */
-    public function getImage()
+    public function getBranding()
     {
-        return $this->image;
+        return $this->branding;
+    }
+    
+    /**
+     * Set or nullify branding.
+     * 
+     * @param \Metagist\ServerBundle\Entity\Branding $branding
+     */
+    public function setBranding(Branding $branding = null)
+    {
+        $this->branding = $branding;
     }
 }

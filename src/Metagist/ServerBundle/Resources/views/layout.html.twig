@@ -15,6 +15,7 @@
         <meta name="viewport" content="width=device-width">
 
         <link rel="stylesheet" href="{{ app.request.basepath }}/css/bootstrap.css">
+        <link rel="stylesheet" href="{{ app.request.basepath }}/css/brandings.css">
         <link rel="stylesheet" href="{{ app.request.basepath }}/bundles/metagistserver/css/metagist.css">
         <link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
     </head>
@@ -36,6 +37,10 @@
                         {% if (is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')) %}
                             <li><a href="{{ path('profile') }}"><i class="icon icon-user"></i> {{ 'My Profile'|trans }}</a></li>
                             <li><a href="{{ path('logout') }}"><i class="icon icon-off"></i> {{ 'Logout'|trans }}</a></li>
+                            {% if (is_granted('ROLE_ADMIN')) %}
+                                <li><a href="{{ path('admin_packages') }}"><i class="icon icon-cogs"></i> {{ 'Packages'|trans }}</a></li>
+                                <li><a href="{{ path('admin_branding') }}"><i class="icon icon-cogs"></i> {{ 'Brandings'|trans }}</a></li>
+                            {% endif %}
                         {% else %}
                             <li><a href="{{ path('github_login') }}"><i class="icon icon-lock"></i> {{ 'Sign in with github'|trans }}</a></li>
                         {% endif %}
@@ -49,8 +54,7 @@
             {% set alertTypeAvailable = [ 'info', 'success', 'warning', 'error'] %}
             {% for alert in alertTypeAvailable %}
                 {% for message in app.session.getFlashBag.get(alert) %}
-                    <div class="alert alert-{{ alert }}" >
-                        <button class="close" data-dismiss="alert">×</button>
+                    <div class="row padded alert-{{ alert }}" >
                         {{ message|trans }}
                     </div>
                 {% endfor %}

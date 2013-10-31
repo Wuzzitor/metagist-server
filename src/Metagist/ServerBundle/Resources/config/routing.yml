@@ -6,3 +6,11 @@ web:
 api:
     resource: "@MetagistServerBundle/Controller/ApiController.php"
     type:     annotation
+
+admin_brandings:
+    resource: "@MetagistServerBundle/Controller/BrandingController.php"
+    type:     annotation
+    
+admin_packages:
+    resource: "@MetagistServerBundle/Controller/PackageController.php"
+    type:     annotation

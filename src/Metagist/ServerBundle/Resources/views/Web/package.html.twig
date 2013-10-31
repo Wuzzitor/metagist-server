@@ -2,17 +2,15 @@
 {% set pagetitle = 'metagist.org on ' ~ package %}
 
 {% block content %}
-{% set class = "" %}
-{% set style = "" %}
-{% if package.image and package.image.style != "" %}
-    {% set style = package.image.style %}
+{% if package.branding%}
+    {% set class = package.branding.vendor %}
 {% else %}
     {% set class = "default-gradient" %}
 {% endif %}
-<div class="row package {{class}}" {% if style %}style="{{style}}"{% endif %}>
+<div class="row {{class}}">
     <div class="col-md-8 col-lg-10">
-        {% if package.image %}
-            <img class="logo" src="{{ package.image.getWebPath() | imagine_filter('my_thumb') }}" alt="logo for {{ package.identifier }}"/>
+        {% if package.branding %}
+            <img class="logo" src="{{ package.branding.getWebPath() | imagine_filter('my_thumb') }}" alt="logo for {{ package.identifier }}"/>
         {% endif %}
             <h1>{{ stars(package.overallrating) }} {{package.getIdentifier}}</h1>
             <p>{{package.description}}</p>
@@ -20,50 +18,42 @@
 
         <h2><a href="{{ path('ratings', {'author': package.author, 'name': package.name })}}">{{ "Latest Reviews" |trans}}</a></h2>
         {% for rating in ratings %}
-                    <h3>{{ stars(rating.rating) }} {{ rating.title | e}}</h3>
-                    <div class="row rating">
-                        <div class="col-md-2 col-lg-1">
-                            <a href="{{ path('user', {'name': rating.user.username}) }}">
-                                <img src="{{rating.user.getAvatarUrl}}" alt="by {{rating.user.getUsername}}" class="img-rounded" /><br />
-                            </a>
-                        </div>
-                        <div class="col-md-10 col-lg-11">
-                            <p>{{rating.comment | e}}</p>
-                        </div>
-                    </div>
+        <h3>{{ stars(rating.rating) }} {{ rating.title | e}}</h3>
+        <div class="row rating">
+            <div class="col-md-2 col-lg-1">
+                <a href="{{ path('user', {'name': rating.user.username}) }}">
+                    <img src="{{rating.user.getAvatarUrl}}" alt="by {{rating.user.getUsername}}" class="img-rounded" /><br />
+                </a>
+            </div>
+            <div class="col-md-10 col-lg-11">
+                <p>{{rating.comment | e}}</p>
+            </div>
+        </div>
         {% endfor %}
     </div>
         
-    <div class="col-md-4 col-lg-2">
-        <div class="btn-group-vertical btn-block">
+    <div class="col-md-4 col-lg-2 sidebar">
             {% if (is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')) %}
-                <a class="btn btn-primary" href="{{ path('rate', {'author': package.author, 'name': package.name })}}"><i class="icon-white icon-star"></i> Rate this package</a> 
-                <a class="btn btn-primary" href="{{ path('contribute-list', {'author': package.author, 'name': package.name })}}"><i class="icon-edit"></i> Edit</a>
+                <a class="btn btn-block" href="{{ path('rate', {'author': package.author, 'name': package.name })}}"><i class="icon-white icon-star"></i> Rate this package</a> 
+                <a class="btn btn-block" href="{{ path('contribute-list', {'author': package.author, 'name': package.name })}}"><i class="icon-edit"></i> Contribute</a>
             {% else %}
-                <a class="btn btn-primary" href="{{ path('github_login')}}"><i class="icon-white icon-rocket"></i> Contribute</a> 
+                <a class="btn btn-block" href="{{ path('github_login')}}"><i class="icon-white icon-rocket"></i> Contribute</a> 
             {% endif %}
-        </div>
             
         {% if is_granted('ROLE_ADMIN') %}
-            <div class="btn-group-vertical btn-block">
-                <a class="btn btn-warning" href="/update/{{package.identifier}}"><i class="icon-refresh"></i> Update</a>
-                <a class="btn btn-warning" href="{{ path('style', {'author': package.author, 'name': package.name })}}"><i class="icon-wrench"></i> Style</a>
-            </div>
+                <a class="btn btn-block" href="/update/{{package.identifier}}"><i class="icon-refresh"></i> Update</a>
+                <a class="btn btn-block" href="{{ path('admin_packages_edit', {'id': package.id })}}"><i class="icon-wrench"></i> Style</a>
         {% endif %}
         <br class="clearfix" />
-        <br class="clearfix" />
             
-        External sites
-        <div class="btn-group-vertical btn-block">
-            <a class="btn btn-default" href="http://packagist.org/packages/{{package.identifier}}"><i class="icon-archive"></i> at Packagist.org</a>
-            {% set urlMetainfos = ['homepage', 'repository', 'travis'] %}
-            {% for group in urlMetainfos %}
-                {% set url = package.getMetaInfos(group).first %}
-                {% if url %}
-                    <a class="btn btn-default" href="{{ url.getValue }}"> {{ group | trans }}</a>
-                {% endif %}
-            {% endfor %}
-        </div>
+        <a class="btn btn-block" href="http://packagist.org/packages/{{package.identifier}}"><i class="icon-archive"></i> at Packagist.org</a>
+        {% set urlMetainfos = ['homepage', 'repository', 'travis'] %}
+        {% for group in urlMetainfos %}
+            {% set url = package.getMetaInfos(group).first %}
+            {% if url %}
+                <a class="btn btn-block" href="{{ url.getValue }}"> {{ group | trans }}</a>
+            {% endif %}
+        {% endfor %}
 
         <br class="clearfix" />
         <br class="clearfix" />
