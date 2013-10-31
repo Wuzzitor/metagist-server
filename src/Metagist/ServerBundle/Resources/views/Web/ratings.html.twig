@@ -2,14 +2,13 @@
 {% set pagetitle = 'metagist.org - ratings for ' ~ package %}
 
 {% block content %}
-{% set class = "" %}
-{% set style = "" %}
-{% if package.image and package.image.style != "" %}
-    {% set style = package.image.style %}
+
+{% if package.branding %}
+    {% set class = package.branding.vendor %}
 {% else %}
     {% set class = "default-gradient" %}
 {% endif %}
-<div class="row package {{class}}" {% if style %}style="{{style}}"{% endif %}>
+<div class="row package {{class}}">
     <div class="page-header">
         <h1>Ratings and Reviews for<br />
             <a href="{{ path('package', {'author': package.author, 'name': package.name })}}">{{package}}</a>
@@ -18,20 +17,15 @@
     </div>
     
     {% for rating in ratings %}
-            <div class="panel">
-                <div class="panel-heading">{{ stars(rating.rating) }} {{ rating.title | e}}</div>
-                <div class="panel-body row">
-                    <div class="col-md-1">
-                        <a href="{{ path('user', {'name': rating.user.username}) }}">
-                            <img src="{{rating.user.getAvatarUrl}}" alt="by {{rating.user.getUsername}}" class="img-rounded" /><br />
-                        </a>
-                    </div>
-                    <div class="col-md-10 col-md-offset-1">
-                        <p>{{rating.comment | e}}</p>
-                    </div>
-                </div>
-            </div>
-            
+        <h2>{{ stars(rating.rating) }} {{ rating.title | e}}</h2>
+        <div class="col-md-1">
+            <a href="{{ path('user', {'name': rating.user.username}) }}">
+                <img src="{{rating.user.getAvatarUrl}}" alt="by {{rating.user.getUsername}}" class="img-rounded" /><br />
+            </a>
+        </div>
+        <div class="col-md-10 col-md-offset-1">
+            <p>{{rating.comment | e}}</p>
+        </div>
     {% endfor %}
 
     {% if ratings | length == 0 %}
