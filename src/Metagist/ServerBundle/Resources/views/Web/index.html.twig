@@ -5,6 +5,19 @@
 
 <h1 class="hidden">{{ 'Random Packages' | trans}}</h1>
 <div class="row">
+    
+<!-- dummy teaser -->
+<div class="col-lg-4 col-md-4 package-teaser metagist">
+    <img class="logo" src="{{ 'images/metagist.png' | imagine_filter('my_thumb') }}" alt="logo for metagist"/>
+    <h1>Welcome to Metagist.org</h1>
+
+    <p>
+        <strong>The app store for composer packages.</strong>
+        <a href="{{ path('about') }}">Learn more...</a>
+    </p>
+</div>
+<!-- dummy teaser -->
+    
 {% for package in packages %}
     {% include 'MetagistServerBundle::packageteaser.html.twig' with {'package': package} %}
 {% endfor %}
