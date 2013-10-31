@@ -1,0 +1,23 @@
+{% extends 'MetagistServerBundle::layout.html.twig' %}
+{% set pagetitle = 'Edit package' %}
+
+{% block content -%}
+
+{% if entity.branding%}
+    {% set class = entity.branding.vendor %}
+{% else %}
+    {% set class = "default-gradient" %}
+{% endif %}
+
+<div class="row padded {{class}}">
+    
+    <h1>Edit Package "{{ entity }}"</h1>
+
+    {{ form(edit_form) }}
+
+    <a class="btn btn-default" href="{{ path('admin_packages') }}">
+        Back to the list
+    </a>
+    {{ form(delete_form) }}
+</div>
+{% endblock %}

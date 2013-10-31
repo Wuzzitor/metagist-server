@@ -47,3 +47,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d4e4ef', end
 .pagination-nav {
     margin-bottom: 0;
 }
+
+.sidebar {
+    padding: 0
+}
+
+.sidebar .btn {
+    border-radius: 0;
+    border-bottom: 1px solid #d5d5d5;
+}
