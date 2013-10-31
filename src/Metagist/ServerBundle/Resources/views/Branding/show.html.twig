@@ -21,18 +21,13 @@
         </tbody>
     </table>
 
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('admin_branding') }}">
-            Back to the list
-        </a>
-    </li>
-    <li>
-        <a href="{{ path('admin_branding_edit', { 'id': entity.id }) }}">
-            Edit
-        </a>
-    </li>
-    <li>{{ form(delete_form) }}</li>
-</ul>
+    <a  class="btn btn-default" href="{{ path('admin_branding') }}">
+        Back to the list
+    </a>
+    <a  class="btn btn-default" href="{{ path('admin_branding_edit', { 'id': entity.id }) }}">
+        Edit
+    </a>
+    {{ form(delete_form) }}
+
 </div>
 {% endblock %}

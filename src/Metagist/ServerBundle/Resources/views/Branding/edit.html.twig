@@ -2,13 +2,13 @@
 {% set pagetitle = 'Edit branding' %}
 
 {% block content -%}
-<div class="row default-gradient padded">
+<div class="row {{ entity.vendor }} padded">
     
     <h1>Branding edit</h1>
 
     {{ form(edit_form) }}
 
-        <a href="{{ path('admin_branding') }}">Back to the list</a>
+        <a class="btn btn-default" href="{{ path('admin_branding') }}">Back to the list</a>
     {{ form(delete_form) }}
 </div>
 {% endblock %}
