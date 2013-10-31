@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  *
  * @ORM\Table(name="brandings",uniqueConstraints={@UniqueConstraint(name="branding_vendor_idx", columns={"vendor"})})
  * @ORM\Entity(repositoryClass="Metagist\ServerBundle\Entity\BrandingRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Branding
 {
@@ -84,12 +85,14 @@ class Branding
     }
 
     /**
-     * Get less
+     * Get less, surround with the vendor class.
      *
      * @return string 
      */
     public function getLess()
     {
-        return $this->less;
+        return '.' . $this->vendor . '{' . PHP_EOL
+            . $this->less . PHP_EOL
+            . '}' . PHP_EOL;
     }
 }
