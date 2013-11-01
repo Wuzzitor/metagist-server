@@ -31,7 +31,33 @@ class ScanCommand extends BaseCommand
         $parts   = Package::splitIdentifier($input->getArgument('package'));
         $package = $this->getServiceProvider()->getPackage($parts[0], $parts[1]);
         
-        $scanner = new \Metagist\WorkerBundle\Scanner\PackageScanner($this->getServiceProvider()->logger());
-        $infos   = $scanner->scan($package);
+        $this->enableConsoleLogOutput();
+        $logger  = $this->getServiceProvider()->logger();
+        $scanner = new \Metagist\WorkerBundle\Scanner\PackageScanner($logger);
+        $scanner->addScanner(new \Metagist\WorkerBundle\Scanner\Packagist($logger));
+        $scanner->addScanner($this->createGithubScanner());
+        $metainfos   = $scanner->scan($package);
+        
+        $metainfoRepo = $this->getServiceProvider()->metainfo();
+        $metainfoRepo->disableSecurity();
+        
+        foreach ($metainfos as $metaInfo) {
+            $metainfoRepo->save($metaInfo);
+        }
+    }
+    
+    /**
+     * Creates the github pages scanner.
+     * 
+     * @return \Metagist\WorkerBundle\Scanner\GitHub
+     */
+    private function createGithubScanner()
+    {
+        $clientId     = $this->getContainer()->getParameter('metagist.github.client.id');
+        $clientSecret = $this->getContainer()->getParameter('metagist.github.client.secret');
+        
+        $githubClient = \Metagist\WorkerBundle\Scanner\GitHub::createGithubClient($clientId, $clientSecret);
+        $scanner = new \Metagist\WorkerBundle\Scanner\GitHub($this->getServiceProvider()->logger(), $githubClient);
+        return $scanner;
     }
 }

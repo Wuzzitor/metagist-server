@@ -4,6 +4,7 @@ namespace Metagist\WorkerBundle\Scanner;
 use Metagist\ServerBundle\Entity\Metainfo;
 use Metagist\ServerBundle\Entity\Package;
 use Metagist\WorkerBundle\Scanner\GithubApi\Stats;
+use Github\Client as GitHubClient;
 
 /**
  * Scanner to query and scrape info from github.com
@@ -20,13 +21,6 @@ class GitHub extends Base implements ScannerInterface
     const USER_AGENT = "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0";
     
     /**
-     * Configuration key where the github credentials are stored
-     * 
-     * @var string
-     */
-    const GITHUB_CLIENT_CONFIG = 'metagist.github.credentials';
-    
-    /**
      * github client
      * 
      * @var \Github\Client
@@ -40,6 +34,18 @@ class GitHub extends Base implements ScannerInterface
      */
     private $githubBaseUrl = 'https://github.com';
     
+    /**
+     * Constructor.
+     * 
+     * @param \Psr\Log\LoggerInterface $logger
+     * @param \Github\Client $client
+     */
+    public function __construct(\Psr\Log\LoggerInterface $logger, GitHubClient $client)
+    {
+        parent::__construct($logger);
+        $this->setGitHubClient($client);
+    }
+
     /**
      * Scans github pages.
      * 
@@ -60,8 +66,13 @@ class GitHub extends Base implements ScannerInterface
         
         $needle = '://github.com/';
         if (strpos($url, $needle) === FALSE) {
-            $this->logger->info('Is no github repo:' . $url);
-            return array();
+            $needle = 'github.com:';
+            if (($pos = strpos($url, $needle)) !== FALSE) {
+                $url = $this->githubBaseUrl . '/' . substr($url, $pos + strlen($needle));
+            } else {
+                $this->logger->info('Is no github repo:' . $url);
+                return array();
+            }
         }
         
         list($owner, $repo) = $this->getOwnerAndRepoFromUrl($url);
@@ -99,8 +110,7 @@ class GitHub extends Base implements ScannerInterface
     public function fromGithubRepo($owner, $repository)
     {
         $collection = array();
-        
-        $stats = new Stats($this->getClient());
+        $stats = new Stats($this->client);
         $contributors = $stats->contributors($owner, $repository);
         $collection[] = MetaInfo::fromValue(MetaInfo::CONTRIBUTORS, count($contributors));
         $commitCount = 0;
@@ -108,7 +118,6 @@ class GitHub extends Base implements ScannerInterface
             $commitCount += $contributor['total'];
         }
         $collection[] = MetaInfo::fromValue(MetaInfo::COMMITS, $commitCount);
-        
         return $collection;
     }
     
@@ -196,7 +205,7 @@ class GitHub extends Base implements ScannerInterface
      */
     protected function getHttpClientForScraping()
     {
-        $client = $this->getClient()->getHttpClient();
+        $client = $this->client->getHttpClient();
         $client->setOption('base_url', $this->githubBaseUrl);
         $client->setHeaders(
             array(
@@ -210,25 +219,19 @@ class GitHub extends Base implements ScannerInterface
     /**
      * Returns the configured github client.
      * 
+     * @param string $clientId
+     * @param string $clientSecret
      * @return \Github\Client
      */
-    protected function getClient()
+    public static function createGithubClient($clientId, $clientSecret)
     {
-        if ($this->client === null) {
-            $client = new \Github\Client();
-            $config = $this->application[self::GITHUB_CLIENT_CONFIG];    
-            $client->authenticate(
-                $config["client_id"],
-                $config["client_secret"],
-                \Github\Client::AUTH_URL_CLIENT_ID
-            );
-            $client->setHeaders(
-                array("User-Agent" => self::USER_AGENT)
-            );
-            $this->client = $client;
-        }
+        $client = new GitHubClient();
+        $client->authenticate($clientId, $clientSecret, GitHubClient::AUTH_URL_CLIENT_ID);
+        $client->setHeaders(
+            array("User-Agent" => self::USER_AGENT)
+        );
         
-        return $this->client;
+        return $client;
     }
     
     /**

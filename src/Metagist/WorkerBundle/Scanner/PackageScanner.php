@@ -34,6 +34,9 @@ class PackageScanner extends Base implements ScannerInterface
                 $metaInfos = array_merge($metaInfos, $retrievedInfos);
             }
         }
+        foreach ($metaInfos as $metaInfo) {
+            $metaInfo->setPackage($package);
+        }
         
         $this->logger->info('Retrieved ' . count($metaInfos) . ' infos.');
         return $metaInfos;

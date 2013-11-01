@@ -3,7 +3,6 @@ namespace Metagist\WorkerBundle\Tests\Scanner;
 
 use Metagist\WorkerBundle\Scanner\PackageScanner;
 use Metagist\ServerBundle\Entity\Package;
-use Metagist\ServerBundle\Entity\Metainfo;
 
 /**
  * Tests the package scanner decorator.
@@ -18,19 +17,6 @@ class PackageScannerTest extends \PHPUnit_Framework_TestCase
      * @var PackageScanner
      */
     private $scanner;
-    
-    /**
-     * app 
-     * @var Application
-     */
-    private $apiMock;
-    
-    /**
-     * server client mock
-     * 
-     * @var \Metagist\Api\ServerInterface
-     */
-    private $serverMock;
     
     /**
      * Test setup.
