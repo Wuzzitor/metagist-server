@@ -19,6 +19,8 @@ class AppKernel extends Kernel
             new Metagist\ServerBundle\MetagistServerBundle(),
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
             new Liip\ImagineBundle\LiipImagineBundle(),
+            new Metagist\WorkerBundle\MetagistWorkerBundle(),
+            new JMS\JobQueueBundle\JMSJobQueueBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
