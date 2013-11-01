@@ -5,14 +5,22 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use JMS\JobQueueBundle\Entity\Job;
 
 use Metagist\WorkerBundle\FeedReader;
 
 /**
+ * Command for a cronjobs which regularly reads the packagist feed.
+ * 
  * 
  */
 class FollowFeedCommand extends BaseCommand
 {
+    /**
+     * packagist rss feed.
+     * 
+     * @var string 
+     */
     private $feed = 'https://packagist.org/feeds/releases.rss';
     
     /**
@@ -61,7 +69,8 @@ class FollowFeedCommand extends BaseCommand
      */
     protected function createFeed()
     {
-        $cache = \Zend\Cache\StorageFactory::adapterFactory('Filesystem', array('cache_dir' => sys_get_temp_dir()));
+        $cacheDir = $this->getContainer()->get('kernel')->getCacheDir();
+        $cache = \Zend\Cache\StorageFactory::adapterFactory('Filesystem', array('cache_dir' => $cacheDir));
         \Zend\Feed\Reader\Reader::setCache($cache);
         \Zend\Feed\Reader\Reader::useHttpConditionalGet();
         $adapter = new \Zend\Http\Client\Adapter\Curl();
