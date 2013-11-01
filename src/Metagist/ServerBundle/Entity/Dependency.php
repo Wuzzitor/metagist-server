@@ -162,7 +162,7 @@ class Dependency
      */
     public function getAuthor()
     {
-        return current(\Metagist\Util::splitIdentifier($this->dependencyIdentifier));
+        return current(Package::splitIdentifier($this->dependencyIdentifier));
     }
     
     /**
@@ -172,7 +172,7 @@ class Dependency
      */
     public function getName()
     {
-        $parts = \Metagist\Util::splitIdentifier($this->dependencyIdentifier);
+        $parts = Package::splitIdentifier($this->dependencyIdentifier);
         return isset($parts[1]) ? $parts[1] : '';
     }
     
