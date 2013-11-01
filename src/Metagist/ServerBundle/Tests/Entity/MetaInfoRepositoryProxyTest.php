@@ -5,7 +5,7 @@ use Metagist\ServerBundle\Entity\MetainfoRepositoryProxy;
 use Metagist\ServerBundle\Entity\Metainfo;
 use Metagist\ServerBundle\Entity\User;
 use Metagist\ServerBundle\Entity\Package;
-use Metagist\CategorySchema;
+use Metagist\ServerBundle\Validation\CategorySchema;
 
 /**
  * Tests the metainfo repo class.
@@ -44,7 +44,7 @@ class MetaInfoRepositoryProxyTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->repo = $this->getMockBuilder("\Metagist\ServerBundle\Entity\MetaInfoRepository")
+        $this->repo = $this->getMockBuilder("\Metagist\ServerBundle\Entity\MetainfoRepository")
             ->disableOriginalConstructor()
             ->getMock();
         $this->context = $this->getMockBuilder("\Symfony\Component\Security\Core\SecurityContextInterface")

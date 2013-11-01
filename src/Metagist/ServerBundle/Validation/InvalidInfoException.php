@@ -1,5 +1,5 @@
 <?php
-namespace Metagist\ServerBundle;
+namespace Metagist\ServerBundle\Validation;
 
 /**
  * Exception which is thrown if a metainfo is not valid.

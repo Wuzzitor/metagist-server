@@ -3,7 +3,7 @@ namespace Metagist\ServerBundle\Entity;
 
 use Symfony\Component\Security\Core\SecurityContextInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Metagist\CategorySchema;
+use Metagist\ServerBundle\Validation\CategorySchema;
     
 /**
  * Security proxy for the metainfo repo.
@@ -29,7 +29,7 @@ class MetainfoRepositoryProxy
     /**
      * The category schema
      * 
-     * @var \Metagist\CategorySchema
+     * @var \Metagist\ServerBundle\Validation\CategorySchema
      */
     private $schema;
     

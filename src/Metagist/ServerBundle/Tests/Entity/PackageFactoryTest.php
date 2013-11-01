@@ -81,7 +81,7 @@ class PackageFactoryTest extends \PHPUnit_Framework_TestCase
             ->method('get')
             ->will($this->throwException(new \Guzzle\Http\Exception\ClientErrorResponseException('test')));
         
-        $this->setExpectedException("\Metagist\Api\Exception");
+        $this->setExpectedException("\Metagist\ServerBundle\Exception");
         $this->repo->byAuthorAndName('author', 'name');
     }
     

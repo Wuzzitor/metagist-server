@@ -81,7 +81,7 @@ class ServiceProviderTest extends WebDoctrineTestCase
     public function testProvidesCategorySchemaShortcut()
     {
         $cat = $this->serviceProvider->categories();
-        $this->assertInstanceOf("\Metagist\CategorySchema", $cat);
+        $this->assertInstanceOf("\Metagist\ServerBundle\Validation\CategorySchema", $cat);
     }
     
     /**
@@ -93,20 +93,11 @@ class ServiceProviderTest extends WebDoctrineTestCase
     }
     
     /**
-     * Ensures the application returns the api provider
-     */
-    public function testGetApi()
-    {
-        $factory = $this->serviceProvider->getApiFactory();
-        $this->assertInstanceOf("\Metagist\Api\FactoryInterface", $factory);
-    }
-    
-    /**
      * 
      */
     public function testGetPackage()
     {
-        $this->setExpectedException("\Metagist\Api\Exception");
+        $this->setExpectedException("\Metagist\ServerBundle\Exception");
         $this->serviceProvider->getPackage('cannot', 'befound');
     }
     

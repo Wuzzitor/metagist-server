@@ -3,7 +3,7 @@ namespace Metagist\ServerBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Metagist\Validator;
+use Metagist\ServerBundle\Validation\Validator;
 
 /**
  * Repository for package meta information.

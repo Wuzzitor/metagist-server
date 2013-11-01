@@ -1,11 +1,29 @@
 <?php
 namespace Metagist\ServerBundle\Controller;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Packagist\Api\Client as PackagistClient;
+use Doctrine\Common\Cache\ApcCache;
+use Doctrine\ORM\EntityRepository;
 use Guzzle\Cache\DoctrineCacheAdapter;
+use Guzzle\Http\Client as Client2;
+use Guzzle\Http\Message\Header\CacheControl;
+use Guzzle\Http\Message\Response;
 use Guzzle\Plugin\Cache\CachePlugin;
 use Guzzle\Plugin\Cache\CallbackCanCacheStrategy;
+use Guzzle\Plugin\Cache\DefaultCacheStorage;
+use Metagist\Api\Exception;
+use Metagist\ServerBundle\Entity\DependencyRepository;
+use Metagist\ServerBundle\Entity\MetainfoFactory;
+use Metagist\ServerBundle\Entity\MetainfoRepository;
+use Metagist\ServerBundle\Entity\MetainfoRepositoryProxy;
+use Metagist\ServerBundle\Entity\PackageFactory;
+use Metagist\ServerBundle\Entity\PackageRepository;
+use Metagist\ServerBundle\Entity\RatingRepository;
+use Packagist\Api\Client as PackagistClient;
+use Symfony\Bridge\Monolog\Logger;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Templating\Asset\Package;
 
 /**
  * Provides access to often used resources.
@@ -24,7 +42,7 @@ class ServiceProvider
     /**
      * Constructor.
      *
-     * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+     * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
     {
@@ -37,7 +55,7 @@ class ServiceProvider
      * @param string $author
      * @param string $name
      * @return Package
-     * @throws \Metagist\Api\Exception
+     * @throws Exception
      */
     public function getPackage($author, $name)
     {
@@ -54,13 +72,13 @@ class ServiceProvider
     /**
      * Returns the package factory.
      * 
-     * @return \Metagist\ServerBundle\Entity\PackageFactory
+     * @return PackageFactory
      */
     private function getPackageFactory()
     {
-        return new \Metagist\ServerBundle\Entity\PackageFactory(
+        return new PackageFactory(
             $this->getPackagistApiClient(),
-            new \Metagist\ServerBundle\Entity\MetainfoFactory($this->logger())
+            new MetainfoFactory($this->logger())
         );
     }
 
@@ -68,7 +86,7 @@ class ServiceProvider
     /**
      * Provides access to the session.
      * 
-     * @return \Symfony\Component\HttpFoundation\Session\Session
+     * @return Session
      */
     public function session()
     {
@@ -78,7 +96,7 @@ class ServiceProvider
     /**
      * Provides access to the logger.
      * 
-     * @return \Symfony\Bridge\Monolog\Logger
+     * @return Logger
      */
     public function logger()
     {
@@ -88,7 +106,7 @@ class ServiceProvider
     /**
      * Returns the package repository.
      * 
-     * @return \Metagist\ServerBundle\Entity\PackageRepository
+     * @return PackageRepository
      */
     public function packages()
     {
@@ -100,7 +118,7 @@ class ServiceProvider
     /**
      * Returns the metainfo repository (proxy).
      * 
-     * @return \Metagist\ServerBundle\Entity\MetainfoRepository
+     * @return MetainfoRepository
      */
     public function metainfo()
     {
@@ -118,7 +136,7 @@ class ServiceProvider
     /**
      * Returns the metainfo repository.
      * 
-     * @return \Metagist\ServerBundle\Entity\RatingRepository
+     * @return RatingRepository
      */
     public function ratings()
     {
@@ -138,7 +156,7 @@ class ServiceProvider
     /**
      * Returns the dependency repo.
      * 
-     * @return \Metagist\ServerBundle\Entity\DependencyRepository
+     * @return DependencyRepository
      */
     public function dependencies()
     {
@@ -148,7 +166,7 @@ class ServiceProvider
     /**
      * Returns the security context.
      * 
-     * @return \Symfony\Component\Security\Core\SecurityContext
+     * @return SecurityContext
      */
     public function security()
     {
@@ -156,20 +174,10 @@ class ServiceProvider
     }
     
     /**
-     * Returns the api factory.
-     * 
-     * @return \Metagist\Api\FactoryInterface
-     */
-    public function getApiFactory()
-    {
-        return $this->container->get('metagist.api');
-    }
-    
-    /**
      * Returns the repo for an entity.
      * 
      * @param string $entityName
-     * @return \Doctrine\ORM\EntityRepository
+     * @return EntityRepository
      */
     private function getRepo($entityName)
     {
@@ -193,15 +201,15 @@ class ServiceProvider
      * The api client uses a http client with an apc cache. Cache-control
      * headers of responses are ignored.
      * 
-     * @return \Packagist\Api\Client
+     * @return Client
      * @link http://guzzlephp.org/guide/http/caching.html
      */
     public function getPackagistApiClient()
     {
-        $cache = new \Doctrine\Common\Cache\ApcCache();
+        $cache = new ApcCache();
         $adapter = new DoctrineCacheAdapter($cache);
         $cachePlugin = new CachePlugin(array(
-            'storage' => new \Guzzle\Plugin\Cache\DefaultCacheStorage($adapter),
+            'storage' => new DefaultCacheStorage($adapter),
             'can_cache' => $this->getPackagistCanCacheStrategy()
         ));
         
@@ -213,12 +221,12 @@ class ServiceProvider
     /**
      * Creates a caching stragegy which caches all packagist api requests.
      * 
-     * @return \Guzzle\Plugin\Cache\CallbackCanCacheStrategy
+     * @return CallbackCanCacheStrategy
      */
     private function getPackagistCanCacheStrategy()
     {
         $callback = function(){return true;};
-        $responseCallback = function(\Guzzle\Http\Message\Response $response){
+        $responseCallback = function(Response $response){
             /* @var $cacheControl \Guzzle\Http\Message\Header\CacheControl */
             $cacheControl = $response->getHeader('Cache-Control');
             if ($cacheControl) {
