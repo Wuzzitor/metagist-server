@@ -1,92 +1,101 @@
 {
-   "name": "wuzzitor\/metagist-server",
-   "license": "MIT",
-   "type": "project",
-   "version": "0.2.3",
-   "description": "Metagist collects meta information on composer packages.",
-   "autoload": {
-      "psr-0": {
-         "_empty_": "src\/",
-         "Metagist": "src\/"
-      }
-   },
-   "require": {
-      "php": ">=5.3.3",
-      "symfony\/symfony": "2.3.*",
-      "doctrine\/orm": ">=2.2.3,<2.4-dev",
-      "doctrine\/doctrine-bundle": "1.2.*",
-      "twig\/extensions": "1.0.*",
-      "symfony\/assetic-bundle": "2.3.*",
-      "symfony\/swiftmailer-bundle": "2.3.*",
-      "symfony\/monolog-bundle": "2.3.*",
-      "sensio\/distribution-bundle": "2.3.*",
-      "sensio\/framework-extra-bundle": "2.3.*",
-      "sensio\/generator-bundle": "2.3.*",
-      "incenteev\/composer-parameter-handler": "~2.0",
-      "hwi\/oauth-bundle": "0.3.*@dev",
-      "twitter\/bootstrap": "v3.0.0",
-      "mopa\/bootstrap-bundle": "3.*@dev",
-      "knplabs\/packagist-api": "1.0",
-      "pagerfanta\/pagerfanta": "v1.0.1",
-      "bonndan\/release-manager": "0.2.*",
-      "vierbergenlars\/php-semver": "2.0.5",
-      "liip\/imagine-bundle": "dev-master",
-      "leafo/lessphp": "0.4.0",
-      "guzzle/guzzle": "v3.7.4"
-   },
-   "require-dev": {
-      "fzaninotto\/faker": "v1.2.0"
-   },
-   "scripts": {
-      "post-install-cmd": [
-         "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
-         "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
-         "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
-         "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
-         "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
-      ],
-      "post-update-cmd": [
-         "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
-         "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
-         "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
-         "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
-         "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
-      ]
-   },
-   "config": {
-      "bin-dir": "bin"
-   },
-   "minimum-stability": "stable",
-   "extra": {
-      "symfony-app-dir": "app",
-      "symfony-web-dir": "web",
-      "incenteev-parameters": {
-         "file": "app\/config\/parameters.yml"
-      },
-      "branch-alias": {
-         "dev-master": "2.3-dev"
-      },
-      "rmt": {
-         "vcs": "git",
-         "prerequisites": [
-            "working-copy-check",
-            "display-last-changes"
-         ],
-         "preReleaseActions": [
-            {
-               "name": "version-stamp",
-               "const": "METAGIST_VERSION",
-               "file": "src\/Metagist\/ServerBundle\/version.php"
-            },
-            {
-               "name": "changelog-update",
-               "format": "semantic",
-               "dump-commits": true
-            }
-         ],
-         "postReleaseActions": [
-            "vcs-commit"
-         ]
-      }
-   }
+    "name": "wuzzitor\/metagist-server",
+    "license": "MIT",
+    "type": "project",
+    "version": "0.2.3",
+    "description": "Metagist collects meta information on composer packages.",
+    "autoload": {
+        "psr-0": {
+            "_empty_": "src\/",
+            "Metagist": "src\/"
+        }
+    },
+    "require": {
+        "php": ">=5.3.3",
+        "symfony\/symfony": "2.3.*",
+        "doctrine\/orm": ">=2.2.3,<2.4-dev",
+        "doctrine\/doctrine-bundle": "1.2.*",
+        "twig\/extensions": "1.0.*",
+        "symfony\/assetic-bundle": "2.3.*",
+        "symfony\/swiftmailer-bundle": "2.3.*",
+        "symfony\/monolog-bundle": "2.3.*",
+        "sensio\/distribution-bundle": "2.3.*",
+        "sensio\/framework-extra-bundle": "2.3.*",
+        "sensio\/generator-bundle": "2.3.*",
+        "incenteev\/composer-parameter-handler": "~2.0",
+        "hwi\/oauth-bundle": "0.3.*@dev",
+        "twitter\/bootstrap": "v3.0.0",
+        "mopa\/bootstrap-bundle": "3.*@dev",
+        "knplabs\/packagist-api": "1.0",
+        "pagerfanta\/pagerfanta": "v1.0.1",
+        "bonndan\/release-manager": "0.2.*",
+        "vierbergenlars\/php-semver": "2.0.5",
+        "liip\/imagine-bundle": "dev-master",
+        "leafo/lessphp": "0.4.0",
+        "guzzle/guzzle": "v3.7.4",
+        
+        "knplabs\/github-api"    : "1.1.3",
+        "jms/job-queue-bundle": "1.0.0",
+        "symfony/browser-kit": "~2.2",
+        "symfony/css-selector": "~2.2",
+        "symfony/dom-crawler": "~2.2",
+        "zendframework/zend-feed": "2.2.1",
+        "zendframework/zend-cache": "2.2.1",
+        "zendframework/zend-http": "2.2.1"
+    },
+    "require-dev": {
+        "fzaninotto\/faker": "v1.2.0"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
+        ],
+        "post-update-cmd": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
+        ]
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "minimum-stability": "stable",
+    "extra": {
+        "symfony-app-dir": "app",
+        "symfony-web-dir": "web",
+        "incenteev-parameters": {
+            "file": "app\/config\/parameters.yml"
+        },
+        "branch-alias": {
+            "dev-master": "2.3-dev"
+        },
+        "rmt": {
+            "vcs": "git",
+            "prerequisites": [
+                "working-copy-check",
+                "display-last-changes"
+            ],
+            "preReleaseActions": [
+                {
+                    "name": "version-stamp",
+                    "const": "METAGIST_VERSION",
+                    "file": "src\/Metagist\/ServerBundle\/version.php"
+                },
+                {
+                    "name": "changelog-update",
+                    "format": "semantic",
+                    "dump-commits": true
+                }
+            ],
+            "postReleaseActions": [
+                "vcs-commit"
+            ]
+        }
+    }
 }

@@ -33,6 +33,8 @@ class MetainfoRepositoryProxy
      */
     private $schema;
     
+    private $checkSecurity = true;
+    
     /**
      * Constructor.
      * 
@@ -61,6 +63,11 @@ class MetainfoRepositoryProxy
         return call_user_func_array(array($this->repository, $name), $arguments);
     }
     
+    public function disableSecurity()
+    {
+        $this->checkSecurity = false;
+    }
+    
     /**
      * Controls the access to the save() method.
      * 
@@ -71,13 +78,7 @@ class MetainfoRepositoryProxy
     {
         $group      = $metaInfo->getGroup();
         $category   = $this->schema->getCategoryForGroup($group);
-        $reqRole    = $this->schema->getAccess($category, $group);
-        if (!$this->context->isGranted($reqRole)) {
-            $token = $this->context->getToken();
-            throw new AccessDeniedException(
-                $token->getUsername() . ' is not authorized to save ' . $category . "/" . $group . ', required is ' . $reqRole
-            );
-        }
+        $this->checkPermission($category, $group);
         
         //cardinality check
         $groups      = $this->schema->getGroups($category);
@@ -85,5 +86,20 @@ class MetainfoRepositoryProxy
         $cardinality = isset($groupData->cardinality) ? $groupData->cardinality : null;
         
         $this->repository->save($metaInfo, $cardinality);
+    }
+    
+    private function checkPermission($category, $group)
+    {
+        if (!$this->checkSecurity) {
+            return;
+        }
+        
+        $reqRole    = $this->schema->getAccess($category, $group);
+        if (!$this->context->isGranted($reqRole)) {
+            $token = $this->context->getToken();
+            throw new AccessDeniedException(
+                $token->getUsername() . ' is not authorized to save ' . $category . "/" . $group . ', required is ' . $reqRole
+            );
+        }
     }
 }

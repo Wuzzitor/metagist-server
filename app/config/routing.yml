@@ -14,3 +14,8 @@ metagist:
 _imagine:
     resource: .
     type:     imagine
+    
+JMSJobQueueBundle:
+    resource: "@JMSJobQueueBundle/Controller/"
+    type: annotation
+    prefix: /admin/jobs
