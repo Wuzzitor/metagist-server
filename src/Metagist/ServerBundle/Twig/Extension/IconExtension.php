@@ -43,14 +43,14 @@ class IconExtension extends \Twig_Extension
             'maintainers' => array(
                 'group'    => 'maintainers',
                 'callback' => function ($value) { return ($value > 1); },
-                'icon'     => 'volume-up',
+                'icon'     => 'group',
                 'title'    => 'This package is maintained by more than one person.',
                 'class'    => 'text-success'
             ),
             'one_maintainer' => array(
                 'group'    => 'maintainers',
                 'callback' => function ($value) { return ($value == 1); },
-                'icon'     => 'meh',
+                'icon'     => 'meh-o',
                 'title'    => 'This package is only maintained by one person.',
                 'class'    => 'text-warning'
             ),
@@ -58,8 +58,15 @@ class IconExtension extends \Twig_Extension
                 'group'    => 'hiddengem',
                 'callback' => function ($value) { return ($value != null); },
                 'icon'     => 'gift',
-                'title'    => 'This package is considered a hidden gem.',
+                'title'    => 'hidden gem',
                 'class'    => 'text-primary'
+            ),
+            Metainfo::STARGAZERS => array(
+                'group'    => Metainfo::STARGAZERS, 
+                'callback' => function ($value) { return true; },
+                'icon'     => 'star',
+                'title'    => '%s stargazers',
+                'class'    => 'text-primary badge'
             )
         );
     }
@@ -105,8 +112,8 @@ class IconExtension extends \Twig_Extension
         $buffer = '';
         // {% for i in 1..latestRating.rating %}{% endfor %}
         for ($i=0; $i<5; $i++) {
-            $iconType = ($i < $rating) ? 'icon-star' : 'icon-star-empty';
-            $buffer .= '<i class="symbol icon ' . $iconType . '"></i>';
+            $iconType = ($i < $rating) ? 'fa-star' : 'fa-star-o';
+            $buffer .= '<i class="symbol fa ' . $iconType . '"></i>';
         }
         
         return $buffer;
@@ -122,12 +129,6 @@ class IconExtension extends \Twig_Extension
     public function symbols(Package $package, $magnification = 1)
     {
         $symbols = array();
-        if ($package->getType() == 'library') {
-            $symbols['wrench'] = 'This package is a library';
-        }
-        if ($package->getType() == 'application') {
-            $symbols['cog'] = 'This package is an application';
-        }
         
         if ($package->getOverallRating() >= 4) {
             $symbols['star'] = 'This package has a high rating.';
@@ -169,8 +170,8 @@ class IconExtension extends \Twig_Extension
      */
     private function renderIcon($icon, $title, $magnification = 1, $class = '')
     {
-        return '<i class="symbol icon icon-' . $icon 
-            . ' icon-' . $magnification . 'x ' 
+        return '<i class="symbol fa fa-' . $icon 
+            . ' fa-' . $magnification . 'x ' 
             . $class 
             . '" title="' . $title . '"></i>';
     }

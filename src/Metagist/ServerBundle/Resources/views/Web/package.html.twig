@@ -12,6 +12,7 @@
         {% if package.branding %}
             <img class="logo" src="{{ package.branding.getWebPath() | imagine_filter('my_thumb') }}" alt="logo for {{ package.identifier }}"/>
         {% endif %}
+        <br />
             
         <h1>{{ stars(package.overallrating) }} {{package.getIdentifier}}</h1>
         <p>{{package.description}}</p>
