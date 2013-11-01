@@ -221,7 +221,9 @@ class ServiceProvider
         $responseCallback = function(\Guzzle\Http\Message\Response $response){
             /* @var $cacheControl \Guzzle\Http\Message\Header\CacheControl */
             $cacheControl = $response->getHeader('Cache-Control');
-            $cacheControl->addDirective('max-age', 60);
+            if ($cacheControl) {
+                $cacheControl->addDirective('max-age', 60);
+            }
             return true;
         };
         $canCache = new CallbackCanCacheStrategy($callback, $responseCallback);
