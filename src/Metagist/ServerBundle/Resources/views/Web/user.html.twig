@@ -2,22 +2,12 @@
 {% set pagetitle = 'metagist.org - My Profile' %}
 
 {% block content %}
-    <h1>{{ user.getUsername }}`s Profile</h1>
-    <img src="{{user.getAvatarUrl}}" alt="User icon" />
-    <h2>Ratings</h2>
+<div class="row padded default-gradient">
+    
+    <h1><img src="{{user.getAvatarUrl}}" alt="User icon" /> {{ user.getUsername }}`s Profile</h1>
+    
     {% for rating in ratings %}
-    <div class="panel panel-default">
-          <!-- Default panel contents -->
-          <div class="panel-heading"> on 
-              {{ stars(rating.package.overallrating) }} 
-              <a href="{{ path('package', {'author': rating.package.author, 'name': rating.package.name })}}">
-                {{ rating.package }}
-              </a>
-          </div>
-          <div class="panel-body">
-              <h3>{{ stars(rating.rating) }} {{ rating.title}}</h3>
-              <p>{{ rating.comment }}</p>
-          </div>
-    </div>
+    {% include 'MetagistServerBundle::ratingteaser.html.twig' with {'rating': rating, 'hideAvatar': true} %}
     {% endfor %}
+</div>
 {% endblock %}

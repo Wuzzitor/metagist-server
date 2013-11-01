@@ -49,10 +49,21 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d4e4ef', end
 }
 
 .sidebar {
-    padding: 0
+    padding: 0;
+    border-radius: 0;
 }
 
 .sidebar .btn {
     border-radius: 0;
-    border-bottom: 1px solid #d5d5d5;
+}
+
+.sidebar .navbar-text {
+    float: none;
+    text-align: center; 
+}
+
+.rating-teaser {
+    padding: 1em;
+    height: 20em;
+    overflow: hidden;
 }

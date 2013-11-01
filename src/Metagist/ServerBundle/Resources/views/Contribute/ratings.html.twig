@@ -9,22 +9,20 @@
     {% set class = "default-gradient" %}
 {% endif %}
 <div class="row package {{class}}">
-    <div class="page-header">
-        <h1>Ratings and Reviews for<br />
-            <a href="{{ path('package', {'author': package.author, 'name': package.name })}}">{{package}}</a>
-        </h1>
-        <a class="btn btn-primary" href="{{ path('rate', {'author': package.author, 'name': package.name })}}"><i class="icon-white icon-star"></i> Rate this package</a>
-    </div>
+    <h1>Ratings and Reviews for 
+        <a href="{{ path('package', {'author': package.author, 'name': package.name })}}">{{package}}</a>
+    </h1>
     
     {% for rating in ratings %}
-        <h2>{{ stars(rating.rating) }} {{ rating.title | e}}</h2>
-        <div class="col-md-1">
+        <div class="col-md-2 col-lg-1">
             <a href="{{ path('user', {'name': rating.user.username}) }}">
                 <img src="{{rating.user.getAvatarUrl}}" alt="by {{rating.user.getUsername}}" class="img-rounded" /><br />
             </a>
         </div>
-        <div class="col-md-10 col-md-offset-1">
+        <div class="col-md-10 col-lg-11">
+            <h2>{{ stars(rating.rating) }} {{ rating.title | e}}</h2>
             <p>{{rating.comment | e}}</p>
+            <p class="muted">by {{rating.user.getUsername}} on {{rating.timeUpdated | date('m/d/Y')}}</p>
         </div>
     {% endfor %}
 
@@ -34,12 +32,13 @@
                 
 </div>
 <div class="row">
-    {% if ratings | length %}
-        <nav class="navbar navbar-inverse navbar-static-top pagination-nav" role="navigation">
-            <ul class="nav navbar-nav">
-                {{ pagination|raw }}
-            </ul>
-        </nav>
-    {% endif %}
+    <nav class="navbar navbar-inverse navbar-static-top pagination-nav" role="navigation">
+        <ul class="nav navbar-nav">
+            <li>
+                <a href="{{ path('rate', {'author': package.author, 'name': package.name })}}"><i class="icon-white icon-star"></i> Rate this package</a>
+            </li>
+            {{ pagination|raw }}
+        </ul>
+    </nav>
 </div>
 {% endblock %}

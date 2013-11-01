@@ -7,32 +7,27 @@
 {% else %}
     {% set class = "default-gradient" %}
 {% endif %}
-<div class="row {{class}}">
+<div class="row padded {{class}}">
     <div class="col-md-8 col-lg-10">
         {% if package.branding %}
             <img class="logo" src="{{ package.branding.getWebPath() | imagine_filter('my_thumb') }}" alt="logo for {{ package.identifier }}"/>
         {% endif %}
-            <h1>{{ stars(package.overallrating) }} {{package.getIdentifier}}</h1>
-            <p>{{package.description}}</p>
-            {{ symbols(package, 2) }}
+            
+        <h1>{{ stars(package.overallrating) }} {{package.getIdentifier}}</h1>
+        <p>{{package.description}}</p>
+        {{ symbols(package, 2) }}
 
-        <h2><a href="{{ path('ratings', {'author': package.author, 'name': package.name })}}">{{ "Latest Reviews" |trans}}</a></h2>
-        {% for rating in ratings %}
-        <h3>{{ stars(rating.rating) }} {{ rating.title | e}}</h3>
-        <div class="row rating">
-            <div class="col-md-2 col-lg-1">
-                <a href="{{ path('user', {'name': rating.user.username}) }}">
-                    <img src="{{rating.user.getAvatarUrl}}" alt="by {{rating.user.getUsername}}" class="img-rounded" /><br />
-                </a>
-            </div>
-            <div class="col-md-10 col-lg-11">
-                <p>{{rating.comment | e}}</p>
-            </div>
+        <br />
+        <br />
+        <div class="row">
+            {% for rating in ratings %}
+            {% include 'MetagistServerBundle::ratingteaser.html.twig' with {'rating': rating} %}
+            {% endfor %}
         </div>
-        {% endfor %}
+        Last updated: {{ package.getTimeUpdated |date('d-m-Y') }}
     </div>
         
-    <div class="col-md-4 col-lg-2 sidebar">
+    <nav class="col-md-4 col-lg-2 navbar navbar-inverse sidebar">
             {% if (is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')) %}
                 <a class="btn btn-block" href="{{ path('rate', {'author': package.author, 'name': package.name })}}"><i class="icon-white icon-star"></i> Rate this package</a> 
                 <a class="btn btn-block" href="{{ path('contribute-list', {'author': package.author, 'name': package.name })}}"><i class="icon-edit"></i> Contribute</a>
@@ -58,37 +53,33 @@
         <br class="clearfix" />
         <br class="clearfix" />
         
-        Dependencies
-        <div class="btn-group-vertical btn-block">
+        <div class="navbar-text">Dependencies</div>
         {% for dep in package.dependencies %}
             {% if dep.name %}
-                <a class="btn btn-default" href="{{ path('package', {'author': dep.author, 'name': dep.name})}}">
+                <a class="btn btn-block" href="{{ path('package', {'author': dep.author, 'name': dep.name})}}">
                         <i class="icon-link"></i>  {{ dep.dependencyIdentifier }}
                 </a>
             {% else %}
-                <a class="btn btn-default" href="#">{{ dep.dependencyIdentifier }}</a>
+                <a class="btn btn-block" href="#">{{ dep.dependencyIdentifier }}</a>
             {% endif %}
         {% endfor %}
-        </div>
         <br />
         <br />
         
         {% if consumers | length %}
-        Packages consuming {{package}}
-        <div class="btn-group-vertical btn-block">
+        <div class="navbar-text">Packages using {{package}}</div>
             {% for cons in consumers %}
-                {% if cons.name %}<a class="btn btn-default" href="{{ path('package', {'author': cons.author, 'name': cons.name})}}">{% endif %}
+                {% if cons.name %}<a class="btn btn-block" href="{{ path('package', {'author': cons.author, 'name': cons.name})}}">{% endif %}
                         <i class="icon-link"></i>  {{ cons.package }}
                 {% if cons.name %}</a>{% endif %}
             {% endfor %}
-        </div>
         {% endif %}
 
         
         <div class="clearfix"></div>
         <br />
-        Last updated: {{ package.getTimeUpdated |date('d-m-Y') }}
-    </div>
+        
+    </nav>
 </div>          
 
             
