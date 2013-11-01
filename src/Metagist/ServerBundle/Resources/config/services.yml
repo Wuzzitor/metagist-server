@@ -1,6 +1,6 @@
 parameters:
     metagist.web.controller.class: Metagist\ServerBundle\Controller\WebController
-    metagist.api.controller.class: Metagist\ServerBundle\Controller\ApiController
+    metagist.contribute.controller.class: Metagist\ServerBundle\Controller\ContributeController
     metagist.categoryschema.class: Metagist\CategorySchema
     
 services:
@@ -48,9 +48,11 @@ services:
     calls:
       - [setContainer, ["@service_container"]]
   
-  metagist.api.controller:
-    class:     "%metagist.api.controller.class%"
-    arguments: ["@metagist.controller.serviceprovider","@metagist.api.request_validator"]
+  metagist.contribute.controller:
+    class:     "%metagist.contribute.controller.class%"
+    arguments: ["@metagist.controller.serviceprovider"]
+    calls:
+      - [setContainer, ["@service_container"]]
   
   metagist.user.repository:
         class:           Metagist\ServerBundle\Entity\UserRepository
