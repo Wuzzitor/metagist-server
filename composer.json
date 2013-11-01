@@ -3,7 +3,7 @@
    "license": "MIT",
    "type": "project",
    "version": "0.2.3",
-   "description": "",
+   "description": "Metagist collects meta information on composer packages.",
    "autoload": {
       "psr-0": {
          "_empty_": "src\/",
@@ -30,9 +30,9 @@
       "pagerfanta\/pagerfanta": "v1.0.1",
       "bonndan\/release-manager": "0.2.*",
       "vierbergenlars\/php-semver": "2.0.5",
-      "wuzzitor\/metagist-api": "0.0.6",
       "liip\/imagine-bundle": "dev-master",
-      "leafo/lessphp": "0.4.0"
+      "leafo/lessphp": "0.4.0",
+      "guzzle/guzzle": "v3.7.4"
    },
    "require-dev": {
       "fzaninotto\/faker": "v1.2.0"
@@ -88,11 +88,5 @@
             "vcs-commit"
          ]
       }
-   },
-   "repositories": [
-      {
-         "type": "vcs",
-         "url": "https:\/\/github.com\/Wuzzitor\/metagist-api.git"
-      }
-   ]
+   }
 }

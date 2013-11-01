@@ -42,7 +42,7 @@ class RatingRepositoryTest extends WebDoctrineTestCase
     {
         $faker = \Faker\Factory::create();
         
-        $this->package = new Package('test/' . $faker->domainWord);
+        $this->package = new Package('test/' . $faker->domainWord. uniqid());
         $this->package->setDescription('test');
         $this->entityManager->persist($this->package);
         $this->entityManager->flush();

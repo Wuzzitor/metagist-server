@@ -4,8 +4,8 @@ namespace Metagist\ServerBundle\Tests\Entity;
 use Metagist\ServerBundle\Tests\WebDoctrineTestCase;
 use Metagist\ServerBundle\Entity\PackageRepository;
 use Metagist\ServerBundle\Entity\Package;
-use Metagist\CategorySchema;
-use Metagist\Validator;
+use Metagist\ServerBundle\Validation\Validator;
+use Metagist\ServerBundle\Validation\CategorySchema;
 
 /**
  * Tests the package repo class.

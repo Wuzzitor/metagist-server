@@ -2,7 +2,6 @@
 namespace Metagist\ServerBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Metagist\MetainfoInterface;
 
 /**
  * Metainfo
@@ -10,7 +9,7 @@ use Metagist\MetainfoInterface;
  * @ORM\Table(name="metainfo")
  * @ORM\Entity(repositoryClass="MetainfoRepository")
  */
-class Metainfo implements MetainfoInterface
+class Metainfo
 {
     /**
      * identifier for the repo

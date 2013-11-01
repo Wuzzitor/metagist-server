@@ -1,10 +1,9 @@
 web:
     resource: "@MetagistServerBundle/Controller/WebController.php"
     type:     annotation
-    prefix:   /
 
-api:
-    resource: "@MetagistServerBundle/Controller/ApiController.php"
+contribute:
+    resource: "@MetagistServerBundle/Controller/ContributeController.php"
     type:     annotation
 
 admin_brandings:
