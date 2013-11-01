@@ -33,7 +33,7 @@ class AdminController extends BaseController
      * @param string $author
      * @param string $name
      * @return string
-     * @Route('/update/{author}/{name}
+     * @Route("/update/{author}/{name}")
      */
     public function update($author, $name)
     {

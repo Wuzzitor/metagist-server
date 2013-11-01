@@ -20,6 +20,8 @@ class AppKernel extends Kernel
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
             new Liip\ImagineBundle\LiipImagineBundle(),
             new Metagist\WorkerBundle\MetagistWorkerBundle(),
+            new JMS\DiExtraBundle\JMSDiExtraBundle($this),
+            new JMS\AopBundle\JMSAopBundle(),
             new JMS\JobQueueBundle\JMSJobQueueBundle(),
         );
 
