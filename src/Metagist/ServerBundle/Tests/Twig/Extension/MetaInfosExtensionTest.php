@@ -38,17 +38,6 @@ class MetaInfosExtensionTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests the url rendering
      */
-    public function testDisplayAsUrl() 
-    {
-        $info = Metainfo::fromValue(Metainfo::HOMEPAGE, 'http://an.url');
-        
-        $list = $this->extension->renderInfo($info);
-        $this->assertContains('<a href="http://an.url" target="_blank">http://an.url</a>', $list);
-    }
-    
-    /**
-     * Tests the url rendering
-     */
     public function testDisplayAsBadge() 
     {
         $res = $this->extension->renderInfo(Metainfo::fromValue(Metainfo::STILL_MAINTAINED, 'http://an.url'));

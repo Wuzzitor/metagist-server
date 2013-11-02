@@ -24,10 +24,10 @@ class MetaInfosExtension extends \Twig_Extension
     public function __construct()
     {
         $this->strategies = array(
-            Metainfo::HOMEPAGE     => new RenderStrategy\Link(),
-            Metainfo::REPOSITORY   => new RenderStrategy\Link(),
             Metainfo::PACKAGIST_DOWNLOADS   => new RenderStrategy\TextBadge(),
             Metainfo::PACKAGIST_FAVERS      => new RenderStrategy\TextBadge(),
+            Metainfo::STARGAZERS      => new RenderStrategy\TextBadge(),
+            Metainfo::OPEN_ISSUES      => new RenderStrategy\TextBadge(),
             Metainfo::MAINTAINERS  => new RenderStrategy\TextBadge(),
             Metainfo::STILL_MAINTAINED  => new RenderStrategy\Badge(),
         );
