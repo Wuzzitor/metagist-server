@@ -3,6 +3,7 @@
 namespace Metagist\ServerBundle\Controller;
 
 use Metagist\ServerBundle\Entity\Package;
+use Metagist\ServerBundle\Entity\Category;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Doctrine\Common\Collections\Collection;
@@ -69,5 +70,26 @@ abstract class BaseController extends Controller
         $pagerfanta = new Pagerfanta($adapter);
         $pagerfanta->setMaxPerPage($maxPerPage);
         return $pagerfanta;
+    }
+    
+    /**
+     * Returns links to category pages.
+     * 
+     * @return array
+     */
+    protected function getCategories()
+    {
+        $catRepo = $this->getDoctrine()->getRepository('MetagistServerBundle:Category');
+        $categories = $catRepo->findAll();
+        
+        $links = array();
+        
+        foreach ($categories as $category) {
+            /* @var $category Category */
+            $name = $category->getName();
+            $links[$name] = $this->generateUrl('category', array('name' => $name));
+        }
+        
+        return $links;
     }
 }
