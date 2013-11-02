@@ -1,0 +1,23 @@
+{% extends 'MetagistServerBundle::layout.html.twig' %}
+{% set pagetitle = 'metagist.org Administration' %}
+
+{% block content %}
+<div class="row padded default-gradient">
+
+    <h1 class="">Administration</h1>
+    <nav class="navbar navbar-default" role="navigation">
+        <ul class="nav navbar-nav">
+            <li><a href="{{ path('admin_packages') }}"><i class="fa fa-cogs"></i> {{ 'Packages'|trans }}</a></li>
+            <li><a href="{{ path('admin_branding') }}"><i class="fa fa-cogs"></i> {{ 'Brandings'|trans }}</a></li>
+            <li><a href="{{ path('admin_category') }}"><i class="fa fa-cogs"></i> {{ 'Categories'|trans }}</a></li>
+            <li><a href="{{ path('jms_jobs_overview') }}"><i class="fa fa-cogs"></i> {{ 'Scan Jobs'|trans }}</a></li>
+        </ul>
+    </nav>
+    
+    <h2>Uncategorized Packages</h2>
+    {% for package in uncategorized %}
+        <a href="{{ path('admin_packages_edit', {'id': package.id}) }}">{{ package.identifier }}</a> 
+    {% endfor %}
+</div>
+
+{% endblock %}

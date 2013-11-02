@@ -5,6 +5,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 use Metagist\ServerBundle\Validation\Validator;
 use Metagist\ServerBundle\Entity\Branding;
+use Metagist\ServerBundle\Entity\Category;
 
 /**
  * Package
@@ -89,6 +90,14 @@ class Package
      * @ORM\ManyToOne(targetEntity="Branding", inversedBy="packages",cascade={"persist"})
      */
     private $branding;
+    
+    /**
+     * Related categories
+     * 
+     * @var Category[]
+     * @ORM\ManyToMany(targetEntity="Category", inversedBy="packages", cascade={"persist"})
+     */
+    private $categories;
     
     /**
      * Constructor.
@@ -362,5 +371,20 @@ class Package
     public function setBranding(Branding $branding = null)
     {
         $this->branding = $branding;
+    }
+    
+    /**
+     * Returns the related categories.
+     * 
+     * @return Category[]
+     */
+    public function getCategories()
+    {
+        return $this->categories;
+    }
+
+    public function setCategories($categories)
+    {
+        $this->categories = $categories;
     }
 }

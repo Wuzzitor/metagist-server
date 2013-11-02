@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class PackageType extends AbstractType
+class CategoryType extends AbstractType
 {
         /**
      * @param FormBuilderInterface $builder
@@ -15,15 +15,8 @@ class PackageType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('identifier')
+            ->add('name')
             ->add('description')
-            ->add('type')
-            ->add('branding')
-            ->add('categories', 'entity', array(
-                'class' => 'MetagistServerBundle:Category',
-                'multiple' => true,
-                'expanded' => true,
-            ))
         ;
     }
     
@@ -33,7 +26,7 @@ class PackageType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Metagist\ServerBundle\Entity\Package'
+            'data_class' => 'Metagist\ServerBundle\Entity\Category'
         ));
     }
 
@@ -42,6 +35,6 @@ class PackageType extends AbstractType
      */
     public function getName()
     {
-        return 'metagist_serverbundle_package';
+        return 'metagist_serverbundle_category';
     }
 }

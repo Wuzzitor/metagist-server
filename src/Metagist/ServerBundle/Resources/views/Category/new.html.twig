@@ -1,0 +1,15 @@
+{% extends 'MetagistServerBundle::layout.html.twig' %}
+{% set pagetitle = 'metagist.org' %}
+
+{% block content -%}
+<div class="row padded default-gradient">
+
+    <h1>Category creation</h1>
+
+    {{ form(form) }}
+
+    <a class="btn btn-default" href="{{ path('admin_category') }}">
+        Back to the list
+    </a>
+</div>
+{% endblock %}

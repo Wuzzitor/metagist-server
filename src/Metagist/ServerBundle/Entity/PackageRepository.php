@@ -79,22 +79,39 @@ class PackageRepository extends EntityRepository
      */
     public function random($limit)
     {
-        $query   = $this->getEntityManager()->createQuery("select max(p.id) from MetagistServerBundle:Package p");
-        $result  = $query->getSingleResult();
+        $query = $this->getEntityManager()->createQuery("select max(p.id) from MetagistServerBundle:Package p");
+        $result = $query->getSingleResult();
         $highest = $result[1];
-        $limit   = min($highest, $limit);
-        $ids     = array();
-        
+        $limit = min($highest, $limit);
+        $ids = array();
+
         while (count($ids) < $limit) {
             $ids[] = rand(1, $highest);
             $ids = array_unique($ids);
         }
-        
+
         if (count($ids) == 0) {
             return array();
         }
-        
+
         return $this->findBy(array('id' => $ids));
+    }
+
+    /**
+     * Returns the packages which are not categorized yet.
+     * 
+     * @return Package[]
+     */
+    public function uncategorized($limit = 100)
+    {
+        $packages = $this->findBy(array(), array(), $limit);
+        foreach ($packages as $key => $package) {
+            if ($package->getCategories()->count() > 0) {
+                unset($packages[$key]);
+            }
+        }
+        
+        return $packages;
     }
 
     /**
@@ -106,7 +123,7 @@ class PackageRepository extends EntityRepository
     public function save(Package $package)
     {
         $package->setTimeUpdated(new DateTime());
-        $package->setDescription((string)$package->getDescription());
+        $package->setDescription((string) $package->getDescription());
         $package->setType($package->getType());
         $package->setVersions($package->getVersions());
 

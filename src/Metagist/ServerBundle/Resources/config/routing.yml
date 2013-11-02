@@ -2,8 +2,16 @@ web:
     resource: "@MetagistServerBundle/Controller/WebController.php"
     type:     annotation
 
+search:
+    resource: "@MetagistServerBundle/Controller/SearchController.php"
+    type:     annotation
+
 contribute:
     resource: "@MetagistServerBundle/Controller/ContributeController.php"
+    type:     annotation
+
+admin:
+    resource: "@MetagistServerBundle/Controller/AdminController.php"
     type:     annotation
 
 admin_brandings:
@@ -12,4 +20,8 @@ admin_brandings:
     
 admin_packages:
     resource: "@MetagistServerBundle/Controller/PackageController.php"
+    type:     annotation
+
+admin_categories:
+    resource: "@MetagistServerBundle/Controller/CategoryController.php"
     type:     annotation
