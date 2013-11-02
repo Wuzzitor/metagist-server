@@ -59,6 +59,12 @@
                 "type": "integer",
                 "cardinality": 1,
                 "description": "Number of closed issues."
+            },
+            "abandoned": {
+                "access": "ROLE_USER",
+                "type": "boolean",
+                "cardinality": 1,
+                "description": "Flag to show the package is not maintained anymore."
             }
         }
     },
@@ -184,36 +190,6 @@
         "access": "ROLE_USER",
         "description": "Metrics derived from static code analysis.",
         "types": {
-        }
-    },
-    
-    "flags": {
-        "description": "Special flags to be set by admins only.",
-        "access": "ROLE_ADMIN", 
-        "types": {
-            "globalplayer": {
-                "access": "ROLE_ADMIN",
-                "type": "boolean",
-                "cardinality": 1,
-                "description": "Flag to show the package is of major importance (e.g. a major framework)"
-            },
-            "abandoned": {
-                "access": "ROLE_ADMIN",
-                "type": "boolean",
-                "cardinality": 1,
-                "description": "Flag to show the package is not maintained anymore."
-            },
-            "featured": {
-                "access": "ROLE_ADMIN",
-                "type": "string",
-                "cardinality": 1,
-                "description": "Features the project."
-            },
-            "hiddengem": {
-                "access": "ROLE_ADMIN",
-                "type": "string",
-                "description": "A hidden or unfeatured functionality."
-            }
         }
     }
 }
