@@ -12,7 +12,7 @@ use Metagist\ServerBundle\Form\BrandingType;
 /**
  * Branding controller.
  *
- * @Route("/admin")
+ * @Route("/admin", service="metagist.admin.controller")
  */
 class AdminController extends BaseController
 {
@@ -20,6 +20,7 @@ class AdminController extends BaseController
      * Admin index view.
      * 
      * @Template()
+     * @Route("/", name="admin")
      * @return array
      */
     public function indexAction()

@@ -1,6 +1,7 @@
 parameters:
     metagist.web.controller.class: Metagist\ServerBundle\Controller\WebController
     metagist.contribute.controller.class: Metagist\ServerBundle\Controller\ContributeController
+    metagist.admin.controller.class: Metagist\ServerBundle\Controller\AdminController
     metagist.categoryschema.class: Metagist\ServerBundle\Validation\CategorySchema
     
 services:
@@ -50,6 +51,12 @@ services:
   
   metagist.contribute.controller:
     class:     "%metagist.contribute.controller.class%"
+    arguments: ["@metagist.controller.serviceprovider"]
+    calls:
+      - [setContainer, ["@service_container"]]
+  
+  metagist.admin.controller:
+    class:     "%metagist.admin.controller.class%"
     arguments: ["@metagist.controller.serviceprovider"]
     calls:
       - [setContainer, ["@service_container"]]

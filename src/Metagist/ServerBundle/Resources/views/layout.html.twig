@@ -20,7 +20,7 @@
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
     </head>
     <body>
-        <div class="navbar navbar-inverse navbar-fixed-top">
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <div class="container">
                 <div class="navbar-header">
                     <a class="navbar-brand" href="{{ path('homepage') }}">metagist.org</a>
@@ -37,8 +37,7 @@
                         {% if (is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')) %}
                             <li><a href="{{ path('profile') }}"><i class="fa fa-user"></i> {{ 'My Profile'|trans }}</a></li>
                             {% if (is_granted('ROLE_ADMIN')) %}
-                                <li><a href="{{ path('admin_packages') }}"><i class="fa fa-cogs"></i> {{ 'Packages'|trans }}</a></li>
-                                <li><a href="{{ path('admin_branding') }}"><i class="fa fa-cogs"></i> {{ 'Brandings'|trans }}</a></li>
+                                <li><a href="{{ path('admin') }}"><i class="fa fa-cogs"></i> {{ 'Administraion'|trans }}</a></li>
                             {% endif %}
                             <li><a href="{{ path('logout') }}"><i class="fa fa-power-off"></i> {{ 'Logout'|trans }}</a></li>
                         {% else %}
@@ -47,7 +46,7 @@
                     </ul>
                 </div><!--/.nav-collapse -->
             </div>
-        </div>
+        </nav>
         <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
         <div class="container">
             <div id="main" role="main">

@@ -6,10 +6,18 @@ contribute:
     resource: "@MetagistServerBundle/Controller/ContributeController.php"
     type:     annotation
 
+admin:
+    resource: "@MetagistServerBundle/Controller/AdminController.php"
+    type:     annotation
+
 admin_brandings:
     resource: "@MetagistServerBundle/Controller/BrandingController.php"
     type:     annotation
     
 admin_packages:
     resource: "@MetagistServerBundle/Controller/PackageController.php"
+    type:     annotation
+
+admin_categories:
+    resource: "@MetagistServerBundle/Controller/CategoryController.php"
     type:     annotation
