@@ -19,6 +19,11 @@ class PackageType extends AbstractType
             ->add('description')
             ->add('type')
             ->add('branding')
+            ->add('categories', 'entity', array(
+                'class' => 'MetagistServerBundle:Category',
+                'multiple' => true,
+                'expanded' => true,
+            ))
         ;
     }
     
