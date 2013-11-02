@@ -24,7 +24,10 @@ class GitHubTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->scanner = new GitHub($this->getMock("Psr\Log\LoggerInterface"));
+        $this->scanner = new GitHub(
+            $this->getMock("Psr\Log\LoggerInterface"),
+            $this->getMock("Github\Client")
+        );
     }
     
     /**
