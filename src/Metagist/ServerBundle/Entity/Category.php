@@ -36,7 +36,12 @@ class Category
      */
     private $description;
 
-
+    /**
+     * @var Package[]
+     * @ORM\ManyToMany(targetEntity="Package", mappedBy="categories")
+     */
+    private $packages;
+    
     /**
      * Get id
      *
@@ -91,6 +96,16 @@ class Category
     public function getDescription()
     {
         return $this->description;
+    }
+    
+    /**
+     * Returns all packages assigned to this category.
+     * 
+     * @return Package[]
+     */
+    public function getPackages()
+    {
+        return $this->packages;
     }
     
     public function __toString()
