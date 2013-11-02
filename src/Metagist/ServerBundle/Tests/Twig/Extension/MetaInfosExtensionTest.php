@@ -51,8 +51,8 @@ class MetaInfosExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function testDisplayAsBadge() 
     {
-        $res = $this->extension->renderInfo(Metainfo::fromValue(Metainfo::MAINTAINERS, 3));
-        $this->assertContains('<li><span><img src="http://an.url" alt="badge for ', $res);
+        $res = $this->extension->renderInfo(Metainfo::fromValue(Metainfo::STILL_MAINTAINED, 'http://an.url'));
+        $this->assertContains('<img src="http://an.url" alt="badge for ', $res);
     }
     
     /**
