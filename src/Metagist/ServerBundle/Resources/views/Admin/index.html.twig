@@ -13,6 +13,11 @@
             <li><a href="{{ path('jms_jobs_overview') }}"><i class="fa fa-cogs"></i> {{ 'Scan Jobs'|trans }}</a></li>
         </ul>
     </nav>
+    
+    <h2>Uncategorized Packages</h2>
+    {% for package in uncategorized %}
+        <a href="{{ path('admin_packages_edit', {'id': package.id}) }}">{{ package.identifier }}</a> 
+    {% endfor %}
 </div>
 
 {% endblock %}

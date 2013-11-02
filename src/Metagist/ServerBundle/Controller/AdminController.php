@@ -25,7 +25,9 @@ class AdminController extends BaseController
      */
     public function indexAction()
     {
-        return array();
+        return array(
+            'uncategorized' => $this->serviceProvider->packages()->uncategorized()
+        );
     }
     
     /**
