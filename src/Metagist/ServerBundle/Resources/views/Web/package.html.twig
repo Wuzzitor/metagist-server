@@ -16,7 +16,11 @@
             
         <h1>{{ stars(package.overallrating) }} {{package.getIdentifier}}</h1>
         <p>{{package.description}}</p>
-        {{ symbols(package, 2) }}
+        {% for metainfo in package.metainfos %}
+        {{ renderInfo(metainfo) }}
+        {% endfor %}
+        
+        
 
         <br />
         <br />
@@ -37,7 +41,7 @@
             {% endif %}
             
         {% if is_granted('ROLE_ADMIN') %}
-                <a class="btn btn-block" href="/update/{{package.identifier}}"><i class="icon-refresh"></i> Update</a>
+                <a class="btn btn-block" href="{{ path('admin_update', {'author': package.author, 'name': package.name })}}"><i class="icon-refresh"></i> Update</a>
                 <a class="btn btn-block" href="{{ path('admin_packages_edit', {'id': package.id })}}"><i class="icon-wrench"></i> Style</a>
         {% endif %}
         <br class="clearfix" />
