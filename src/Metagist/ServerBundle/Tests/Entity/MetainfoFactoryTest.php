@@ -66,7 +66,8 @@ class MetainfoFactoryTest extends \PHPUnit_Framework_TestCase
         $package->expects($this->once())
             ->method('getVersions')
             ->will($this->returnValue(array()));
+        
         $collection = $this->factory->fromPackagistPackage($package);
-        $this->assertEmpty($collection);
+        $this->assertCount(0, $collection);
     }
 }
