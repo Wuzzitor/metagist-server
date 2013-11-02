@@ -22,19 +22,7 @@ class MetaInfosExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        parent::setUp();
-        $filter = function(\Doctrine\Common\Collections\Collection $collection) {
-            return $this->getFirst($collection);
-        };
-        
-        $this->extension = new MetaInfosExtension(
-            array(
-                'test/list' => array('displayAs' => 'url'),
-                'test/badge' => array('displayAs' => 'badge'),
-                'test/styled' => array('class' => 'label'),
-                'test/filter' => array('filter' => $filter),
-            )
-        );
+        $this->extension = new MetaInfosExtension();
     }
     
     /**
@@ -44,34 +32,7 @@ class MetaInfosExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $functions = $this->extension->getFunctions();
         $this->assertNotEmpty($functions);
-        $this->assertArrayHasKey('renderInfos', $functions);
         $this->assertArrayHasKey('renderInfo', $functions);
-    }
-    
-    /**
-     * Ensures a collection is rendered as list.
-     */
-    public function testRenderAsDefault() 
-    {
-        $collection = new \Doctrine\Common\Collections\ArrayCollection();
-        $collection->add(Metainfo::fromValue('test/unknown', 'http://an.url'));
-        $collection->add(Metainfo::fromValue('test/unknown', 'http://an.other.url'));
-        
-        $list = $this->extension->renderInfos($collection);
-        $this->assertContains('<li><span>http://an.url</span></li>', $list);
-        $this->assertContains('<li><span>http://an.other.url</span></li>', $list);
-    }
-    
-    /**
-     * Ensures that css classes are applied if given.
-     */
-    public function testApplyClass() 
-    {
-        $collection = new \Doctrine\Common\Collections\ArrayCollection();
-        $collection->add(Metainfo::fromValue('test/styled', 'http://an.url'));
-        
-        $list = $this->extension->renderInfos($collection);
-        $this->assertContains('<li><span class="label">', $list);
     }
     
     /**
@@ -79,11 +40,10 @@ class MetaInfosExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function testDisplayAsUrl() 
     {
-        $collection = new \Doctrine\Common\Collections\ArrayCollection();
-        $collection->add(Metainfo::fromValue('test/list', 'http://an.url'));
+        $info = Metainfo::fromValue(Metainfo::HOMEPAGE, 'http://an.url');
         
-        $list = $this->extension->renderInfos($collection);
-        $this->assertContains('<li><span><a href="http://an.url" target="_blank">http://an.url</a></span></li>', $list);
+        $list = $this->extension->renderInfo($info);
+        $this->assertContains('<a href="http://an.url" target="_blank">http://an.url</a>', $list);
     }
     
     /**
@@ -91,36 +51,24 @@ class MetaInfosExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function testDisplayAsBadge() 
     {
-        $collection = new \Doctrine\Common\Collections\ArrayCollection();
-        $collection->add(Metainfo::fromValue('test/badge', 'http://an.url'));
-        
-        $list = $this->extension->renderInfos($collection);
-        $this->assertContains('<li><span><img src="http://an.url" alt="badge for ', $list);
+        $res = $this->extension->renderInfo(Metainfo::fromValue(Metainfo::MAINTAINERS, 3));
+        $this->assertContains('<li><span><img src="http://an.url" alt="badge for ', $res);
     }
     
     /**
-     * Ensures a given filter is used.
+     * Tests the url rendering
      */
-    public function testWithFilter()
+    public function testDisplayAsTextBadge() 
     {
-        $collection = new \Doctrine\Common\Collections\ArrayCollection();
-        $collection->add(Metainfo::fromValue('test/filter', 'http://an.url'));
-        $collection->add(Metainfo::fromValue('test/filter', 'http://an.other.url'));
-        
-        $list = $this->extension->renderInfos($collection);
-        $this->assertContains('http://an.url', $list);
-        $this->assertNotContains('http://an.other.url', $list);
+        $res = $this->extension->renderInfo(Metainfo::fromValue(Metainfo::MAINTAINERS, 3));
+        $this->assertContains('<span class="badge">3 maintainers</span>', $res);
     }
     
-    /**
-     * Test filter.
-     * 
-     * @param \Doctrine\Common\Collections\Collection $info
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getFirst(\Doctrine\Common\Collections\Collection $info)
+    public function testDoesNotRenderWithoutStrategy()
     {
-        return new \Doctrine\Common\Collections\ArrayCollection(array($info->first()));
+        $metaInfo = Metainfo::fromValue('test/url', 'http://an.url');
+        $result = $this->extension->renderInfo($metaInfo);
+        $this->assertEmpty($result);
     }
     
     /**
@@ -128,16 +76,8 @@ class MetaInfosExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetName()
     {
-        $this->assertEquals(MetaInfosExtension::NAME, $this->extension->getName());
+        $this->assertEquals('metainfos_extension', $this->extension->getName());
     }
     
-    /**
-     * Ensures a single metainfo can in rendered.
-     */
-    public function testRenderMetaInfo()
-    {
-        $metaInfo = Metainfo::fromValue('test/url', 'http://an.url');
-        $result = $this->extension->renderInfo($metaInfo);
-        $this->assertContains('<span>http://an.url</span>', $result);
-    }
+    
 }
