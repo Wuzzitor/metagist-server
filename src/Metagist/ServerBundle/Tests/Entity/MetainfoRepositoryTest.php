@@ -74,6 +74,23 @@ class MetaInfoRepositoryTest extends WebDoctrineTestCase
         $this->repo->savePackage($this->package);
     }
     
+    /**
+     * Ensures that old infos are replaced.
+     */
+    public function testReplace()
+    {
+        $value = uniqid();
+        $metaInfo = Metainfo::fromValue('test', $value);
+        $metaInfo->setPackage($this->package);
+        
+        $this->repo->save($metaInfo, true);
+        
+        $remaining = $this->repo->findAll();
+        $this->assertCount(1, $remaining);
+        $info = current($remaining);
+        $this->assertEquals($value, $info->getValue());
+    }
+    
         /**
      * Ensures a package is returned if found.
      */
