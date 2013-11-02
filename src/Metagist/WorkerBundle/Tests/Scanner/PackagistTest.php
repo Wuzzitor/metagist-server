@@ -68,6 +68,10 @@ class PackagistTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
         
+        $package->expects($this->any())
+            ->method('getDownloads')
+            ->will($this->returnValue(new \Packagist\Api\Result\Package\Downloads()));
+        
         $version = $this->getMock("\Packagist\Api\Result\Package\Version");
         $version->expects($this->once())
             ->method('getLicense')

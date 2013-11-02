@@ -54,8 +54,10 @@ class Packagist extends Base implements ScannerInterface
         $metainfos[] = Metainfo::fromValue(Metainfo::REPOSITORY, $package->getRepository(), $version);
         $metainfos[] = Metainfo::fromValue(Metainfo::HOMEPAGE, $firstVersion->getHomepage(), $version);
         $metainfos[] = Metainfo::fromValue(Metainfo::MAINTAINERS, count($package->getMaintainers()), $version);
-        $metainfos[] = Metainfo::fromValue(Metainfo::PACKAGIST_DOWNLOADS, $package->getDownloads()->getTotal(), $version);
         $metainfos[] = Metainfo::fromValue(Metainfo::PACKAGIST_FAVERS, $package->getFavers(), $version);
+        if ($package->getDownloads()) {
+            $metainfos[] = Metainfo::fromValue(Metainfo::PACKAGIST_DOWNLOADS, $package->getDownloads()->getTotal(), $version);
+        }
 
         $licenses = $firstVersion->getLicense();
         if (is_array($licenses)) {
