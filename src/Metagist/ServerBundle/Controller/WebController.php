@@ -140,75 +140,6 @@ class WebController extends BaseController
     }
 
     /**
-     * Search for a package.
-     * 
-     * @param Request $request
-     * @return string
-     * @Route(
-     *     "/search/{page}/{query}",
-     *     defaults={"page" = 1, "query" = ""},
-     *     requirements={"page" = "\d+"},
-     *     name="search"
-     * )
-     * @Route("/search?query={query}")
-     * @Template()
-     * @link http://www.terrymatula.com/development/2013/some-packagist-api-hacks/
-     */
-    public function searchAction($page, $query, Request $request)
-    {
-
-        if (empty($query)) {
-            $query = $request->query->get('query');
-            if (empty($query)) {
-                $this->notifyUser('error', 'Please enter a search query.');
-                return $this->redirect($this->generateUrl('homepage'));
-            }
-        }
-
-        @list ($author, $name) = explode('/', $query);
-        $package = null;
-        try {
-            $package = $this->serviceProvider->packages()->byAuthorAndName($author, $name);
-            if ($package !== null) {
-                return $this->redirectToPackageView($package);
-            }
-        } catch (\Exception $exception) {
-            $this->serviceProvider->logger()->info('Search failed: ' . $exception->getMessage());
-        }
-
-        $api = $this->serviceProvider->getPackagistApiClient();
-        $response = $api->search($query, array('page' => $page));
-
-
-        $packages = new \Doctrine\Common\Collections\ArrayCollection();
-        foreach ($response as $result) {
-            /* @var $result \Packagist\Api\Result\Result */
-            $identifier = $result->getName();
-            list ($author, $name) = Package::splitIdentifier($identifier);
-            $package = $this->serviceProvider->packages()->byAuthorAndName($author, $name);
-            if (!$package) {
-                $package = new Package($identifier);
-                $package->setDescription($result->getDescription());
-            }
-            $packages->add($package);
-        }
-
-        $that = $this;
-        $routeGenerator = function($page) use ($that, $query) {
-            return $that->generateUrl('search', array('query' => urlencode($query), 'page' => $page));
-        };
-        $pagerfanta = $this->getPaginationFor($packages);
-        $pagerfanta->setCurrentPage($page);
-        $view = new TwitterBootstrapView();
-
-        return array(
-            'query' => $query,
-            'packages' => $pagerfanta,
-            'pagination' => $view->render($pagerfanta, $routeGenerator)
-        );
-    }
-
-    /**
      * Just displays the notice that the user has to be logged in.
      * 
      * @return array
@@ -218,13 +149,6 @@ class WebController extends BaseController
     public function loginAction()
     {
         return array();
-    }
-
-    protected function getCategories()
-    {
-        return array(
-            'featured' => $this->generateUrl('featured')
-        );
     }
 
 }
