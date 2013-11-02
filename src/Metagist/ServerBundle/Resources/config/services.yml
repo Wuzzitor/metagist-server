@@ -38,6 +38,11 @@ services:
     tags:
       - { name: twig.extension }
   
+  metagist_symbols_iconextension:
+    class:     Metagist\ServerBundle\Twig\Extension\SymbolsExtension
+    tags:
+      - { name: twig.extension }
+  
   metagist_twig_metainfosextension:
     class:     Metagist\ServerBundle\Twig\Extension\MetaInfosExtension
     arguments: [%category.render.mapping%]
