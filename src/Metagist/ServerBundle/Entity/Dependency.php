@@ -48,7 +48,7 @@ class Dependency
      * Dependency package identifier
      * 
      * @var string
-     * @ORM\Column(name="identifier", type="text", nullable=false)
+     * @ORM\Column(name="identifier", type="string", length=255, nullable=false)
      */
     private $dependencyIdentifier;
 
