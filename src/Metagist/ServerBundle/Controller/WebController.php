@@ -112,7 +112,8 @@ class WebController extends BaseController
             'package' => $package,
             'categories' => $this->getCategories(),
             'ratings' => $this->serviceProvider->ratings()->byPackage($package, 0, 3),
-            'consumers' => $this->serviceProvider->dependencies()->getConsumersOf($package)
+            'consumers' => $this->serviceProvider->dependencies()->getConsumersOf($package),
+            'dependencies' => $this->serviceProvider->packages()->getPackageDependencies($package)
         );
     }
 
