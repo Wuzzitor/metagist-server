@@ -5,7 +5,7 @@
 
 <div class="row padded default-gradient">
     <h1>Packages in Category "{{ category }}"</h1>
-
+    <p>{{ category.description }}</p>
     {% for package in packages %}
         {% include 'MetagistServerBundle::packageteaser.html.twig' with {'package': package} %}
     {% endfor %}

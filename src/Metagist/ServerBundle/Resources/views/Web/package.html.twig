@@ -34,17 +34,17 @@
     <nav class="navbar navbar-inverse">
         <ul class="nav navbar-nav">
             {% if (is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')) %}
-            <li><a class="btn btn-block" href="{{ path('rate', {'author': package.author, 'name': package.name })}}"><i class="icon-white fa-star"></i> Rate this package</a></li> 
-            <li><a class="btn btn-block" href="{{ path('contribute-list', {'author': package.author, 'name': package.name })}}"><i class="icon-edit"></i> Contribute</a></li>
+            <li><a class="btn btn-block" href="{{ path('rate', {'author': package.author, 'name': package.name })}}"><i class="fa fa-star-o"></i> Rate this package</a></li> 
+            <li><a class="btn btn-block" href="{{ path('contribute-list', {'author': package.author, 'name': package.name })}}"><i class="fa fa-edit"></i> Contribute</a></li>
             {% else %}
             <li><a class="btn btn-block" href="{{ path('github_login')}}"><i class="icon-white icon-rocket"></i> Contribute</a></li>
             {% endif %}
             {% if is_granted('ROLE_ADMIN') %}
             <li>
-                <a class="btn btn-block" href="{{ path('admin_update', {'author': package.author, 'name': package.name })}}"><i class="icon-refresh"></i> Update</a>
+                <a class="btn btn-block" href="{{ path('admin_update', {'author': package.author, 'name': package.name })}}"><i class="fa fa-refresh"></i> Update</a>
             </li>
             <li>
-                <a class="btn btn-block" href="{{ path('admin_packages_edit', {'id': package.id })}}"><i class="icon-wrench"></i> Style</a>
+                <a class="btn btn-block" href="{{ path('admin_packages_edit', {'id': package.id })}}"><i class="fa fa-cogs"></i> Edit</a>
             </li>
             {% endif %}
         </ul>
@@ -59,9 +59,9 @@
             
     <h2>Dependencies</h2>
     <div class="row padded">
-        {% for dep in package.dependencies %}
+        {% for dep in dependencies %}
             {% if dep.name %}
-                {% include 'MetagistServerBundle::packageteaser.html.twig' with {'package': dep.dependencyPackage} %}
+                {% include 'MetagistServerBundle::packageteaser.html.twig' with {'package': dep} %}
             {% endif %}
         {% endfor %}
     </div>

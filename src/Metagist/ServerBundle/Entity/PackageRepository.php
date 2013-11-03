@@ -123,13 +123,25 @@ class PackageRepository extends EntityRepository
     public function save(Package $package)
     {
         $package->setTimeUpdated(new DateTime());
-        $package->setDescription((string) $package->getDescription());
-        $package->setType($package->getType());
-        $package->setVersions($package->getVersions());
-
         $this->getEntityManager()->persist($package);
         $this->getEntityManager()->flush();
         return $package;
     }
 
+    /**
+     * Returns all the package dependencies as packge instance.
+     * 
+     * @param \Metagist\ServerBundle\Entity\Package $package
+     * @return \Metagist\ServerBundle\Entity\Package[]
+     */
+    public function getPackageDependencies(Package $package)
+    {
+        $deps = $package->getDependencies();
+        $identifiers = array();
+        foreach ($deps as $dep) {
+            $identifiers[] = $dep->getDependencyIdentifier();
+        }
+        
+        return $this->findBy(array('identifier' => $identifiers));
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Metagist\ServerBundle\Entity;
 
 use Metagist\ServerBundle\Entity\Dependency;
@@ -12,6 +13,7 @@ use Metagist\ServerBundle\Entity\Dependency;
  */
 class DependencyFactory
 {
+
     /**
      * Creates dependencies based on a packagist package object.
      * 
@@ -21,43 +23,56 @@ class DependencyFactory
     public function fromPackagistPackage(\Packagist\Api\Result\Package $package)
     {
         $dependencies = array();
-        $versions     = $package->getVersions();
+        $versions = $package->getVersions();
         /* @var $firstVersion \Packagist\Api\Result\Package\Version */
-        $firstVersion  = current($versions);
-        
+        $firstVersion = current($versions);
+
         if ($firstVersion != false) {
-            $versionString = $firstVersion->getVersion();
-            $dependencyEntries = $firstVersion->getRequire();
-            if (!$dependencyEntries) {
-                $dependencyEntries = array();
-            }
+            $version = $firstVersion->getVersion();
+
+            /*
+             * normal requirements
+             */
+            $dependencies = array_merge(
+                $dependencies,
+                $this->getDependenciesFromRequirements($firstVersion->getRequire(), $version)
+            );
             
             /*
-             * entry is like array('php' => string '>=5.3.3')
+             * dev requirements
              */
-            foreach ($dependencyEntries as $identifier => $version) {
-                $dependency = new Dependency();
-                $dependency->setPackageVersion($versionString);
-                $dependency->setDependencyIdentifier($identifier);
-                $dependency->setDependencyVersion($version);
-                $dependencies[] = $dependency;
-            }
-            
-            $dependencyEntries = $firstVersion->getRequireDev();
-            if (!$dependencyEntries) {
-                $dependencyEntries = array();
-            }
-            
-            foreach ($dependencyEntries as $identifier => $version) {
-                $dependency = new Dependency();
-                $dependency->setPackageVersion($versionString);
-                $dependency->setDependencyIdentifier($identifier);
-                $dependency->setDependencyVersion($version);
-                $dependency->setIsDevDependency(true);
-                $dependencies[] = $dependency;
-            }
+            $dependencies = array_merge(
+                $dependencies,
+                $this->getDependenciesFromRequirements($firstVersion->getRequireDev(), $version)
+            );
         }
         
         return $dependencies;
     }
+
+    /**
+     * Extract dependencies.
+     * 
+     * @param array $dependencyEntries
+     * @param string $versionString
+     * @return \Metagist\ServerBundle\Entity\Dependency[]
+     */
+    private function getDependenciesFromRequirements($dependencyEntries, $versionString)
+    {
+        $dependencies = array();
+        if (!$dependencyEntries) {
+            return $dependencies;
+        }
+        
+        foreach ($dependencyEntries as $identifier => $version) {
+            $dependency = new Dependency();
+            $dependency->setPackageVersion($versionString);
+            $dependency->setDependencyIdentifier($identifier);
+            $dependency->setDependencyVersion($version);
+            $dependency->setIsDevDependency(true);
+            $dependencies[] = $dependency;
+        }
+        return $dependencies;
+    }
+
 }

@@ -3,6 +3,12 @@ VERSION 0  FIRST RELEASE
 ========================
 
    Version 0.3 - Introducing brandings and categories
+      03/11/2013 16:21  0.3.2  Fixed dependency handling
+         f5fe056 added category description to category view
+         bdac4ef fixed package view
+         7e954fd fixed how package dependencies are resolved (removed relation on identifiers causing trouble)
+         27385d9 refactored the dependency factory
+         80b521c Merge branch 'release/0.3.1' into develop
       03/11/2013 15:04  0.3.1  Small fixes
          7604dc5 changed less compilation handling
          a588da3 small changes addressing request method handling on the server
