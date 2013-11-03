@@ -3,6 +3,10 @@ VERSION 0  FIRST RELEASE
 ========================
 
    Version 0.3 - Introducing brandings and categories
+      03/11/2013 17:22  0.3.3  Small fixes
+         d348ebc added copyright infos to about page
+         1b8f977 fixed an error caused by empty dependencies
+         7c66657 Merge branch 'release/0.3.2' into develop
       03/11/2013 16:21  0.3.2  Fixed dependency handling
          f5fe056 added category description to category view
          bdac4ef fixed package view

@@ -52,11 +52,12 @@ class FollowFeedCommand extends BaseCommand
         $this->enableConsoleLogOutput();
         $reader = new FeedReader($this->createFeed(), $this->getServiceProvider()->logger());
         $dummyPackages = $reader->read();
-        $entityManager = $this->getContainer()->get('doctrine')->getEntityManager();
+        $entityManager = $this->getContainer()->get('doctrine')->getManager();
         
         foreach ($dummyPackages as $package) {
             $job = new Job(ScanCommand::COMMAND, array($package->getIdentifier()));
             $entityManager->persist($job);
+            $this->getServiceProvider()->logger()->info('Scheduled scanning of ' . $package->getIdentifier());
         }
         $entityManager->flush($job);
     }

@@ -2,7 +2,7 @@
    "name": "wuzzitor\/metagist-server",
    "license": "MIT",
    "type": "project",
-   "version": "0.3.2",
+   "version": "0.3.3",
    "description": "Metagist collects meta information on composer packages.",
    "autoload": {
       "psr-0": {
