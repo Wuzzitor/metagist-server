@@ -1,12 +1,14 @@
 <?php
 namespace Metagist\WorkerBundle\Command;
 
+use Metagist\ServerBundle\Entity\Package;
+use Metagist\WorkerBundle\Scanner\GitHub;
+use Metagist\WorkerBundle\Scanner\PackageScanner;
+use Metagist\WorkerBundle\Scanner\Packagist;
+
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-
-use Metagist\ServerBundle\Entity\Package;
 
 /**
  * Command to retrieve metainfos on a package.
@@ -33,7 +35,7 @@ class ScanCommand extends BaseCommand
         
         $this->enableConsoleLogOutput();
         $logger  = $this->getServiceProvider()->logger();
-        $scanner = new \Metagist\WorkerBundle\Scanner\PackageScanner($logger);
+        $scanner = new PackageScanner($logger);
         $scanner->addScanner(new \Metagist\WorkerBundle\Scanner\Packagist($logger));
         $scanner->addScanner($this->createGithubScanner());
         $metainfos   = $scanner->scan($package);
@@ -49,15 +51,15 @@ class ScanCommand extends BaseCommand
     /**
      * Creates the github pages scanner.
      * 
-     * @return \Metagist\WorkerBundle\Scanner\GitHub
+     * @return GitHub
      */
     private function createGithubScanner()
     {
         $clientId     = $this->getContainer()->getParameter('metagist.github.client.id');
         $clientSecret = $this->getContainer()->getParameter('metagist.github.client.secret');
         
-        $githubClient = \Metagist\WorkerBundle\Scanner\GitHub::createGithubClient($clientId, $clientSecret);
-        $scanner = new \Metagist\WorkerBundle\Scanner\GitHub($this->getServiceProvider()->logger(), $githubClient);
+        $githubClient = GitHub::createGithubClient($clientId, $clientSecret);
+        $scanner = new GitHub($this->getServiceProvider()->logger(), $githubClient);
         return $scanner;
     }
 }

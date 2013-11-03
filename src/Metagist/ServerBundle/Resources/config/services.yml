@@ -40,7 +40,6 @@ services:
   
   metagist_twig_metainfosextension:
     class:     Metagist\ServerBundle\Twig\Extension\MetaInfosExtension
-    arguments: [%category.render.mapping%]
     tags:
       - { name: twig.extension }
 
@@ -77,8 +76,5 @@ services:
   metagist.user.provider.entity:
     class: Metagist\ServerBundle\Entity\UserProvider
     arguments: ["@metagist.user.repository", %metagist.server.admins%]
-    
-  metagist.opauth.listener:
-    class: Metagist\ServerBundle\EventListener\OpauthListener
-    arguments: ["@doctrine.orm.entity_manager"]
+
       

@@ -19,13 +19,6 @@ class PackagistTest extends \PHPUnit_Framework_TestCase
     private $scanner;
     
     /**
-     * app 
-     * 
-     * @var \Metagist\Worker\Application
-     */
-    private $application;
-    
-    /**
      * client
      *  
      * @var \Packagist\Api\Client
@@ -60,7 +53,8 @@ class PackagistTest extends \PHPUnit_Framework_TestCase
         
         $this->assertInternalType("array", $infos);
         $this->assertEquals(6, count($infos));
-        $this->assertInstanceOf("\Metagist\ServerBundle\Entity\MetaInfo", current($infos));
+        $first = current($infos);
+        $this->assertInstanceOf("\Metagist\ServerBundle\Entity\MetaInfo", $first);
     }
     
     /**
@@ -73,6 +67,10 @@ class PackagistTest extends \PHPUnit_Framework_TestCase
         $package = $this->getMockBuilder("\Packagist\Api\Result\Package")
             ->disableOriginalConstructor()
             ->getMock();
+        
+        $package->expects($this->any())
+            ->method('getDownloads')
+            ->will($this->returnValue(new \Packagist\Api\Result\Package\Downloads()));
         
         $version = $this->getMock("\Packagist\Api\Result\Package\Version");
         $version->expects($this->once())

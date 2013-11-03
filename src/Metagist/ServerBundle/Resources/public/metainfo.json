@@ -127,6 +127,18 @@
                 "type": "integer",
                 "cardinality": 1,
                 "description": "Number of github users starring the package."
+            },
+            "packagist.downloads": {
+                "access": "ROLE_SYSTEM",
+                "type": "integer",
+                "cardinality": 1,
+                "description": "Number of downloads at packagist."
+            },
+            "packagist.favers": {
+                "access": "ROLE_SYSTEM",
+                "type": "integer",
+                "cardinality": 1,
+                "description": "Number of favers at packagist."
             }
         }
     },

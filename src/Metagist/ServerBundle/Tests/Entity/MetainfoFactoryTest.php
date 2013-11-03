@@ -54,7 +54,7 @@ class MetainfoFactoryTest extends \PHPUnit_Framework_TestCase
         
         $collection = $this->factory->fromPackagistPackage($package);
         $this->assertInstanceOf("\Doctrine\Common\Collections\Collection", $collection);
-        $this->assertEquals(6, count($collection));
+        $this->assertEquals(5, count($collection));
         $this->assertInstanceOf("\Metagist\ServerBundle\Entity\MetaInfo", $collection->first());
     }
     
@@ -66,7 +66,8 @@ class MetainfoFactoryTest extends \PHPUnit_Framework_TestCase
         $package->expects($this->once())
             ->method('getVersions')
             ->will($this->returnValue(array()));
+        
         $collection = $this->factory->fromPackagistPackage($package);
-        $this->assertEmpty($collection);
+        $this->assertCount(0, $collection);
     }
 }

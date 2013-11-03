@@ -34,7 +34,6 @@ class IconExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEmpty($functions);
         $this->assertArrayHasKey('icon', $functions);
         $this->assertArrayHasKey('stars', $functions);
-        $this->assertArrayHasKey('symbols', $functions);
     }
     
     /**
@@ -62,39 +61,8 @@ class IconExtensionTest extends \PHPUnit_Framework_TestCase
     public function testStars()
     {
         $result = $this->extension->stars(5);
-        $icon = '<i class="symbol icon icon-star"></i>';
+        $icon = '<i class="symbol fa fa-star"></i>';
         $this->assertEquals(str_repeat($icon, 5), $result);
-    }
-    
-    /**
-     * Ensures the package type is represented as symbol
-     */
-    public function testSymbolsWithLibrary()
-    {
-        $package = new \Metagist\ServerBundle\Entity\Package('test/test');
-        $package->setType('library');
-        $this->assertContains('icon-wrench', $this->extension->symbols($package));
-    }
-    
-    /**
-     * Ensures magnification is regarded.
-     */
-    public function testSymbolsWithMagnification()
-    {
-        $package = new \Metagist\ServerBundle\Entity\Package('test/test');
-        $package->setType('library');
-        $this->assertContains('icon-2x', $this->extension->symbols($package, 2));
-    }
-    
-    /**
-     * Ensures metainfos are traversed and checked agains specs.
-     */
-    public function testSymbolsWithMetainfos()
-    {
-        $package = new \Metagist\ServerBundle\Entity\Package('test/test');
-        $package->setMetaInfos(array(\Metagist\ServerBundle\Entity\Metainfo::fromValue('featured', true)));
-        
-        $this->assertContains('icon-volume-up', $this->extension->symbols($package));
     }
     
     /**

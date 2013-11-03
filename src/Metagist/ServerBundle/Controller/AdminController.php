@@ -8,6 +8,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Metagist\ServerBundle\Entity\Branding;
 use Metagist\ServerBundle\Form\BrandingType;
+use Metagist\WorkerBundle\Command\ScanCommand;
+use JMS\JobQueueBundle\Entity\Job;
 
 /**
  * Branding controller.
@@ -36,13 +38,16 @@ class AdminController extends BaseController
      * @param string $author
      * @param string $name
      * @return string
-     * @Route("/update/{author}/{name}")
+     * @Route("/update/{author}/{name}", name="admin_update")
      */
     public function update($author, $name)
     {
+        $package = $this->serviceProvider->packages()->byAuthorAndName($author, $name);
+        $entityManager = $this->getDoctrine()->getEntityManager();
         try {
-            $package = $this->getPackage($author, $name);
-            $this->serviceProvider->getApi()->worker()->scan($author, $name);
+            $job = new Job(ScanCommand::COMMAND, array($package->getIdentifier()));
+            $entityManager->persist($job);
+            $entityManager->flush($job);
         } catch (\Exception $exception) {
             $this->notifyUser(
                 'error', 'Error while updating the package: ' . $exception->getMessage()

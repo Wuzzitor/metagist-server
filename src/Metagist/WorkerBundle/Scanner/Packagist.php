@@ -1,6 +1,7 @@
 <?php
 namespace Metagist\WorkerBundle\Scanner;
 
+use \Doctrine\Common\Collections\ArrayCollection;
 use \Packagist\Api\Client as PackagistClient;
 use Metagist\ServerBundle\Entity\Package;
 use Metagist\ServerBundle\Entity\Metainfo;
@@ -28,31 +29,44 @@ class Packagist extends Base implements ScannerInterface
     public function scan(Package $package)
     {
         $packagistPackage = $this->getPackagistClient()->get($package->getIdentifier());
-        $metainfos     = array();
-        $versions      = $packagistPackage->getVersions();
+        return self::fromPackagistPackage($packagistPackage);
+    }
+
+    /**
+     * Creates metainfos based on a packagist package object.
+     * 
+     * @param \Packagist\Api\Result\Package $package
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public static function fromPackagistPackage(\Packagist\Api\Result\Package $package)
+    {
+        $metainfos = array();
+        $versions      = $package->getVersions();
         /* @var $firstVersion \Packagist\Api\Result\Package\Version */
         $firstVersion  = current($versions);
         
-        if ($firstVersion != false) {
-            $versionString = $firstVersion->getVersion();
-            $repository    = $packagistPackage->getRepository();
-            $metainfos = array(
-                MetaInfo::fromValue(Metainfo::REPOSITORY, $repository, $versionString),
-                MetaInfo::fromValue(MetaInfo::HOMEPAGE, $firstVersion->getHomepage(), $versionString),
-                MetaInfo::fromValue(MetaInfo::MAINTAINERS, count($packagistPackage->getMaintainers()), $versionString),
-                MetaInfo::fromValue(MetaInfo::REQUIRES, count($firstVersion->getRequire()), $versionString),
-                MetaInfo::fromValue(MetaInfo::REQUIRES_DEV, count($firstVersion->getRequireDev()), $versionString)
-            );
-            
-            $licenses = $firstVersion->getLicense();
-            if (is_array($licenses)) {
-                $metainfos[] = MetaInfo::fromValue(MetaInfo::LICENSE, implode(' ', $licenses), $versionString);
-            }
+        if ($firstVersion == false) {
+            return $metainfos;
+        }
+        
+        $version = $firstVersion->getVersion();
+        
+        $metainfos[] = Metainfo::fromValue(Metainfo::REPOSITORY, $package->getRepository(), $version);
+        $metainfos[] = Metainfo::fromValue(Metainfo::HOMEPAGE, $firstVersion->getHomepage(), $version);
+        $metainfos[] = Metainfo::fromValue(Metainfo::MAINTAINERS, count($package->getMaintainers()), $version);
+        $metainfos[] = Metainfo::fromValue(Metainfo::PACKAGIST_FAVERS, $package->getFavers(), $version);
+        if ($package->getDownloads()) {
+            $metainfos[] = Metainfo::fromValue(Metainfo::PACKAGIST_DOWNLOADS, $package->getDownloads()->getTotal(), $version);
+        }
+
+        $licenses = $firstVersion->getLicense();
+        if (is_array($licenses)) {
+            $metainfos[] = Metainfo::fromValue(Metainfo::LICENSE, implode(' ', $licenses), $version);
         }
         
         return $metainfos;
     }
-
+    
     /**
      * Inject the packagist client.
      * 

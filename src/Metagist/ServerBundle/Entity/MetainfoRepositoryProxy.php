@@ -76,23 +76,59 @@ class MetainfoRepositoryProxy
      */
     public function save(MetaInfo $metaInfo)
     {
-        $group      = $metaInfo->getGroup();
-        $category   = $this->schema->getCategoryForGroup($group);
-        $this->checkPermission($category, $group);
-        
-        //cardinality check
-        $groups      = $this->schema->getGroups($category);
-        $groupData   = $groups[$group];
-        $cardinality = isset($groupData->cardinality) ? $groupData->cardinality : null;
-        
-        $this->repository->save($metaInfo, $cardinality);
+        $this->assertPermission($metaInfo); 
+        $this->repository->save($metaInfo, $this->getCardinality($metaInfo));
     }
     
-    private function checkPermission($category, $group)
+    /**
+     * Returns the cardinality for a group.
+     * 
+     * @param \Metagist\ServerBundle\Entity\MetaInfo $metaInfo
+     * @return int
+     */
+    private function getCardinality(MetaInfo $metaInfo)
+    {
+        $group      = $metaInfo->getGroup();
+        $category   = $this->schema->getCategoryForGroup($group);
+        $groups     = $this->schema->getGroups($category);
+        $groupData  = $groups[$group];
+        
+        return isset($groupData->cardinality) ? (int)$groupData->cardinality : 0;
+    }
+    
+    /**
+     * Saves a package.
+     * 
+     * @param \Metagist\Package $package
+     * @throws \RuntimeException
+     */
+    public function savePackage(Package $package)
+    {
+        if ($package->getId() == null) {
+            throw new \RuntimeException('Save the package first.');
+        }
+        
+        $metaInfos = $package->getMetaInfos();
+        foreach ($metaInfos as $info) {
+            $this->save($info, $this->getCardinality($info));
+        }
+    }
+    
+    /**
+     * Throws an exception if the current user is not allowed to write to the group.
+     * 
+     * @param \Metagist\ServerBundle\Entity\Metainfo $metainfo
+     * @return void
+     * @throws AccessDeniedException
+     */
+    private function assertPermission(Metainfo $metainfo)
     {
         if (!$this->checkSecurity) {
             return;
         }
+        
+        $group      = $metainfo->getGroup();
+        $category   = $this->schema->getCategoryForGroup($group);
         
         $reqRole    = $this->schema->getAccess($category, $group);
         if (!$this->context->isGranted($reqRole)) {
