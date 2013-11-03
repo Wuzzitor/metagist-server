@@ -3,7 +3,9 @@
 
 {% block content -%}
 <div class="row {{ entity.vendor }} padded">
+    {% if entity.getWebPath() %}
     <img class="logo" src="{{ entity.getWebPath() | imagine_filter('my_thumb') }}"/>
+    {% endif %}
     <h1>Edit "{{ entity.vendor }}" Branding</h1>
 
     {{ form(edit_form) }}

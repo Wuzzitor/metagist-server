@@ -3,6 +3,11 @@ VERSION 0  FIRST RELEASE
 ========================
 
    Version 0.3 - Introducing brandings and categories
+      03/11/2013 15:04  0.3.1  Small fixes
+         7604dc5 changed less compilation handling
+         a588da3 small changes addressing request method handling on the server
+         7576a0f change dependency identifier field type
+         f6ddae9 Merge branch 'release/0.3.0' into develop
       03/11/2013 13:22  0.3.0  initial release
          d50fe8b styled the package view
          df15758 Merge branch 'feature/symbol_extension' into develop

@@ -39,7 +39,7 @@ class BrandingController extends Controller
     /**
      * Creates a new Branding entity.
      *
-     * @Route("/", name="admin_branding_create")
+     * @Route("/create", name="admin_branding_create")
      * @Method("POST")
      * @Template("MetagistServerBundle:Branding:new.html.twig")
      */
@@ -164,7 +164,7 @@ class BrandingController extends Controller
     {
         $form = $this->createForm(new BrandingType(), $entity, array(
             'action' => $this->generateUrl('admin_branding_update', array('id' => $entity->getId())),
-            'method' => 'PUT',
+            'method' => 'POST',
         ));
 
         $form->add('submit', 'submit', array('label' => 'Update'));
@@ -175,8 +175,7 @@ class BrandingController extends Controller
     /**
      * Edits an existing Branding entity.
      *
-     * @Route("/{id}", name="admin_branding_update")
-     * @Method("PUT")
+     * @Route("/update/{id}", name="admin_branding_update")
      * @Template("MetagistServerBundle:Branding:edit.html.twig")
      */
     public function updateAction(Request $request, $id)
@@ -198,7 +197,7 @@ class BrandingController extends Controller
             $em->persist($entity);
             $em->flush();
             $entity->upload();
-            $flashBag->add('success', 'Image received.');
+            $flashBag->add('success', 'Branding updated.');
             
             $webDir = $this->get('kernel')->getRootDir() . '/../web';
             $file = $webDir . '/media/cache/my_thumb/images/'.basename($entity->getWebPath());
@@ -268,17 +267,18 @@ class BrandingController extends Controller
         return $this->get('doctrine')->getEntityManager()->getRepository('MetagistServerBundle:Branding');
     }
 
+    /**
+     * Compiles less to css.
+     * 
+     * @throws \Exception
+     */
     private function compileBrandings()
     {
         $sourcePath = $this->get('kernel')->getCacheDir();
         $lessFile   = $this->getRepo()->compileAllToLess($sourcePath);
         $targetPath = $this->get('kernel')->getRootDir() . '/../web/css/brandings.css';
         $lessComp   = new \lessc();
-        try {
-            file_put_contents($targetPath, $lessComp->compileFile($lessFile));
-        } catch (\Exception $e) {
-            echo "fatal error: " . $e->getMessage();
-        }
+        file_put_contents($targetPath, $lessComp->compileFile($lessFile));
     }
 
 }
