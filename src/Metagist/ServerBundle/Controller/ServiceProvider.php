@@ -116,9 +116,9 @@ class ServiceProvider
     }
     
     /**
-     * Returns the metainfo repository (proxy).
+     * Returns the metainfo repository proxy.
      * 
-     * @return MetainfoRepository
+     * @return MetainfoRepositoryProxy
      */
     public function metainfo()
     {
