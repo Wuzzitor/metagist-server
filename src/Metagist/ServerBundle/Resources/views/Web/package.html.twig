@@ -8,83 +8,75 @@
     {% set class = "default-gradient" %}
 {% endif %}
 <div class="row padded {{class}}">
-    <div class="col-md-8 col-lg-10">
-        {% if package.branding %}
-            <img class="logo" src="{{ package.branding.getWebPath() | imagine_filter('my_thumb') }}" alt="logo for {{ package.identifier }}"/>
-        {% endif %}
-        <br />
-            
-        <h1>{{ stars(package.overallrating) }} {{package.getIdentifier}}</h1>
-        <p>{{package.description}}</p>
-        {% for metainfo in package.metainfos %}
-        {{ renderInfo(metainfo) }}
-        {% endfor %}
-        
-        
+    {% if package.branding %}
+        <img class="logo" src="{{ package.branding.getWebPath() | imagine_filter('my_thumb') }}" alt="logo for {{ package.identifier }}"/>
+    {% endif %}
+    <br />
 
-        <br />
-        <br />
-        <div class="row">
-            {% for rating in ratings %}
-            {% include 'MetagistServerBundle::ratingteaser.html.twig' with {'rating': rating} %}
-            {% endfor %}
-        </div>
-        Last updated: {{ package.getTimeUpdated |date('d-m-Y') }}
-    </div>
-        
-    <nav class="col-md-4 col-lg-2 navbar navbar-inverse sidebar">
+    <h1>{{ stars(package.overallrating) }} {{package.getIdentifier}}</h1>
+    <p>{{package.description}}</p>
+    {% for metainfo in package.metainfos %}
+    {{ renderInfo(metainfo) }}
+    {% endfor %}
+    <br /><br />
+
+    <!-- links -->
+    <a class="btn btn-default" href="http://packagist.org/packages/{{package.identifier}}"><i class="icon-archive"></i> at Packagist.org</a>
+    {% set urlMetainfos = ['homepage', 'repository', 'travis'] %}
+    {% for group in urlMetainfos %}
+        {% set url = package.getMetaInfos(group).first %}
+        {% if url %}
+            <a class="btn btn-default" href="{{ url.getValue }}"> {{ group | trans }}</a>
+        {% endif %}
+    {% endfor %}
+    <br /><br />
+    
+    <nav class="navbar navbar-inverse">
+        <ul class="nav navbar-nav">
             {% if (is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')) %}
-                <a class="btn btn-block" href="{{ path('rate', {'author': package.author, 'name': package.name })}}"><i class="icon-white icon-star"></i> Rate this package</a> 
-                <a class="btn btn-block" href="{{ path('contribute-list', {'author': package.author, 'name': package.name })}}"><i class="icon-edit"></i> Contribute</a>
+            <li><a class="btn btn-block" href="{{ path('rate', {'author': package.author, 'name': package.name })}}"><i class="icon-white fa-star"></i> Rate this package</a></li> 
+            <li><a class="btn btn-block" href="{{ path('contribute-list', {'author': package.author, 'name': package.name })}}"><i class="icon-edit"></i> Contribute</a></li>
             {% else %}
-                <a class="btn btn-block" href="{{ path('github_login')}}"><i class="icon-white icon-rocket"></i> Contribute</a> 
+            <li><a class="btn btn-block" href="{{ path('github_login')}}"><i class="icon-white icon-rocket"></i> Contribute</a></li>
             {% endif %}
-            
-        {% if is_granted('ROLE_ADMIN') %}
+            {% if is_granted('ROLE_ADMIN') %}
+            <li>
                 <a class="btn btn-block" href="{{ path('admin_update', {'author': package.author, 'name': package.name })}}"><i class="icon-refresh"></i> Update</a>
+            </li>
+            <li>
                 <a class="btn btn-block" href="{{ path('admin_packages_edit', {'id': package.id })}}"><i class="icon-wrench"></i> Style</a>
-        {% endif %}
-        <br class="clearfix" />
-            
-        <a class="btn btn-block" href="http://packagist.org/packages/{{package.identifier}}"><i class="icon-archive"></i> at Packagist.org</a>
-        {% set urlMetainfos = ['homepage', 'repository', 'travis'] %}
-        {% for group in urlMetainfos %}
-            {% set url = package.getMetaInfos(group).first %}
-            {% if url %}
-                <a class="btn btn-block" href="{{ url.getValue }}"> {{ group | trans }}</a>
+            </li>
             {% endif %}
-        {% endfor %}
-
-        <br class="clearfix" />
-        <br class="clearfix" />
-        
-        <div class="navbar-text">Dependencies</div>
+        </ul>
+    </nav>
+            
+    <h2>Reviews</h2>
+    <div class="row">
+    {% for rating in ratings %}
+    {% include 'MetagistServerBundle::ratingteaser.html.twig' with {'rating': rating} %}
+    {% endfor %}
+    </div>
+            
+    <h2>Dependencies</h2>
+    <div class="row padded">
         {% for dep in package.dependencies %}
             {% if dep.name %}
-                <a class="btn btn-block" href="{{ path('package', {'author': dep.author, 'name': dep.name})}}">
-                        <i class="icon-link"></i>  {{ dep.dependencyIdentifier }}
-                </a>
-            {% else %}
-                <a class="btn btn-block" href="#">{{ dep.dependencyIdentifier }}</a>
+                {% include 'MetagistServerBundle::packageteaser.html.twig' with {'package': dep.dependencyPackage} %}
             {% endif %}
         {% endfor %}
-        <br />
-        <br />
-        
-        {% if consumers | length %}
-        <div class="navbar-text">Packages using {{package}}</div>
-            {% for cons in consumers %}
-                {% if cons.name %}<a class="btn btn-block" href="{{ path('package', {'author': cons.author, 'name': cons.name})}}">{% endif %}
-                        <i class="icon-link"></i>  {{ cons.package }}
-                {% if cons.name %}</a>{% endif %}
-            {% endfor %}
-        {% endif %}
+    </div>
+    
+    {% if consumers | length %}
+        <h2>Packages using {{package}}</h2>
+        <div class="row padded">
+        {% for cons in consumers %}
+            {% include 'MetagistServerBundle::packageteaser.html.twig' with {'package': cons.package } %}
+        {% endfor %}
+        </div>
+    {% endif %}
 
         
-        <div class="clearfix"></div>
-        <br />
-        
-    </nav>
+    Last updated: {{ package.getTimeUpdated |date('d-m-Y') }}    
 </div>          
 
             

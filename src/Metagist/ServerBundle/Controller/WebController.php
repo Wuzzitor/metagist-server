@@ -110,7 +110,7 @@ class WebController extends BaseController
 
         return array(
             'package' => $package,
-            'categories' => $this->serviceProvider->categories(),
+            'categories' => $this->getCategories(),
             'ratings' => $this->serviceProvider->ratings()->byPackage($package, 0, 3),
             'consumers' => $this->serviceProvider->dependencies()->getConsumersOf($package)
         );
