@@ -141,6 +141,9 @@ class PackageRepository extends EntityRepository
         foreach ($deps as $dep) {
             $identifiers[] = $dep->getDependencyIdentifier();
         }
+        if (empty($identifiers)) {
+            return array();
+        }
         
         return $this->findBy(array('identifier' => $identifiers));
     }
