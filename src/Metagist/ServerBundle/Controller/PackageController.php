@@ -99,7 +99,7 @@ class PackageController extends Controller
     {
         $form = $this->createForm(new PackageType(), $entity, array(
             'action' => $this->generateUrl('admin_packages_update', array('id' => $entity->getId())),
-            'method' => 'PUT',
+            'method' => 'POST',
         ));
 
         $form->add('submit', 'submit', array('label' => 'Update'));
@@ -109,8 +109,8 @@ class PackageController extends Controller
     /**
      * Edits an existing Package entity.
      *
-     * @Route("/{id}", name="admin_packages_update")
-     * @Method("PUT")
+     * @Route("/update/{id}", name="admin_packages_update")
+     * @Method({"PUT", "POST"})
      * @Template("MetagistServerBundle:Package:edit.html.twig")
      */
     public function updateAction(Request $request, $id)
