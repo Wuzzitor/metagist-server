@@ -2,10 +2,12 @@
 
 namespace Metagist\ServerBundle\Entity;
 
-use Doctrine\ORM\EntityRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
-use Metagist\Validator;
-use Metagist\PackageInterface;
+use Doctrine\ORM\EntityRepository;
+use InvalidArgumentException;
+use Metagist\ServerBundle\Entity\Package;
+use Metagist\ServerBundle\Validation\Validator;
 
 /**
  * Repository for packages.
@@ -42,10 +44,10 @@ class PackageRepository extends EntityRepository
     public function byAuthorAndName($author, $name)
     {
         if (!$this->validator->isValidName($author)) {
-            throw new \InvalidArgumentException('The author name ' . $author . ' is invalid.');
+            throw new InvalidArgumentException('The author name ' . $author . ' is invalid.');
         }
         if (!$this->validator->isValidName($name)) {
-            throw new \InvalidArgumentException('The package name ' . $name . ' is invalid.');
+            throw new InvalidArgumentException('The package name ' . $name . ' is invalid.');
         }
 
         return $this->findOneBy(array('identifier' => $author . '/' . $name));
@@ -55,7 +57,7 @@ class PackageRepository extends EntityRepository
      * Retrieves all packages matching an identifier part.
      * 
      * @param string $identifier
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return ArrayCollection
      */
     public function byIdentifierPart($identifier)
     {
@@ -77,50 +79,57 @@ class PackageRepository extends EntityRepository
      */
     public function random($limit)
     {
-        $query   = $this->getEntityManager()->createQuery("select max(p.id) from MetagistServerBundle:Package p");
-        $result  = $query->getSingleResult();
+        $query = $this->getEntityManager()->createQuery("select max(p.id) from MetagistServerBundle:Package p");
+        $result = $query->getSingleResult();
         $highest = $result[1];
-        $limit   = min($highest, $limit);
-        $ids     = array();
-        
+        $limit = min($highest, $limit);
+        $ids = array();
+
         while (count($ids) < $limit) {
             $ids[] = rand(1, $highest);
             $ids = array_unique($ids);
         }
-        
+
         if (count($ids) == 0) {
             return array();
         }
-        
+
         return $this->findBy(array('id' => $ids));
+    }
+
+    /**
+     * Returns the packages which are not categorized yet.
+     * 
+     * @return Package[]
+     */
+    public function uncategorized($limit = 100)
+    {
+        $packages = $this->findBy(array(), array(), $limit);
+        foreach ($packages as $key => $package) {
+            if ($package->getCategories()->count() > 0) {
+                unset($packages[$key]);
+            }
+        }
+        
+        return $packages;
     }
 
     /**
      * Saves a package.
      * 
-     * @param \Metagist\PackageInterface $package
-     * @return \Metagist\ServerBundle\Entity\Package
+     * @param Package $package
+     * @return Package
      */
-    public function save(PackageInterface $package)
+    public function save(Package $package)
     {
-        if ($package instanceof \Metagist\Package) {
-            $entity = $this->findOneBy(array('identifier' => $package->getIdentifier()));
-            if ($entity === null) {
-                $entity = new Package($package->getIdentifier());
-            }
-        } else {
-            $entity = $package;
-        }
+        $package->setTimeUpdated(new DateTime());
+        $package->setDescription((string) $package->getDescription());
+        $package->setType($package->getType());
+        $package->setVersions($package->getVersions());
 
-        /* @var $entity Package */
-        $entity->setTimeUpdated(new \DateTime());
-        $entity->setDescription((string)$package->getDescription());
-        $entity->setType($package->getType());
-        $entity->setVersions($package->getVersions());
-
-        $this->getEntityManager()->persist($entity);
+        $this->getEntityManager()->persist($package);
         $this->getEntityManager()->flush();
-        return $entity;
+        return $package;
     }
 
 }

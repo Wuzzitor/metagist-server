@@ -1,0 +1,36 @@
+{% extends 'MetagistServerBundle::layout.html.twig' %}
+{% set pagetitle = 'contribute to ' ~ package %}
+
+{% block content %}
+{% if package.branding %}
+    {% set class = package.branding.vendor %}
+{% else %}
+    {% set class = "default-gradient" %}
+{% endif %}
+<div class="row package {{class}}">
+    <div class="page-header">
+        <h1>contribute to<br />{{package}}<br />
+        <small>Pick one of the points of the categories listed below.</small></h1>
+    </div>
+    
+    {% for name, data in categories.getCategories() %}
+    {% if is_granted(data.access) %}
+        <div class="row-fluid">
+            <div class="span12">
+                <h2>{{name | trans}}</h2>
+                <p class="text-info">{{data.description | trans}}</p>
+                <ul class="unstyled">
+                {% for group, groupdata in categories.getGroups(name) %}
+                    <li>
+                        {{ (group) | trans}} ({{ package.getMetaInfos(group).count }})
+                        <a href="{{ path('contribute', { 'name': package.name, 'author': package.author, 'group': group}) }}">{{groupdata.description | trans}}</a>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+    {% endfor %}
+                
+</div>
+{% endblock %}

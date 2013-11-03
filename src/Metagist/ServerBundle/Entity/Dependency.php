@@ -7,7 +7,6 @@
 namespace Metagist\ServerBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Metagist\ServerBundle\Entity\Package;
 
 /**
  * Class representing a package dependency.
@@ -69,6 +68,16 @@ class Dependency
      */
     private $isDevDependency = false;
     
+    /**
+     * The package having the dependency
+     * 
+     * @var Package
+     * @ORM\OneToOne(targetEntity="Package")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="identifier", referencedColumnName="identifier")
+     * })
+     */
+    private $dependency;
     
     /**
      * Returns the id
@@ -162,7 +171,7 @@ class Dependency
      */
     public function getAuthor()
     {
-        return current(\Metagist\Util::splitIdentifier($this->dependencyIdentifier));
+        return current(Package::splitIdentifier($this->dependencyIdentifier));
     }
     
     /**
@@ -172,7 +181,7 @@ class Dependency
      */
     public function getName()
     {
-        $parts = \Metagist\Util::splitIdentifier($this->dependencyIdentifier);
+        $parts = Package::splitIdentifier($this->dependencyIdentifier);
         return isset($parts[1]) ? $parts[1] : '';
     }
     
@@ -184,5 +193,25 @@ class Dependency
     public function setIsDevDependency($flag)
     {
         $this->isDevDependency = (bool)$flag;
+    }
+    
+    /**
+     * 
+     * @return \Metagist\ServerBundle\Entity\Package
+     */
+    public function getDependencyPackage()
+    {
+        $dependency = $this->dependency;
+        /* @var $dependency \Doctrine\Common\Persistence\Proxy */
+        if (!$dependency->__isInitialized()) {
+            try {
+                $dependency->__load();
+            } catch (\Doctrine\ORM\EntityNotFoundException $ex) {
+                return new Package($this->dependencyIdentifier);
+            }
+        }
+        
+        
+        return $this->dependency;
     }
 }

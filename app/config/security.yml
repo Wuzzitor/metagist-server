@@ -3,12 +3,13 @@ security:
         Symfony\Component\Security\Core\User\User: plaintext
 
     role_hierarchy:
-        ROLE_ADMIN:       ROLE_USER
+        ROLE_SYSTEM:      ROLE_USER
+        ROLE_ADMIN:       [ROLE_USER, ROLE_SYSTEM]
         ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
 
     providers:
         github_hwi_provider:
-             id: metagist.user.provider.entity
+            id: metagist.user.provider.entity
 
     firewalls:
         dev:
@@ -28,11 +29,6 @@ security:
 
                 oauth_user_provider:
                     service: metagist.user.provider.entity
-                    
-        api:
-            pattern: /api
-            stateless: true
-            api: true
 
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
@@ -40,3 +36,4 @@ security:
         - { path: ^/contribute, roles: ROLE_USER }
         - { path: ^/contribute-list, roles: ROLE_USER }
         - { path: ^/update, roles: ROLE_ADMIN }
+        - { path: ^/admin, roles: ROLE_ADMIN }

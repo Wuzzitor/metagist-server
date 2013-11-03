@@ -1,0 +1,24 @@
+{% extends 'MetagistServerBundle::layout.html.twig' %}
+{% set pagetitle = 'metagist.org - Packages by category ' %}
+
+{% block content %}
+
+<div class="row padded default-gradient">
+    <h1>Packages in Category "{{ category }}"</h1>
+
+    {% for package in packages %}
+        {% include 'MetagistServerBundle::packageteaser.html.twig' with {'package': package} %}
+    {% endfor %}
+</div>
+
+<div class="row default-gradient">
+    {% if packages.count > 0%}
+    <nav class="navbar navbar-inverse navbar-static-top pagination-nav" role="navigation">
+        <ul class="nav navbar-nav">
+        {{ pagination|raw }}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+{% endblock %}

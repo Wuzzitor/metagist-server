@@ -2,103 +2,81 @@
 {% set pagetitle = 'metagist.org on ' ~ package %}
 
 {% block content %}
-{% set class = "" %}
-{% set style = "" %}
-{% if package.image and package.image.style != "" %}
-    {% set style = package.image.style %}
+{% if package.branding%}
+    {% set class = package.branding.vendor %}
 {% else %}
     {% set class = "default-gradient" %}
 {% endif %}
-<div class="row package {{class}}" {% if style %}style="{{style}}"{% endif %}>
-    <div class="col-md-8 col-lg-10">
-        {% if package.image %}
-            <img class="logo" src="{{ package.image.getWebPath() | imagine_filter('my_thumb') }}" alt="logo for {{ package.identifier }}"/>
-        {% endif %}
-            <h1>{{ stars(package.overallrating) }} {{package.getIdentifier}}</h1>
-            <p>{{package.description}}</p>
-            {{ symbols(package, 2) }}
+<div class="row padded {{class}}">
+    {% if package.branding %}
+        <img class="logo" src="{{ package.branding.getWebPath() | imagine_filter('my_thumb') }}" alt="logo for {{ package.identifier }}"/>
+    {% endif %}
+    <br />
 
-        <h2><a href="{{ path('ratings', {'author': package.author, 'name': package.name })}}">{{ "Latest Reviews" |trans}}</a></h2>
-        {% for rating in ratings %}
-                    <h3>{{ stars(rating.rating) }} {{ rating.title | e}}</h3>
-                    <div class="row rating">
-                        <div class="col-md-2 col-lg-1">
-                            <a href="{{ path('user', {'name': rating.user.username}) }}">
-                                <img src="{{rating.user.getAvatarUrl}}" alt="by {{rating.user.getUsername}}" class="img-rounded" /><br />
-                            </a>
-                        </div>
-                        <div class="col-md-10 col-lg-11">
-                            <p>{{rating.comment | e}}</p>
-                        </div>
-                    </div>
-        {% endfor %}
-    </div>
-        
-    <div class="col-md-4 col-lg-2">
-        <div class="btn-group-vertical btn-block">
+    <h1>{{ stars(package.overallrating) }} {{package.getIdentifier}}</h1>
+    <p>{{package.description}}</p>
+    {% for metainfo in package.metainfos %}
+    {{ renderInfo(metainfo) }}
+    {% endfor %}
+    <br /><br />
+
+    <!-- links -->
+    <a class="btn btn-default" href="http://packagist.org/packages/{{package.identifier}}"><i class="icon-archive"></i> at Packagist.org</a>
+    {% set urlMetainfos = ['homepage', 'repository', 'travis'] %}
+    {% for group in urlMetainfos %}
+        {% set url = package.getMetaInfos(group).first %}
+        {% if url %}
+            <a class="btn btn-default" href="{{ url.getValue }}"> {{ group | trans }}</a>
+        {% endif %}
+    {% endfor %}
+    <br /><br />
+    
+    <nav class="navbar navbar-inverse">
+        <ul class="nav navbar-nav">
             {% if (is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')) %}
-                <a class="btn btn-primary" href="{{ path('rate', {'author': package.author, 'name': package.name })}}"><i class="icon-white icon-star"></i> Rate this package</a> 
-                <a class="btn btn-primary" href="{{ path('contribute-list', {'author': package.author, 'name': package.name })}}"><i class="icon-edit"></i> Edit</a>
+            <li><a class="btn btn-block" href="{{ path('rate', {'author': package.author, 'name': package.name })}}"><i class="icon-white fa-star"></i> Rate this package</a></li> 
+            <li><a class="btn btn-block" href="{{ path('contribute-list', {'author': package.author, 'name': package.name })}}"><i class="icon-edit"></i> Contribute</a></li>
             {% else %}
-                <a class="btn btn-primary" href="{{ path('github_login')}}"><i class="icon-white icon-rocket"></i> Contribute</a> 
+            <li><a class="btn btn-block" href="{{ path('github_login')}}"><i class="icon-white icon-rocket"></i> Contribute</a></li>
             {% endif %}
-        </div>
+            {% if is_granted('ROLE_ADMIN') %}
+            <li>
+                <a class="btn btn-block" href="{{ path('admin_update', {'author': package.author, 'name': package.name })}}"><i class="icon-refresh"></i> Update</a>
+            </li>
+            <li>
+                <a class="btn btn-block" href="{{ path('admin_packages_edit', {'id': package.id })}}"><i class="icon-wrench"></i> Style</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
             
-        {% if is_granted('ROLE_ADMIN') %}
-            <div class="btn-group-vertical btn-block">
-                <a class="btn btn-warning" href="/update/{{package.identifier}}"><i class="icon-refresh"></i> Update</a>
-                <a class="btn btn-warning" href="{{ path('style', {'author': package.author, 'name': package.name })}}"><i class="icon-wrench"></i> Style</a>
-            </div>
-        {% endif %}
-        <br class="clearfix" />
-        <br class="clearfix" />
+    <h2>Reviews</h2>
+    <div class="row">
+    {% for rating in ratings %}
+    {% include 'MetagistServerBundle::ratingteaser.html.twig' with {'rating': rating} %}
+    {% endfor %}
+    </div>
             
-        External sites
-        <div class="btn-group-vertical btn-block">
-            <a class="btn btn-default" href="http://packagist.org/packages/{{package.identifier}}"><i class="icon-archive"></i> at Packagist.org</a>
-            {% set urlMetainfos = ['homepage', 'repository', 'travis'] %}
-            {% for group in urlMetainfos %}
-                {% set url = package.getMetaInfos(group).first %}
-                {% if url %}
-                    <a class="btn btn-default" href="{{ url.getValue }}"> {{ group | trans }}</a>
-                {% endif %}
-            {% endfor %}
-        </div>
-
-        <br class="clearfix" />
-        <br class="clearfix" />
-        
-        Dependencies
-        <div class="btn-group-vertical btn-block">
+    <h2>Dependencies</h2>
+    <div class="row padded">
         {% for dep in package.dependencies %}
             {% if dep.name %}
-                <a class="btn btn-default" href="{{ path('package', {'author': dep.author, 'name': dep.name})}}">
-                        <i class="icon-link"></i>  {{ dep.dependencyIdentifier }}
-                </a>
-            {% else %}
-                <a class="btn btn-default" href="#">{{ dep.dependencyIdentifier }}</a>
+                {% include 'MetagistServerBundle::packageteaser.html.twig' with {'package': dep.dependencyPackage} %}
             {% endif %}
         {% endfor %}
+    </div>
+    
+    {% if consumers | length %}
+        <h2>Packages using {{package}}</h2>
+        <div class="row padded">
+        {% for cons in consumers %}
+            {% include 'MetagistServerBundle::packageteaser.html.twig' with {'package': cons.package } %}
+        {% endfor %}
         </div>
-        <br />
-        <br />
-        
-        {% if consumers | length %}
-        Packages consuming {{package}}
-        <div class="btn-group-vertical btn-block">
-            {% for cons in consumers %}
-                {% if cons.name %}<a class="btn btn-default" href="{{ path('package', {'author': cons.author, 'name': cons.name})}}">{% endif %}
-                        <i class="icon-link"></i>  {{ cons.package }}
-                {% if cons.name %}</a>{% endif %}
-            {% endfor %}
-        </div>
-        {% endif %}
+    {% endif %}
 
         
-        <div class="clearfix"></div>
-        <br />
-        Last updated: {{ package.getTimeUpdated |date('d-m-Y') }}
-    </div>
+    Last updated: {{ package.getTimeUpdated |date('d-m-Y') }}    
 </div>          
 
             

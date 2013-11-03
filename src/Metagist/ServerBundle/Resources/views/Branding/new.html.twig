@@ -1,0 +1,12 @@
+{% extends 'MetagistServerBundle::layout.html.twig' %}
+{% set pagetitle = 'Create a branding' %}
+
+{% block content -%}
+<div class="row default-gradient padded">
+    
+    <h1>Branding creation</h1>
+
+    {{ form(form) }}
+    <a class="btn btn-default" href="{{ path('admin_branding') }}">Back to the list</a>
+</div>
+{% endblock %}

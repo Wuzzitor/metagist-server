@@ -2,34 +2,15 @@
 {% set pagetitle = 'metagist.org - Latest updates' %}
 
 {% block content %}
-<div class="item item-yellow">
-    <div class="content">
-        <div class="span6">
-        {% if latestRatings %}
-            <h2>Latest Ratings</h2>
-            {% for rating in latestRatings %}
-
-            <div class="panel">
-                <div class="panel-heading">
-                {{ stars(rating.rating) }} {{ rating.title | e}} on
-                <a href="{{ path('package', {'author': rating.package.author, 'name': rating.package.name}) }}" title="{{ rating.package.getIdentifier|e }}">{{ rating.package.getIdentifier|e }}</a>
-                </div>
-                <div class="panel-body row">
-                    <div class="col-md-1">
-                        <a href="{{ path('user', {'name': rating.user.username}) }}">
-                        <img src="{{rating.user.getAvatarUrl}}" alt="by {{rating.user.getUsername}}" class="img-rounded" /><br />
-                        </a>
-                    </div>
-                    <div class="col-md-10 col-md-offset-1">
-                    <p>{{rating.comment | e}}</p>
-                    </div>
-                </div>
-            </div>
-            
-            {% endfor %}
-        {% endif %}
-        </div>
-        
+<div class="row padded default-gradient">
+{% if latestRatings %}
+    <h1>Recently on Metagist</h1>
+    {% for rating in latestRatings %}
+    {% include 'MetagistServerBundle::ratingteaser.html.twig' with {'rating': rating} %}
+    {% endfor %}
+{% endif %}
+</div>
+<div class="row padded default-gradient">
         <div class="span6">
             <h2>Latest Updates</h2>
             <ul class="unstyled">
@@ -43,9 +24,6 @@
                 {% endfor %}
             </ul>
         </div>
-            <div class="clearfix"></div>
-    </div>
-    </div>
 </div>
         
     

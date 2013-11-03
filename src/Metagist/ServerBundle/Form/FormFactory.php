@@ -2,7 +2,7 @@
 namespace Metagist\ServerBundle\Form;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use Metagist\CategorySchema;
+use Metagist\ServerBundle\Validation\CategorySchema;
 use Metagist\ServerBundle\Entity\Rating;
 
 /**
@@ -34,7 +34,7 @@ class FormFactory
      * Constructor.
      * 
      * @param \Symfony\Component\Form\FormFactory $factory
-     * @param \Metagist\CategorySchema           $schema
+     * @param \CategorySchema           $schema
      */
     public function __construct(\Symfony\Component\Form\FormFactory $factory, CategorySchema $schema)
     {

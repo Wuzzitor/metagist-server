@@ -62,7 +62,7 @@ class PackageFactory
      * Creates an intermediate package by querying packagist.
      * 
      * @param string $identifier
-     * @throws Exception
+     * @throws \Metagist\Api\Exception
      * @return Package
      */
     protected function createPackageFromPackagist($identifier)
@@ -70,8 +70,14 @@ class PackageFactory
         /* @var $packagistPackage \Packagist\Api\Result\Package */
         try {
             $packagistPackage = $this->client->get($identifier);
+        } catch (Guzzle\Common\Exception\RuntimeException $exception) {
+            throw new Exception(
+                'Guzzle exception: ' .$exception->getMessage(),
+                Exception::APPLICATION_EXCEPTION,
+                $exception
+            );
         } catch (\Guzzle\Http\Exception\ClientErrorResponseException $exception) {
-            throw new \Metagist\Api\Exception('Could not find ' . $identifier . ' at packagist', Exception::PACKAGE_NOT_FOUND, $exception);
+            throw new Exception('Could not find ' . $identifier . ' at packagist', Exception::PACKAGE_NOT_FOUND, $exception);
         }
         
         $package = new Package($packagistPackage->getName());

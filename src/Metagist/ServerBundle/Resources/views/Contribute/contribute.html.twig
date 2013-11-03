@@ -1,0 +1,27 @@
+{% extends 'MetagistServerBundle::layout.html.twig' %}
+{% set pagetitle = 'metagist.org - contribute to ' ~ package %}
+
+{% block content %}
+{% if package.branding %}
+    {% set class = package.branding.vendor %}
+{% else %}
+    {% set class = "default-gradient" %}
+{% endif %}
+<div class="row padded package {{class}}">
+    <div class="page-header">
+        <h1>Contribute to {{package}}<br /><small>{{ description }}</small></h1>
+    </div>
+
+    <p>{{ ('typehint_' ~ type) | trans}}</p>
+
+    <form action="" method="post" role="form" {{ form_enctype(form) }}>
+        {{ form_errors(form) }}
+        {{ form_row(form.version) }}
+        {{ form_rest(form) }}
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">{{ 'Send'|trans }}</button>
+            <a href="{{ path('package', {'author': package.author, 'name': package.name})}}" class="btn">{{ 'Cancel'|trans }}</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

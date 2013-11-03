@@ -1,0 +1,18 @@
+{% set class = "" %}
+{% if rating.package.branding %}
+    {% set class = rating.package.branding.vendor %}
+{% else %}
+    {% set class = "default-gradient" %}
+{% endif %}
+<div class="col-lg-2 col-md-4 rating-teaser {{class}}">
+    
+    {% if hideAvatar is not defined or hideAvatar == false %}
+    <a href="{{ path('user', {'name': rating.user.username}) }}">
+        <img src="{{rating.user.getAvatarUrl}}" alt="by {{rating.user.getUsername}}" class="img-rounded" />
+    </a><br />
+    {% endif %}
+
+    <h3>{{ stars(rating.rating) }} {{ rating.title | e}}</h3>
+    <a href="{{ path('ratings', {'author': rating.package.author, 'name': rating.package.name })}}">{{ rating.package.identifier }}</a>
+    <p>{{rating.comment | e}}</p>
+</div>

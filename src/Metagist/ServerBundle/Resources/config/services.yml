@@ -1,7 +1,9 @@
 parameters:
     metagist.web.controller.class: Metagist\ServerBundle\Controller\WebController
-    metagist.api.controller.class: Metagist\ServerBundle\Controller\ApiController
-    metagist.categoryschema.class: Metagist\CategorySchema
+    metagist.contribute.controller.class: Metagist\ServerBundle\Controller\ContributeController
+    metagist.admin.controller.class: Metagist\ServerBundle\Controller\AdminController
+    metagist.search.controller.class: Metagist\ServerBundle\Controller\SearchController
+    metagist.categoryschema.class: Metagist\ServerBundle\Validation\CategorySchema
     
 services:
   
@@ -27,7 +29,7 @@ services:
     arguments: [%kernel.root_dir%/../web/bundles/metagistserver/metainfo.json]
     
   metagist.validator:
-    class:     Metagist\Validator
+    class:     Metagist\ServerBundle\Validation\Validator
     arguments: ["@metagist.categoryschema"]
     
   metagist_twig_iconextension:
@@ -38,7 +40,6 @@ services:
   
   metagist_twig_metainfosextension:
     class:     Metagist\ServerBundle\Twig\Extension\MetaInfosExtension
-    arguments: [%category.render.mapping%]
     tags:
       - { name: twig.extension }
 
@@ -48,9 +49,23 @@ services:
     calls:
       - [setContainer, ["@service_container"]]
   
-  metagist.api.controller:
-    class:     "%metagist.api.controller.class%"
-    arguments: ["@metagist.controller.serviceprovider","@metagist.api.request_validator"]
+  metagist.contribute.controller:
+    class:     "%metagist.contribute.controller.class%"
+    arguments: ["@metagist.controller.serviceprovider"]
+    calls:
+      - [setContainer, ["@service_container"]]
+  
+  metagist.search.controller:
+    class:     "%metagist.search.controller.class%"
+    arguments: ["@metagist.controller.serviceprovider"]
+    calls:
+      - [setContainer, ["@service_container"]]
+  
+  metagist.admin.controller:
+    class:     "%metagist.admin.controller.class%"
+    arguments: ["@metagist.controller.serviceprovider"]
+    calls:
+      - [setContainer, ["@service_container"]]
   
   metagist.user.repository:
         class:           Metagist\ServerBundle\Entity\UserRepository
@@ -61,31 +76,5 @@ services:
   metagist.user.provider.entity:
     class: Metagist\ServerBundle\Entity\UserProvider
     arguments: ["@metagist.user.repository", %metagist.server.admins%]
-    
-  metagist.opauth.listener:
-    class: Metagist\ServerBundle\EventListener\OpauthListener
-    arguments: ["@doctrine.orm.entity_manager"]
-  
-    
-  metagist.api:
-    class: Metagist\Api\Factory
-    calls:
-      - [setConfig, [%metagist.api.config%]]
-  
-  metagist.api.request_validator:
-    class: Metagist\Api\RequestValidator
-    arguments: ["@event_dispatcher"]
-    
-  metagist.api.oauth_validator:
-    class:            Metagist\Api\OAuthValidator
-    factory_service:  metagist.api
-    factory_method:   getOauthValidator
-    
-  api.security.authentication.provider:
-        class:  Metagist\ServerBundle\Security\Authentication\Provider\ApiProvider
-        arguments: [""]
 
-  api.security.authentication.listener:
-        class:  Metagist\ServerBundle\Security\Firewall\ApiListener
-        arguments: ["@security.context", "@security.authentication.manager", "@metagist.api", "@logger"]
-        
+      

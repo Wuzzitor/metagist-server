@@ -2,7 +2,6 @@
 namespace Metagist\ServerBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Metagist\MetainfoInterface;
 
 /**
  * Metainfo
@@ -10,7 +9,7 @@ use Metagist\MetainfoInterface;
  * @ORM\Table(name="metainfo")
  * @ORM\Entity(repositoryClass="MetainfoRepository")
  */
-class Metainfo implements MetainfoInterface
+class Metainfo
 {
     /**
      * identifier for the repo
@@ -32,20 +31,6 @@ class Metainfo implements MetainfoInterface
      * @var string
      */
     const MAINTAINERS = 'maintainers';
-    
-    /**
-     * identifier for number of dependencies
-     * 
-     * @var string
-     */
-    const REQUIRES = 'requires';
-    
-    /**
-     * identifier for number of dependencies for development
-     * 
-     * @var string
-     */
-    const REQUIRES_DEV = 'requires.dev';
     
     /**
      * identifier for license type
@@ -88,6 +73,10 @@ class Metainfo implements MetainfoInterface
      * @var string
      */
     const COMMITS = 'commits';
+    
+    const PACKAGIST_DOWNLOADS = "packagist.downloads";
+    const PACKAGIST_FAVERS    = "packagist.favers";
+    const STILL_MAINTAINED    = "stillmaintained";
     
     /**
      * @var integer

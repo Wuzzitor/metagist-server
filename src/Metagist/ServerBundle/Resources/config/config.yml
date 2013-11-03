@@ -12,13 +12,3 @@ parameters:
     - tests.status:  'icon-lightbulb'
     - repository:  'icon-github'
 
-  category.render.mapping:
-    usage:  {class: 'label label-info'}
-    maintainers:  {class: 'badge'}
-    committers:  {class: 'badge'}
-    commits:  {class: 'badge'}
-    #homepage'     => array('displayAs' => 'url'),
-    #api'          => array('displayAs' => 'url'),
-    #manual'       => array('displayAs' => 'file'),
-    #repository'   => array('displayAs' => 'file'),
-    #tests.status' => array('displayAs' => 'badge'),
