@@ -63,11 +63,12 @@ class MetainfoRepository extends EntityRepository
      * 
      * @param \Metagist\MetaInfo $info
      * @param bool $replace replaced same metainfos
+     * @todo replace is a number, should delete old infos except for the last n entries
      */
     public function save(MetaInfo $info, $replace = false)
     {
         $entityManger = $this->getEntityManager();
-        if ($replace === true) {
+        if ($replace != false) {
             $toDelete = $this->findBy(array(
                 'package' => $info->getPackage(),
                 'group' => $info->getGroup()

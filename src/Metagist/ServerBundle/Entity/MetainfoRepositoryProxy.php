@@ -76,7 +76,7 @@ class MetainfoRepositoryProxy
      */
     public function save(MetaInfo $metaInfo)
     {
-        $this->assertPermission($metaInfo);
+        $this->assertPermission($metaInfo); 
         $this->repository->save($metaInfo, $this->getCardinality($metaInfo));
     }
     
