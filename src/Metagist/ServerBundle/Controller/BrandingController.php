@@ -267,17 +267,18 @@ class BrandingController extends Controller
         return $this->get('doctrine')->getEntityManager()->getRepository('MetagistServerBundle:Branding');
     }
 
+    /**
+     * Compiles less to css.
+     * 
+     * @throws \Exception
+     */
     private function compileBrandings()
     {
         $sourcePath = $this->get('kernel')->getCacheDir();
         $lessFile   = $this->getRepo()->compileAllToLess($sourcePath);
         $targetPath = $this->get('kernel')->getRootDir() . '/../web/css/brandings.css';
         $lessComp   = new \lessc();
-        try {
-            file_put_contents($targetPath, $lessComp->compileFile($lessFile));
-        } catch (\Exception $e) {
-            echo "fatal error: " . $e->getMessage();
-        }
+        file_put_contents($targetPath, $lessComp->compileFile($lessFile));
     }
 
 }
