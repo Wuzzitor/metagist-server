@@ -2,6 +2,87 @@
 VERSION 0  FIRST RELEASE
 ========================
 
+   Version 0.3 - Introducing brandings and categories
+      03/11/2013 13:22  0.3.0  initial release
+         d50fe8b styled the package view
+         df15758 Merge branch 'feature/symbol_extension' into develop
+         09e3133 code cleanup
+         60b9f48 meta info repo cardinality workaround
+         43d3f7a removed unused service
+         35e8b1a added role sytem to role hierarchy
+         fa10297 refactored the metainfo proxy
+         9f319d7 code cleanup
+         6f98e55 moved savePackage() to metainfo repo proxy
+         4500523 metainfo repo provides replace-feature for metainfos with cardinality 1
+         c2d0b2f package view using metainfo extension
+         7d43d86 added new metainfo types
+         938f69c adapted twig metainfo extension
+         8d4046a adapted metainfo factory test
+         0534f8a fixed a possible bug in packagist scanner
+         3a57f64 fixed a packagist scanner bug
+         713c361 admin controller triggers update (fixed, using jobqueue)
+         c1ce485 refactored the metainfos extension, display style is now hardcoded, but much less complicated
+         dfea0ec dropped the symbols extension
+         afca09b metainfo factory uses the packagist scanner to create metainfos (removed duplicate code)
+         593b0c1 #4 registered symbols extension
+         97c1375 #4 introduc symbol extension, separated from icon extension
+         4bd4366 fixed some tests
+         2c23d33 Merge branch 'feature/categories' into develop
+         d21ee81 showing uncategorized packages in admin index view
+         621488f fixed navbar in admin homepage
+         3d64f1c extracted search controller
+         65fd258 added inverse relation to category
+         db7facd base controller provides category links
+         cb41207 including javascript :-(
+         93eb552 fixed typo
+         458aa95 removed the admin-flags from metainfo schema in favour of categories
+         88c2b68 categories can be assigned to packages
+         5f4d5f2 introduced categories
+         35dc19d using font awesome 4
+         bd43ca0 several ui tweaks
+         832dc45 rating teaser template
+         9b44ee7 styled and linked the "latest" page
+         615bfa6 Merge branch 'feature/worker_integration' into develop
+         cb512ed got jms job queue running with supervisord
+         5c21d41 replaced default application with jms job queue console application
+         507c46c loading jobqueuebundle before doctrine bundle
+         efebcaa follow feed cron
+         6878b29 enabled jobqueue bundle controller
+         c58438a git scraper working again
+         a81d746 added travis build file
+         a351af7 ported many classes from metagist-worker
+         5b6bb5e Merge branch 'feature/cleanup' into develop
+         c00beb4 fixed the dependency entity, added test
+         3a21a7d removed dependency from metagist-api package
+         a2c6325 added exception code
+         71b2745 code cleanup
+         84a754c introduced contribute controller
+         94a5876 moved pagination to base controller
+         84db640 introduced admin controller, moved the package update function here (not functional yet)
+         6a9e7ab introduced a base controller to reduce duplicated code
+         f219f9a defensive cache-control manipulation
+         41eacaf fixed possible test failure
+         1ae0aa5 pseudo package teaser on homepage to introduce metagist.
+         418dd65 fixed the contribute views
+         10598b7 fixed the ratings view
+         580c9ae fixed the profile
+         1452d66 Merge branch 'feature/styles' into develop
+         cb2812e package crud improvements
+         79f6881 fixed test
+         f55f232 package crud
+         3f1417d branding crud improved
+         7a91ff7 branding file is not required
+         b737580 vendor class used in edit and show view
+         5696a28 including branding.css
+         4140216 less is compiled using lessphp
+         a46ec44 branding repo merges less only
+         59e89e7 branding has separate method to provide less with vendor
+         e9c14d8 branding repo compiles less (to be moved)
+         bd18d20 branding::getLess surrounding output with vendor class
+         3bffc13 fixed a routing typo
+         7bce295 branding crud
+         dc13e56 Merge branch 'release/0.2.3' into develop
+
    Version 0.2 - New UI, dropped some technical info for now
       30/10/2013 21:43  0.2.3  Improved search and pagination
          a2fdaa2 improved ratings pagination
