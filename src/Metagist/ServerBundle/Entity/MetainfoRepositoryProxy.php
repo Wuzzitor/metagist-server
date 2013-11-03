@@ -88,6 +88,40 @@ class MetainfoRepositoryProxy
         $this->repository->save($metaInfo, $cardinality);
     }
     
+    /**
+     * Returns the cardinality for a group.
+     * 
+     * @param \Metagist\ServerBundle\Entity\MetaInfo $metaInfo
+     * @return int|null
+     */
+    private function getCardinality(MetaInfo $metaInfo)
+    {
+        $group      = $metaInfo->getGroup();
+        $category   = $this->schema->getCategoryForGroup($group);
+        $groups     = $this->schema->getGroups($category);
+        $groupData  = $groups[$group];
+        
+        return isset($groupData->cardinality) ? $groupData->cardinality : null;
+    }
+    
+    /**
+     * Saves a package.
+     * 
+     * @param \Metagist\Package $package
+     * @throws \RuntimeException
+     */
+    public function savePackage(Package $package)
+    {
+        if ($package->getId() == null) {
+            throw new \RuntimeException('Save the package first.');
+        }
+        
+        $metaInfos = $package->getMetaInfos();
+        foreach ($metaInfos as $info) {
+            $this->save($info, $this->getCardinality($info));
+        }
+    }
+    
     private function checkPermission($category, $group)
     {
         if (!$this->checkSecurity) {

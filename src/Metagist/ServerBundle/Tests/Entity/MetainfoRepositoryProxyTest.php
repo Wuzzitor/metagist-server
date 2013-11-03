@@ -12,7 +12,7 @@ use Metagist\ServerBundle\Validation\CategorySchema;
  * 
  * @author Daniel Pozzi <bonndan76@googlemail.com>
  */
-class MetaInfoRepositoryProxyTest extends \PHPUnit_Framework_TestCase
+class MetainfoRepositoryProxyTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * system under test
@@ -96,14 +96,37 @@ class MetaInfoRepositoryProxyTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Ensures a package can be saved.
+     */
+    public function testSavePackage()
+    {
+        $package = new Package('test/test123');
+        $package->setDescription('test');
+        $package->setId(1);
+        
+        $elements = array(Metainfo::fromValue('test/test', 123));
+        $collection = new \Doctrine\Common\Collections\ArrayCollection($elements);
+        $package->setMetaInfos($collection);
+        
+        $this->repo->savePackage($package);
+    }
+    
+    /**
      * Ensures the call interceptor forwards method calls.
      */
     public function testForwarding()
     {
         $package = new Package('test');
-        $this->repo->expects($this->once())
-            ->method('savePackage')
-            ->with($package);
+        $package->setId(1);
+        $elements = array(Metainfo::fromValue('testInteger', 123));
+        $collection = new \Doctrine\Common\Collections\ArrayCollection($elements);
+        $package->setMetaInfos($collection);
+        $this->repo->expects($this->atLeastOnce())
+            ->method('save');
+        $this->context->expects($this->once())
+            ->method('isGranted')
+            ->will($this->returnValue(true));
+        
         $this->proxy->savePackage($package);
     }
 }

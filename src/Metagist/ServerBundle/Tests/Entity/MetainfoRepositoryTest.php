@@ -63,18 +63,6 @@ class MetaInfoRepositoryTest extends WebDoctrineTestCase
     }
     
     /**
-     * Ensures a package can be saved.
-     */
-    public function testSavePackage()
-    {
-        $elements = array(Metainfo::fromValue('test/test', 123));
-        $collection = new \Doctrine\Common\Collections\ArrayCollection($elements);
-        $this->package->setMetaInfos($collection);
-        
-        $this->repo->savePackage($this->package);
-    }
-    
-    /**
      * Ensures that old infos are replaced.
      */
     public function testReplace()

@@ -59,24 +59,6 @@ class MetainfoRepository extends EntityRepository
     }
     
     /**
-     * Saves a package.
-     * 
-     * @param \Metagist\Package $package
-     * @throws \RuntimeException
-     */
-    public function savePackage(Package $package)
-    {
-        if ($package->getId() == null) {
-            throw new \RuntimeException('Save the package first.');
-        }
-        
-        $metaInfos = $package->getMetaInfos();
-        foreach ($metaInfos as $info) {
-            $this->save($info, null);
-        }
-    }
-    
-    /**
      * Saves (inserts) a single info.
      * 
      * @param \Metagist\MetaInfo $info
