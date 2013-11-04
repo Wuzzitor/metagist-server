@@ -21,7 +21,7 @@ class PackageTest extends WebDoctrineTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->package = new Package('test/123');
+        $this->package = new Package('test/t123');
     }
     
     /**
@@ -29,7 +29,7 @@ class PackageTest extends WebDoctrineTestCase
      */
     public function testAssertConstructorWorks()
     {
-        $this->assertEquals('test/123', $this->package->getIdentifier());
+        $this->assertEquals('test/t123', $this->package->getIdentifier());
     }
     
     /**
@@ -45,7 +45,7 @@ class PackageTest extends WebDoctrineTestCase
      */
     public function testGetName()
     {
-        $this->assertEquals('123', $this->package->getName());
+        $this->assertEquals('t123', $this->package->getName());
     }
     
     /**

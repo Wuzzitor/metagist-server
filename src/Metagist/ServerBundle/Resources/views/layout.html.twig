@@ -20,6 +20,7 @@
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
     </head>
     <body>
+        {% block navigation %}
         <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <div class="container">
                 <div class="navbar-header">
@@ -58,6 +59,7 @@
                 </div><!--/.nav-collapse -->
             </div>
         </nav>
+        {% endblock %}
         <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
         <div class="container">
             <div id="main" role="main">
@@ -74,9 +76,11 @@
             {% endblock %}
                 </div>
         </div>
+        {% block footer %}
         <footer class="padded">
                 <a href="{{ path('about') }}"><i class="fa fa-info"></i> About</a>
         </footer>
+        {% endblock %}
         <script src="//code.jquery.com/jquery-2.0.3.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"></script>
     </body>

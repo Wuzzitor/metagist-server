@@ -67,3 +67,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d4e4ef', end
     height: 20em;
     overflow: hidden;
 }
+
+.start-content {
+    max-width: 800px;
+    padding: 15px;
+    margin: 0 auto;
+}
