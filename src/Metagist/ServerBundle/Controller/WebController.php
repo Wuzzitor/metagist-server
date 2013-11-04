@@ -21,13 +21,27 @@ use Metagist\ServerBundle\Entity\Package;
 class WebController extends BaseController
 {
     /**
-     * Default.
+     * The start page.
      * 
      * @return string
      * @Route("/", name="homepage")
      * @Template()
      */
     public function indexAction()
+    {
+        return array(
+            'categories' => $this->getCategories()
+        );
+    }
+    
+    /**
+     * Displays random packages.
+     * 
+     * @return string
+     * @Route("/random", name="random")
+     * @Template()
+     */
+    public function randomAction()
     {
         return array(
             'packages' => $this->serviceProvider->packages()->random(20),

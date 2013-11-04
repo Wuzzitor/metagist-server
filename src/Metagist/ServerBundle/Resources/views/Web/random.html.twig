@@ -1,0 +1,12 @@
+{% extends 'MetagistServerBundle::layout.html.twig' %}
+{% set pagetitle = 'metagist.org' %}
+
+{% block content %}
+<h1 class="hidden">{{ 'Random Packages' | trans}}</h1>
+<div class="row">
+    {% for package in packages %}
+        {% include 'MetagistServerBundle::packageteaser.html.twig' with {'package': package} %}
+    {% endfor %}
+</div>
+
+{% endblock %}

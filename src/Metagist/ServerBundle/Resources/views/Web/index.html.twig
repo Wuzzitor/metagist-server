@@ -1,27 +1,46 @@
 {% extends 'MetagistServerBundle::layout.html.twig' %}
 {% set pagetitle = 'metagist.org' %}
 
+{% block navigation %}{% endblock %}
+{% block footer %}{% endblock %}
+
 {% block content %}
 
 <h1 class="hidden">{{ 'Random Packages' | trans}}</h1>
 <div class="row">
-    
-<!-- dummy teaser -->
-<div class="col-lg-4 col-md-4 package-teaser metagist">
+
+    <div class="start-content metagist">
+        
     <img class="logo" src="{{ 'images/metagist.png' | imagine_filter('my_thumb') }}" alt="logo for metagist"/>
-    <h1>Welcome to Metagist.org</h1>
+    <h1>Metagist.org - the PHP app store</h1>
+
+    <nav class="navbar default-gradient" role="navigation">
+            <form class="form navbar-form" role="search" action="{{ path('search') }}" method="GET">
+                <div class="input-group">
+                    <input type="search" accesskey="s" name="query" class="form-control" required="required" value="{% if query is defined %}{{query | e}}{% endif %}" class="search-query" placeholder="Search">
+                  <span class="input-group-btn">
+                    <button type="submit" class="btn btn-default">Search</button>
+                  </span>
+                </div>
+                
+            </form>
+        <div class="contaidner">
+            <ul class="nav navbar-nav">
+                {% if categories is defined %}
+                    {% for name, link in categories %}
+                    <li><a href="{{ link }}">{{ name }}</a></li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
 
     <p>
-        <strong>The app store for composer packages.</strong><br />
-        <a href="{{ path('about') }}">Learn more</a> &nbsp;
-        <a href="{{ path('latest') }}">Latest data</a>
+        <a href="{{ path('about') }}">About metagist</a> &nbsp;
+        <a href="{{ path('latest') }}">Latest data</a> &nbsp;
+        <a href="{{ path('random') }}">Random packages</a>
     </p>
+    </div>
 </div>
-<!-- dummy teaser -->
-    
-{% for package in packages %}
-    {% include 'MetagistServerBundle::packageteaser.html.twig' with {'package': package} %}
-{% endfor %}
-</div>
-    
+
 {% endblock %}
