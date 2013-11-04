@@ -72,7 +72,7 @@ class Validator
      */
     public static function isValidName($name)
     {
-        $pattern = '/^[a-zA-Z0-9\-\_\.]{2,128}$/i';
+        $pattern = '/^[a-zA-Z]{1}[a-zA-Z0-9\-\_\.]{0,127}$/i';
         return (bool) preg_match($pattern, $name);
     }
     
