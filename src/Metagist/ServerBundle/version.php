@@ -1,2 +1,2 @@
 <?php
-define('METAGIST_VERSION', '0.3.3');
+define('METAGIST_VERSION', '0.3.4');

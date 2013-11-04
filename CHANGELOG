@@ -3,6 +3,10 @@ VERSION 0  FIRST RELEASE
 ========================
 
    Version 0.3 - Introducing brandings and categories
+      04/11/2013 20:53  0.3.4  Start page
+         3ee9fb5 changed the start page to be much simpler. only categories and search are shown
+         c176f08 changed the name validator: package name may consist of only one letter (gonzalo123/g)
+         9007340 #6 added compile command
       03/11/2013 17:22  0.3.3  Small fixes
          d348ebc added copyright infos to about page
          1b8f977 fixed an error caused by empty dependencies
