@@ -3,6 +3,11 @@ VERSION 0  FIRST RELEASE
 ========================
 
    Version 0.3 - Introducing brandings and categories
+      05/11/2013 07:04  0.3.5  Bugfixes
+         239955a #6 addressed
+         062cede #7 fixed
+         7aa8e40 simplified the routing config
+         472dd03 Merge branch 'release/0.3.4' into develop
       04/11/2013 20:53  0.3.4  Start page
          3ee9fb5 changed the start page to be much simpler. only categories and search are shown
          c176f08 changed the name validator: package name may consist of only one letter (gonzalo123/g)
