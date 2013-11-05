@@ -274,11 +274,12 @@ class BrandingController extends Controller
      */
     private function compileBrandings()
     {
-        $sourcePath = $this->get('kernel')->getCacheDir();
-        $lessFile   = $this->getRepo()->compileAllToLess($sourcePath);
+        $command = new \Metagist\ServerBundle\Command\CompileBrandingsCommand();
+        $command->setContainer($this->container);
+        
+        $lessFile = $command->writeLess($this->get('kernel')->getCacheDir());
         $targetPath = $this->get('kernel')->getRootDir() . '/../web/css/brandings.css';
-        $lessComp   = new \lessc();
-        file_put_contents($targetPath, $lessComp->compileFile($lessFile));
+        $command->compileBrandings($lessFile, $targetPath);
     }
 
 }
