@@ -1,8 +1,8 @@
 <?php
-namespace Metagist\ServerBundle\Tests\Entity;
+namespace Metagist\ServerBundle\Tests\Command;
 
 use Metagist\ServerBundle\Tests\WebDoctrineTestCase;
-use Metagist\ServerBundle\Entity\BrandingRepository;
+use Metagist\ServerBundle\Command\CompileBrandingsCommand;
 use Metagist\ServerBundle\Entity\Branding;
 
 /**
@@ -11,14 +11,14 @@ use Metagist\ServerBundle\Entity\Branding;
  * 
  * @author Daniel Pozzi <bonndan76@googlemail.com>
  */
-class BrandingRepositoryTest extends WebDoctrineTestCase
+class CompileBrandingsCommandTest extends WebDoctrineTestCase
 {
     /**
      * system under test
      * 
-     * @var \Metagist\ServerBundle\Entity\BrandingRepository
+     * @var \Metagist\ServerBundle\Command\CompileBrandingsCommand
      */
-    private $repo;
+    private $command;
     
     /**
      * Test setup
@@ -26,7 +26,8 @@ class BrandingRepositoryTest extends WebDoctrineTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->repo = $this->entityManager->getRepository('MetagistServerBundle:Branding');
+        $this->command = new CompileBrandingsCommand();
+        $this->command->setContainer(self::$client->getContainer());
     }
     
     protected function loadFixtures()
@@ -44,15 +45,36 @@ class BrandingRepositoryTest extends WebDoctrineTestCase
         $this->entityManager->flush();
     }
 
-    public function testCompilesLess()
+    public function testGetLess()
+    {
+        $less = $this->command->getLess();
+        $this->assertContains('.test1{' . PHP_EOL . 'a{', $less);
+        $this->assertContains('.test2{' . PHP_EOL . 'a{', $less);
+    }
+    
+    public function testWriteLess()
     {
         $tempDir = sys_get_temp_dir();
         @unlink($tempDir . '/brandings.less');
-        $this->repo->compileAllToLess($tempDir);
+        $this->command->writeLess($tempDir);
         
         $this->assertFileExists($tempDir . '/brandings.less');
         $contents = file_get_contents($tempDir . '/brandings.less');
         $this->assertContains('.test1{' . PHP_EOL . 'a{', $contents);
         $this->assertContains('.test2{' . PHP_EOL . 'a{', $contents);
+    }
+    
+    public function testLessCompilerIntegration()
+    {
+        $tempDir = sys_get_temp_dir();
+        $targetPath = $tempDir . '/test.css';
+        @unlink($tempDir . '/brandings.less');
+        @unlink($targetPath);
+        
+        $lessFile = $this->command->writeLess($tempDir);
+        
+        $res = $this->command->compileBrandings($lessFile, $targetPath);
+        $this->assertTrue($res);
+        $this->assertFileExists($targetPath);
     }
 }

@@ -54,7 +54,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
             array('test-123-TEST', true),
             array('test-12.3', true),
             array('t', true),
-            array('1', false),
+            array('1', true),
             array('test/123', false),
             array('test;123', false),
         );
@@ -196,7 +196,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
         return array(
             array('a'),
             array('a/.b'),
-            array('1a/b'),
+            array('.a/b'),
             array('/b'),
             array('a/'),
             array('is/' . str_repeat('toolong', 30)),
